@@ -38,15 +38,29 @@ module.exports = {
           { 
             loader: "css-loader",
             options: { 
-              modules: true,
+              modules: {
+                localIdentName: '[sha1:hash:hex:4]',
+              },
+              importLoaders: 1, 
             } 
           },
           { 
             loader: "sass-loader",
+            options: {
+              additionalData: '@import "./src/css-utils/_index.scss";',
+            },
           },
-    ] 
-    }, 
-    ],
+        ] 
+      },
+      {
+        test: /\.(png|jpe?g|svg)$/,
+        loader: 'file-loader',
+        options: {
+            name: '[name].[ext]',
+            outputPath: 'assets/images',
+          },
+        },
+      ],
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', 'json', '.css', '.scss'],
