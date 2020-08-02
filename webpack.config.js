@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
+  mode: 'production',
   entry: './src/index.tsx',
   output: {
     filename: 'main.js',
@@ -28,32 +29,27 @@ module.exports = {
         loader: 'ts-loader',
         exclude: /node_modules/,
       },
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1,
-              modules: true,
-            },
+      { 
+        test: /\.scss$/, 
+        use: [ 
+          { 
+            loader: "style-loader" 
           },
-        ],
-        include: /\.module\.css$/,
-      },
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-        ],
-        exclude: /\.module\.css$/,
-      },
+          { 
+            loader: "css-loader",
+            options: { 
+              modules: true,
+            } 
+          },
+          { 
+            loader: "sass-loader",
+          },
+    ] 
+    }, 
     ],
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', 'json'],
+    extensions: ['.ts', '.tsx', '.js', 'json', '.css', '.scss'],
   },
   devtool: 'source-map',
   plugins: [
