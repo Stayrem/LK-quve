@@ -5,6 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssnanoPlugin = require('cssnano-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+const autoprefixer = require('autoprefixer');
 
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -59,6 +60,15 @@ module.exports = {
               },
               importLoaders: 1, 
             } 
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+                plugins: [
+                    autoprefixer(),
+                ],
+                sourceMap: true
+            }
           },
           { 
             loader: "sass-loader",
