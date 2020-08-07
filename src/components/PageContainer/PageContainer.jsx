@@ -1,11 +1,8 @@
 import * as React from 'react';
 import styles from './PageContainer.module.scss';
 
-export interface ContainerProps {
-  children: React.ReactNode
-}
-
-const PageContainer = ({ children }: ContainerProps) => {
+const PageContainer = (props) => {
+  const { children } = props;
   const { container } = styles;
   return (
     <div className={container}>

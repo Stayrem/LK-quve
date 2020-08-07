@@ -1,0 +1,277 @@
+.header {
+  position: relative;
+  width: 100%;
+  display: flex;
+  background-color: $color-header-bg;
+}
+
+.title {
+  display: none;
+  font-size: 18px;
+  margin-left: 15px;
+  color: $color-pure-white;
+  font-family: "Montserrat", sans-serif;
+}
+
+.nav {
+  display: none;
+  margin-left: auto;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+}
+
+.item {
+  display: block;
+  margin-right: 65px;
+
+  &:last-child {
+    margin-right: unset;
+  }
+}
+
+.link {
+  color: $color-pure-white;
+  font-size: 14px;
+}
+
+.headerInner {
+  display: flex;
+  position: relative;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-right: 6.77083333333%;
+}
+
+.btn {
+  display: block;
+  width: 28px;
+  margin-left: auto;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.notActive {
+  display: block;
+}
+
+.active {
+  display: block;
+}
+
+.burgerLine {
+  display: block;
+  width: 100%;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+  height: 4px;
+  background: #fff;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.burgerLine + .burgerLine {
+  margin-top: 6px;
+}
+
+.headerLogo {
+  width: 30px;
+}
+
+.mobileMenu {
+  position: absolute;
+  width: 85%;
+  height: 100vh;
+  background-color: $color-header-bg;
+  left: -100%;
+  transition: left 0.6s;
+}
+
+.mobileMenuOpened {
+  left: 0;
+}
+
+@keyframes top {
+  0% {
+    top: 0;
+    transform: rotate(0);
+  }
+
+  50% {
+    top: 10px;
+    transform: rotate(0);
+  }
+
+  100% {
+    top: 10px;
+    transform: rotate(45deg);
+  }
+}
+
+@keyframes top-2 {
+  0% {
+    top: 10px;
+    transform: rotate(45deg);
+  }
+
+  50% {
+    top: 10px;
+    transform: rotate(0deg);
+  }
+
+  100% {
+    top: 0;
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes bottom {
+  0% {
+    bottom: 0;
+    transform: rotate(0);
+  }
+
+  50% {
+    bottom: 10px;
+    transform: rotate(0);
+  }
+
+  100% {
+    bottom: 10px;
+    transform: rotate(135deg);
+  }
+}
+
+@keyframes bottom-2 {
+  0% {
+    bottom: 10px;
+    transform: rotate(135deg);
+  }
+
+  50% {
+    bottom: 10px;
+    transform: rotate(0);
+  }
+
+  100% {
+    bottom: 0;
+    transform: rotate(0);
+  }
+}
+
+@keyframes scaled {
+  50% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes scaled-2 {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.active .burgerLine:nth-child(1) {
+  animation-duration: 0.7s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+  animation-name: top;
+}
+
+.notActive .burgerLine:nth-child(1) {
+  animation-duration: 0.7s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+  animation-name: top-2;
+}
+
+.active .burgerLine:nth-child(2) {
+  animation-duration: 0.7s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+  animation-name: scaled;
+}
+
+.notActive .burgerLine:nth-child(2) {
+  animation-duration: 0.7s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+  animation-name: scaled-2;
+}
+
+.active .burgerLine:nth-child(3) {
+  animation-duration: 0.7s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+  animation-name: bottom;
+}
+
+.notActive .burgerLine:nth-child(3) {
+  animation-duration: 0.7s;
+  animation-timing-function: ease;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+  animation-name: bottom-2;
+}
+
+@media (min-width: 992px) {
+  .nav {
+    display: flex;
+  }
+
+  .btn {
+    display: none;
+  }
+
+  .title {
+    display: block;
+  }
+
+  .headerLogo {
+    width: 54px;
+  }
+}

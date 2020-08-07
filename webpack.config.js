@@ -20,7 +20,7 @@ const PATH = {
 }
 module.exports = {
   mode: isDevelopment ? 'development' : 'production',
-  entry: './src/index.tsx',
+  entry: './src/index.js',
   output: {
     filename: `main${hash}.js`,
     path: PATH.DIST,
@@ -41,11 +41,6 @@ module.exports = {
           loader: 'babel-loader',
         },
       },
-      {
-        test: /\.(tsx|ts)?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
-      },
       { 
         test: /\.(scss|css)$/, 
         use: [ 
@@ -56,7 +51,7 @@ module.exports = {
             loader: "css-loader",
             options: { 
               modules: {
-                localIdentName: '[sha1:hash:hex:4]',
+                localIdentName: '[local]-[sha1:hash:hex:4]',
               },
               importLoaders: 1, 
             } 
@@ -105,9 +100,6 @@ module.exports = {
         }
       },
       ],
-  },
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js', 'json', '.css', '.scss'],
   },
   devtool: 'source-map',
   plugins: [
