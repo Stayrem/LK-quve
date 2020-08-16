@@ -1,0 +1,44 @@
+.card {
+  display: flex;
+  max-width: 350px;
+  width: 100%;
+  border-radius: 6px;
+  color: $color-pure-white;
+  background-color: $color-header-bg;
+  flex-direction: column;
+  padding: 35px 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
+  margin-right: 15px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.cardText {
+  font-size: 24px;
+  color: attr(data-color);
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.cardSubtitle {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cardTextLoss {
+  color: $color-bright-red;
+}
+
+.cardTextProfit {
+  color: $color-strong-green;
+}

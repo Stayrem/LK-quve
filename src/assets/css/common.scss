@@ -1,0 +1,27 @@
+:global {
+  .s_button {
+    padding: 0;
+    border: none;
+    color: inherit;
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  body {
+    font-family: "Montserrat", sans-serif;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+  }
+
+  #root {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main {
+    background-color: $color-dark-desaturated-blue;
+    flex-grow: 1;
+  }
+}
