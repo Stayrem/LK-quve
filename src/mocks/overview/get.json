@@ -1,24 +1,24 @@
 {
   "data": {
-    "income": 180000,
-    "fixed_costs": 65000,
+    "income": 20000,
+    "fixed_costs": 500,
     "saving_percent": 20,
     "spendings": [
       {
         "categorie": "Аптека",
-        "value": 350
+        "value": 100
       },
       {
         "categorie": "Транспорт",
-        "value": 600
+        "value": 100
       },
       {
         "categorie": "Ресторан",
-        "value": 1530
+        "value": 100
       },
       {
         "categorie": "Такси",
-        "value": 150
+        "value": 100
       }
     ]
   }
