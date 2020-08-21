@@ -6,7 +6,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Header from '../../layouts/Header/Header';
-import Overview from '../pages/Overview/Overview';
+import Overview from '../../pages/Overview/Overview';
 import styles from './App.module.scss';
 
 const App = () => {

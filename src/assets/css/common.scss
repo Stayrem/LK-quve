@@ -5,6 +5,10 @@
     color: inherit;
     background-color: transparent;
     cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   body {

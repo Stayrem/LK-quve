@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import 'moment/locale/ru';
+import { toJS } from 'mobx';
 
 const daysCount = moment().daysInMonth();
 const getSpendingsSum = (arr) => {
@@ -14,6 +15,7 @@ const createOverviewStore = () => ({
   savingPercent: null,
   savingSum: null,
   spendings: [],
+  daySpendings: null,
   async getOverviewData() {
     let data;
     await fetch('/mocks/overview/get.json')
@@ -26,8 +28,24 @@ const createOverviewStore = () => ({
     this.savingPercent = data.saving_percent;
     this.savingSum = (data.income * data.saving_percent) / 100;
     this.spendings = data.spendings;
+    this.daySpendings = getSpendingsSum(this.spendings);
     this.dayBudjet = Math.floor((this.income - this.savingSum - this.fixedCosts
-      - getSpendingsSum(this.spendings)) / daysCount);
+      - this.daySpendings) / daysCount);
+  },
+  editSpending(obj) {
+    const modified = toJS(this.spendings).map((item) => {
+      if (item.id !== obj.id) {
+        return item;
+      }
+      return {
+        ...item,
+        ...obj,
+      };
+    });
+    this.spendings = modified;
+  },
+  addSpending() {
+    this.spendings.push({ id: this.spendings.length });
   },
 });
 

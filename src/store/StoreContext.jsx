@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 import PropTypes from 'prop-types';
-import { useLocalStore } from 'mobx-react';
+import { useLocalStore } from 'mobx-react-lite';
 import createOverviewStore from './store';
 
 const StoreContext = createContext(null);

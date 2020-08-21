@@ -1,0 +1,85 @@
+.card {
+  display: flex;
+  max-width: 100%;
+  margin-bottom: 20px;
+  width: 100%;
+  border-radius: 6px;
+  color: $color-pure-white;
+  background-color: $color-header-bg;
+  flex-direction: column;
+  padding: 25px 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
+}
+
+.cardTitle {
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.cardText {
+  font-size: 12px;
+  color: attr(data-color);
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.cardSubtitle {
+  font-size: 12px;
+  font-weight: 400;
+  color: $color-light-grayish-blue;
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: 30px 25px;
+    max-width: 282px;
+  }
+
+  .cardTitle {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  .cardText {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+
+  .cardSubtitle {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .card {
+    max-width: 282px;
+  }
+
+  .cardSubtitle {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1700px) {
+  .card {
+    padding: 35px 30px;
+    max-width: 350px;
+  }
+
+  .cardTitle {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .cardText {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .cardSubtitle {
+    font-size: 16px;
+  }
+}

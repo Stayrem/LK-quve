@@ -1,0 +1,95 @@
+.expences {
+  max-width: 100%;
+  width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
+  background-color: $color-header-bg;
+  border-radius: 6px;
+}
+
+.expencesListItem {
+  display: flex;
+  border-top: 1px solid #707070;
+
+  &:last-child {
+    border-bottom: 1px solid #707070;
+  }
+}
+
+.expencesListInput {
+  width: 50%;
+  border: none;
+  font-size: 11px;
+  background-color: $color-header-bg;
+  color: $color-light-grayish-blue;
+  padding: 10px 0 10px 25px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.focus .expencesListInput {
+  background-color: $color-very-dark-desaturated-blue;
+}
+
+.expencesListButton {
+  display: flex;
+  width: 100%;
+}
+
+.expencesTitle {
+  padding: 25px 20px;
+  color: $color-pure-white;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.addSpendingButton {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  color: $color-tranparent-gray;
+  font-size: 11px;
+  font-weight: 700;
+  padding-left: 20px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+
+  &::before {
+    content: "";
+    background-image: url("./images/plus.svg");
+    width: 16px;
+    height: 16px;
+    margin-right: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  .expencesListInput {
+    font-size: 14px;
+  }
+
+  .expencesTitle {
+    padding: 30px 25px;
+  }
+
+  .addSpendingButton {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .expences {
+    max-width: 578px;
+  }
+}
+
+@media (min-width: 1700px) {
+  .expences {
+    max-width: 805px;
+  }
+
+  .expencesTitle {
+    padding: 35px 30px;
+  }
+}
