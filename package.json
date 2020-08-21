@@ -23,11 +23,13 @@
     "mobx": "5.15.5",
     "mobx-react": "6.2.5",
     "mobx-react-devtools": "6.1.1",
+    "mobx-react-lite": "2.0.7",
     "moment": "2.27.0",
     "prop-types": "15.7.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-router-dom": "5.2.0",
+    "react-slick": "^0.27.9",
     "webpack": "4.44.1",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "3.11.0"

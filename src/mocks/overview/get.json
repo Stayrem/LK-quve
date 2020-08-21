@@ -5,18 +5,22 @@
     "saving_percent": 20,
     "spendings": [
       {
+        "id": 0,
         "categorie": "Аптека",
         "value": 100
       },
       {
+        "id": 1,
         "categorie": "Транспорт",
         "value": 100
       },
       {
+        "id": 2,
         "categorie": "Ресторан",
         "value": 100
       },
       {
+        "id": 3,
         "categorie": "Такси",
         "value": 100
       }

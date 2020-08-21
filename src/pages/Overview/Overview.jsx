@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react-lite';
 import * as moment from 'moment';
-import PageContainer from '../../../hocs/PageContainer/PageContainer';
-import PageTitle from '../../PageTitle/PageTitle';
-import CardSpending from '../../CardSpending/CardSpending';
+import PageContainer from '../../hocs/PageContainer/PageContainer';
+import PageTitle from '../../components/PageTitle/PageTitle';
+import Card from '../../components/Card/Card';
+import ExpensesList from '../../components/ExpensesList/ExpensesList';
 import styles from './Overview.module.scss';
-import { useStore } from '../../../store/StoreContext';
+import { useStore } from '../../store/StoreContext';
 
 const Overview = observer(() => {
   const store = useStore();
@@ -14,13 +15,12 @@ const Overview = observer(() => {
     getOverviewData();
   }, []);
   const {
-    income,
-    fixedCosts,
-    savingPercent,
-    spendings,
     dayBudjet,
     daySpendings,
     savingSum,
+    spendings,
+    editSpending,
+    addSpending,
   } = store;
 
   const today = moment().format('DD MMMM YYYY');
@@ -55,13 +55,20 @@ const Overview = observer(() => {
       subTitle: mounth,
     },
   ];
-  const { cardWrapper } = styles;
+  const { cardWrapper, inner } = styles;
   return (
     <main className="main">
       <PageContainer>
         <PageTitle title="Сводка" />
         <div className={cardWrapper}>
-          {cards.map((card) => <CardSpending key={card.id} content={card} />)}
+          {cards.map((card) => <Card key={card.id} content={card} />)}
+        </div>
+        <div className={inner}>
+          <ExpensesList
+            spendings={spendings}
+            editSpending={editSpending}
+            addSpending={addSpending}
+          />
         </div>
       </PageContainer>
     </main>

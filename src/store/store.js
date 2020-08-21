@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import 'moment/locale/ru';
+import { toJS } from 'mobx';
 
 const daysCount = moment().daysInMonth();
 const getSpendingsSum = (arr) => {
@@ -30,6 +31,21 @@ const createOverviewStore = () => ({
     this.daySpendings = getSpendingsSum(this.spendings);
     this.dayBudjet = Math.floor((this.income - this.savingSum - this.fixedCosts
       - this.daySpendings) / daysCount);
+  },
+  editSpending(obj) {
+    const modified = toJS(this.spendings).map((item) => {
+      if (item.id !== obj.id) {
+        return item;
+      }
+      return {
+        ...item,
+        ...obj,
+      };
+    });
+    this.spendings = modified;
+  },
+  addSpending() {
+    this.spendings.push({ id: this.spendings.length });
   },
 });
 

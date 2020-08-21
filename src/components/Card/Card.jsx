@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './CardSpending.module.scss';
-import { useStore } from '../../store/StoreContext';
+import styles from './Card.module.scss';
 
-const CardSpending = (props) => {
+const Card = (props) => {
   const { content } = props;
   const {
     title, text, textcolor, subTitle,
@@ -24,4 +23,13 @@ const CardSpending = (props) => {
   );
 };
 
-export default CardSpending;
+Card.propTypes = {
+  content: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    text: PropTypes.number.isRequired,
+    textcolor: PropTypes.string.isRequired,
+    subTitle: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+export default Card;

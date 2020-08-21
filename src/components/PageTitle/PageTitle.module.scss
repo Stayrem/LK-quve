@@ -1,7 +1,28 @@
 .pageTitle {
-  font-size: 52px;
+  font-size: 26px;
   color: $color-pure-white;
   font-weight: 700;
-  margin-top: 40px;
-  margin-bottom: 40px;
+  margin-top: 25px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .pageTitle {
+    margin-top: 35px;
+    margin-bottom: 35px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .pageTitle {
+    margin-top: 40px;
+    margin-bottom: 25px;
+  }
+}
+
+@media (min-width: 1700px) {
+  .pageTitle {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
 }
