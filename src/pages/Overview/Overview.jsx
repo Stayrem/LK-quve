@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import * as moment from 'moment';
+import { toJS } from 'mobx';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Card from '../../components/Card/Card';
 import ExpensesList from '../../components/ExpensesList/ExpensesList';
 import styles from './Overview.module.scss';
 import { useStore } from '../../store/StoreContext';
+import Saldo from '../../components/Saldo/Saldo';
 
 const Overview = observer(() => {
   const store = useStore();
@@ -15,12 +17,15 @@ const Overview = observer(() => {
     getOverviewData();
   }, []);
   const {
+    isOverwiewDataFetched,
+    isSaldoDataFetched,
     dayBudjet,
     daySpendings,
     savingSum,
     spendings,
     editSpending,
     addSpending,
+    saldoData,
   } = store;
 
   const today = moment().format('DD MMMM YYYY');
@@ -69,6 +74,14 @@ const Overview = observer(() => {
             editSpending={editSpending}
             addSpending={addSpending}
           />
+          {(() => {
+            if (isSaldoDataFetched) {
+              return (
+                <Saldo graphData={toJS(saldoData)} />
+              );
+            }
+            return null;
+          })()}
         </div>
       </PageContainer>
     </main>

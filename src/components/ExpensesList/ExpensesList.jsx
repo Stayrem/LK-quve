@@ -21,7 +21,7 @@ const ExpensesList = (props) => {
       find = toJS(spendings).find((item) => item.id === id);
       return find === undefined;
     };
-    const content = type === 'value' ? { value: text } : { categorie: text };
+    const content = type === 'value' ? { value: text === '' ? 0 : text } : { categorie: text };
     if (isNew()) {
       editSpending(
         {
