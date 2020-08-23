@@ -4,6 +4,8 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
   background-color: $color-header-bg;
   border-radius: 6px;
+  margin-bottom: 20px;
+  align-self: flex-start;
 }
 
 .expencesListItem {
@@ -65,6 +67,10 @@
 }
 
 @media (min-width: 768px) {
+  .expences {
+    margin-bottom: 30px;
+  }
+
   .expencesListInput {
     font-size: 14px;
   }
@@ -80,13 +86,16 @@
 
 @media (min-width: 1280px) {
   .expences {
-    max-width: 578px;
+    max-width: 556px;
+    margin-right: 15px;
+    margin-bottom: unset;
   }
 }
 
 @media (min-width: 1700px) {
   .expences {
-    max-width: 805px;
+    max-width: 665px;
+    margin-right: 30px;
   }
 
   .expencesTitle {

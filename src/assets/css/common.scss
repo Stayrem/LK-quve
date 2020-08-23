@@ -16,6 +16,7 @@
     display: flex;
     width: 100%;
     flex-direction: column;
+    overflow-x: hidden;
   }
 
   #root {
@@ -27,5 +28,13 @@
   .main {
     background-color: $color-dark-desaturated-blue;
     flex-grow: 1;
+  }
+
+  .chart-tooltip {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
+    background-color: $color-header-bg;
+    color: $color-pure-white;
+    padding: 15px 10px;
+    border-radius: 4px;
   }
 }

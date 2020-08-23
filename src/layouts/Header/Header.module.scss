@@ -284,6 +284,12 @@
   animation-name: bottom-2;
 }
 
+@media (min-width: 768px) {
+  .mobileMenu {
+    width: 350px;
+  }
+}
+
 @media (min-width: 1280px) {
   .nav {
     display: flex;

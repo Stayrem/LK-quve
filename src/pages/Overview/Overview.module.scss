@@ -6,10 +6,18 @@
 
 .inner {
   display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 }
 
 .spendings {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
   padding-top: 35px;
   padding-bottom: 30px;
+}
+
+@media (min-width: 1280px) {
+  .inner {
+    flex-direction: unset;
+  }
 }
