@@ -70,7 +70,6 @@ const Header = () => {
         <div className={headerInner}>
           <Link to="/" className={logoWrapper}>
             <img src={logo} alt="Логотип" className={headerLogo} />
-            <h1 className={title}>Where is my money?</h1>
           </Link>
           <nav className={nav}>
             <ul className={list}>
@@ -87,7 +86,7 @@ const Header = () => {
             <span className={burgerLine} />
           </button>
           <div className={exitWrapper}>
-            <a href="/" className={exit}>Выход</a>
+            <a href="/" className={link}>Выход</a>
           </div>
         </div>
       </Container>

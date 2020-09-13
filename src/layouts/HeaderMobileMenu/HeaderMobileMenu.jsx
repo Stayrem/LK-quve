@@ -14,8 +14,7 @@ const HeaderMobileMenu = (props) => {
   return (
     <div className={menu}>
       <div className={header}>
-        <img width="30" height="30" src={logo} alt="логотип" />
-        <span className={title}>Where is my money?</span>
+        <img height="25" src={logo} alt="логотип" />
       </div>
       <nav className={nav}>
         <ul className={list}>
