@@ -18,7 +18,7 @@ const Card = (props) => {
     <div className={card}>
       <p className={cardTitle}>{title}</p>
       <span style={{ color: textcolor }} className={cardText}>{text}</span>
-      <p className={cardSubtitle}>{subTitle}</p>
+      <div className={cardSubtitle}>{subTitle}</div>
     </div>
   );
 };
@@ -28,7 +28,7 @@ Card.propTypes = {
     title: PropTypes.string.isRequired,
     text: PropTypes.number.isRequired,
     textcolor: PropTypes.string.isRequired,
-    subTitle: PropTypes.string.isRequired,
+    subTitle: PropTypes.any.isRequired,
   }).isRequired,
 };
 

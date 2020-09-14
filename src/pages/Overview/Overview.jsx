@@ -9,6 +9,7 @@ import ExpensesList from '../../components/ExpensesList/ExpensesList';
 import styles from './Overview.module.scss';
 import { useStore } from '../../store/StoreContext';
 import Saldo from '../../components/Saldo/Saldo';
+import RestSumWidget from '../../components/RestSumWidget/RestSumWidget';
 
 const Overview = observer(() => {
   const store = useStore();
@@ -66,7 +67,7 @@ const Overview = observer(() => {
       title: 'Остаток до конца месяца',
       text: restSum,
       textcolor: '#ffffff',
-      subTitle: `${restPercent} %`,
+      subTitle: (<RestSumWidget restPercent={restPercent} />),
     },
   ];
   const { cardElippser, cardScroller, cardWrapper, inner } = styles;
