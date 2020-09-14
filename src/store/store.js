@@ -1,50 +1,76 @@
-import * as moment from 'moment';
 import 'moment/locale/ru';
+import moment from 'moment';
 import { toJS } from 'mobx';
 
-const daysCount = moment().daysInMonth();
 const getSpendingsSum = (arr) => {
   const reducer = (accumulator, currentValue) => accumulator + parseInt(currentValue.value, 10);
   return arr.reduce(reducer, 0);
 };
 
 const createOverviewStore = () => ({
+  date: null,
+
   isOverwiewDataFetched: false,
   isSaldoDataFetched: false,
+
   income: null,
-  dayBudjet: null,
   fixedCosts: null,
   savingPercent: null,
   savingSum: null,
-  spendings: [],
-  daySpendings: null,
+  profit: null,
+
+  spendingsLastSum: null,
+  spendingsTodayList: [],
+  spendingsTodaySum: null,
+
   saldoData: [],
+
+  budgetFixed: null,
+  budgetToday: null,
+
+  restSum: null,
+  restPercent: null,
+
   async getOverviewData() {
     let data;
     let saldo;
-    await fetch('/mocks/overview/get.json')
-      .then((response) => response.json())
-      .then((json) => {
-        data = json.data;
-      });
+
     await fetch('/mocks/saldo.json')
       .then((response) => response.json())
       .then((json) => {
         saldo = json.data;
       });
+
+    await fetch('/mocks/overview/get.json')
+      .then((response) => response.json())
+      .then((json) => {
+        data = json.data;
+      });
+
+    this.date = data.date;
+
     this.income = data.income;
     this.fixedCosts = data.fixed_costs;
     this.savingPercent = data.saving_percent;
-    this.savingSum = (data.income * data.saving_percent) / 100;
-    this.spendings = data.spendings;
-    this.daySpendings = getSpendingsSum(this.spendings);
-    this.dayBudjet = Math.floor((this.income - this.savingSum - this.fixedCosts
-      - this.daySpendings) / daysCount);
+    this.savingSum = data.saving_sum === null ? (data.income * data.saving_percent) / 100 : data.saving_sum;
+    this.profit = this.income - this.savingSum - this.fixedCosts;
+
+    this.spendingsLastSum = data.spendings_last_value;
+    this.spendingsTodayList = data.spendings_today_list;
+    this.spendingsTodaySum = getSpendingsSum(this.spendingsTodayList);
+
     this.saldoData = saldo.saldo_history;
     this.isSaldoDataFetched = true;
+
+    this.budgetFixed = Math.floor(this.profit / moment(this.date).daysInMonth());
+    this.budgetToday = this.saldoData[this.saldoData.length - 1].value + this.budgetFixed;
+
+    this.restSum = this.profit - this.spendingsLastSum - this.spendingsTodaySum;
+    this.restPercent = Math.floor(this.restSum / this.profit * 100);
+    this.restPercent = this.restPercent > 0 ? this.restPercent : 0;
   },
   editSpending(obj) {
-    const modified = toJS(this.spendings).map((item) => {
+    const modified = toJS(this.spendingsTodayList).map((item) => {
       if (item.id !== obj.id) {
         return item;
       }
@@ -53,13 +79,14 @@ const createOverviewStore = () => ({
         ...obj,
       };
     });
-    this.spendings = modified;
-    this.daySpendings = getSpendingsSum(modified);
-    this.dayBudjet = Math.floor((this.income - this.savingSum - this.fixedCosts
-      - this.daySpendings) / daysCount);
+    this.spendingsTodayList = modified;
+    this.spendingsTodaySum = getSpendingsSum(modified);
+    this.restSum = this.profit - this.spendingsLastSum - this.spendingsTodaySum;
+    this.restPercent = Math.floor(this.restSum / this.profit * 100);
+    this.restPercent = this.restPercent > 0 ? this.restPercent : 0;
   },
   addSpending() {
-    this.spendings.push({ id: this.spendings.length });
+    this.spendingsTodayList.push({ id: this.spendingsTodayList.length });
   },
 });
 

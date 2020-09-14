@@ -17,6 +17,8 @@
     width: 100%;
     flex-direction: column;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased; /* Chrome, Safari */
+    -moz-osx-font-smoothing: grayscale; /* Firefox */
   }
 
   #root {

@@ -17,32 +17,41 @@ const Overview = observer(() => {
     getOverviewData();
   }, []);
   const {
+    date,
+
     isOverwiewDataFetched,
     isSaldoDataFetched,
-    dayBudjet,
-    daySpendings,
+
+    spendingsLastSum,
+    spendingsTodayList,
+    spendingsTodaySum,
+
+    budgetToday,
     savingSum,
-    spendings,
+
+    restSum,
+    restPercent,
+
     editSpending,
     addSpending,
     saldoData,
   } = store;
 
-  const today = moment().format('DD MMMM YYYY');
-  const mounth = moment().format('MMMM');
+  const today = moment(date).format('DD MMMM YYYY');
+  const month = moment(date).format('MMMM');
   const cards = [
     {
       id: 0,
       title: 'Траты за сегодня',
-      text: daySpendings,
-      textcolor: (dayBudjet - daySpendings) > 0 ? '#7DC900' : 'red',
-      subTitle: `Осталось: ${dayBudjet - daySpendings}`,
+      text: spendingsTodaySum,
+      textcolor: (budgetToday - spendingsTodaySum) > 0 ? '#7DC900' : '#FC4349',
+      subTitle: `Осталось: ${budgetToday - spendingsTodaySum}`,
     },
     {
       id: 1,
       title: 'Бюджет на день',
-      text: dayBudjet,
-      textcolor: '#7DC900',
+      text: budgetToday,
+      textcolor: budgetToday > 0 ? '#7DC900' : '#FC4349',
       subTitle: today,
     },
     {
@@ -50,14 +59,14 @@ const Overview = observer(() => {
       title: 'Сбережения',
       text: savingSum,
       textcolor: '#ffffff',
-      subTitle: mounth,
+      subTitle: `на ${month}`,
     },
     {
       id: 3,
-      title: 'Сбережения',
-      text: savingSum,
+      title: 'Остаток до конца месяца',
+      text: restSum,
       textcolor: '#ffffff',
-      subTitle: mounth,
+      subTitle: `${restPercent} %`,
     },
   ];
   const { cardElippser, cardScroller, cardWrapper, inner } = styles;
@@ -74,7 +83,7 @@ const Overview = observer(() => {
         </div>
         <div className={inner}>
           <ExpensesList
-            spendings={spendings}
+            spendings={spendingsTodayList}
             editSpending={editSpending}
             addSpending={addSpending}
           />
