@@ -6,13 +6,13 @@ import styles from './ExpensesList.module.scss';
 const ExpensesList = (props) => {
   const { spendings, editSpending, addSpending } = props;
   const {
-    expences,
-    expencesTitle,
-    expencesListInput,
-    expencesListItem,
-    expencesListButton,
+    expenses,
+    expensesTitle,
+    expensesListInput,
+    expensesListItem,
+    expensesListButton,
     focus,
-    addSpendingButton,
+    addExpenseButton,
   } = styles;
   const onChangeHanler = (type, id, evt) => {
     const text = evt.target.value;
@@ -40,22 +40,22 @@ const ExpensesList = (props) => {
   const [focusedId, focusItem] = useState(-1);
 
   return (
-    <div className={expences}>
-      <p className={expencesTitle}>Список трат за сегодня</p>
-      <ul className="expencesList">
+    <div className={expenses}>
+      <p className={expensesTitle}>Список трат за сегодня</p>
+      <ul className="expensesList">
         {spendings.map((item) => {
           const focusClassname = focusedId === item.id ? focus : '';
           return (
-            <li key={item.id} className={expencesListItem}>
-              <button type="button" className={[expencesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
-                <input className={expencesListInput} placeholder="Категория" onChange={(evt) => onChangeHanler('categorie', item.id, evt)} type="text" defaultValue={item.categorie} />
-                <input className={expencesListInput} placeholder="Сумма" onChange={(evt) => onChangeHanler('value', item.id, evt)} type="text" defaultValue={item.value} />
+            <li key={item.id} className={expensesListItem}>
+              <button type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
+                <input className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHanler('categorie', item.id, evt)} type="text" defaultValue={item.categorie} />
+                <input className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHanler('value', item.id, evt)} type="text" defaultValue={item.value} />
               </button>
             </li>
           );
         })}
       </ul>
-      <button className={['s_button', addSpendingButton].join(' ')} type="button" onClick={() => addSpending()}>Добавить строчку</button>
+      <button className={['s_button', addExpenseButton].join(' ')} type="button" onClick={() => addSpending()}>Добавить строчку</button>
     </div>
   );
 };

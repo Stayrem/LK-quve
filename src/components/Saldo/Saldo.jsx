@@ -10,8 +10,8 @@ const createGraph = (ctx, labels, values) => {
   const saldoGraph = ctx;
 
   Chart.defaults.global.defaultFontFamily = 'Montserrat';
-  Chart.defaults.global.defaultFontSize = 12;
-  Chart.defaults.global.defaultFontColor = '#D7DADB';
+  Chart.defaults.global.defaultFontSize = 10;
+  Chart.defaults.global.defaultFontColor = '#929FAC';
 
   const saldoData = {
     labels,
@@ -40,7 +40,7 @@ const createGraph = (ctx, labels, values) => {
       }],
       yAxes: [{
         gridLines: {
-          color: '#707070',
+          color: 'rgba(255, 255, 255, 0.1)',
         },
       }],
     },

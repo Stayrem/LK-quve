@@ -1,7 +1,39 @@
+.cardElippser {
+  position: relative;
+  width: 100%;
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -1px;
+    height: 100%;
+    width: 30px;
+    background: #33485d;
+    background: linear-gradient(90deg, rgba(51, 72, 93, 0) 0%, rgb(51 72 93 / 85%) 100%);
+    z-index: 10;
+  }
+}
+
+.cardScroller {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  overflow-x: scroll;
+  margin-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .cardWrapper {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  gap: 20px;
 }
 
 .inner {
@@ -19,5 +51,16 @@
 @media (min-width: 1280px) {
   .inner {
     flex-direction: unset;
+  }
+
+  .cardElippser {
+
+    &:after {
+      display: none;
+    }
+  }
+
+  .cardWrapper {
+    gap: 15px;
   }
 }

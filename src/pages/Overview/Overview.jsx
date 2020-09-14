@@ -60,13 +60,17 @@ const Overview = observer(() => {
       subTitle: mounth,
     },
   ];
-  const { cardWrapper, inner } = styles;
+  const { cardElippser, cardScroller, cardWrapper, inner } = styles;
   return (
     <main className="main">
       <PageContainer>
         <PageTitle title="Сводка" />
-        <div className={cardWrapper}>
-          {cards.map((card) => <Card key={card.id} content={card} />)}
+        <div className={cardElippser}>
+          <div className={cardScroller}>
+            <div className={cardWrapper}>
+              {cards.map((card) => <Card key={card.id} content={card} />)}
+            </div>
+          </div>
         </div>
         <div className={inner}>
           <ExpensesList

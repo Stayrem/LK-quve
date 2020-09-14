@@ -3,6 +3,7 @@
   width: 100%;
   display: flex;
   background-color: $color-header-bg;
+  box-shadow: 0 0 10px 5px rgb(0 0 0 / 0.15);
 }
 
 .title {
@@ -15,7 +16,7 @@
 
 .nav {
   display: none;
-  margin-left: auto;
+  margin-right: auto;
 }
 
 .list {
@@ -24,11 +25,30 @@
 }
 
 .item {
-  display: block;
+  display: flex;
+  align-items: center;
   margin-right: 65px;
+  position: relative;
+  height: 100%;
+
+  &:after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: $color-tranparent-gray;
+    position: absolute;
+    top: 50%;
+    right: -25px;
+    transform: translate(50%, -50%);
+  }
 
   &:last-child {
     margin-right: unset;
+  }
+
+  &:last-child:after {
+    display: none;
   }
 }
 
@@ -36,23 +56,12 @@
   color: $color-pure-white;
   font-size: 12px;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
+  opacity: .75;
   transition: opacity 0.3s;
 
   &:hover {
-    opacity: 0.75;
-  }
-}
-
-.exit {
-  color: $color-pure-white;
-  font-size: 14px;
-  text-decoration: none;
-  line-height: 1.5;
-  transition: opacity 0.3s;
-
-  &:hover {
-    opacity: 0.75;
+    opacity: 1;
   }
 }
 
@@ -65,20 +74,20 @@
 
 .headerInner {
   display: flex;
+  align-items: center;
   position: relative;
+  height: 60px;
 }
 
 .logoWrapper {
   display: flex;
   align-items: center;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  margin-right: 6.77083333333%;
+  margin-right: 100px;
 }
 
 .btn {
   display: block;
-  width: 28px;
+  width: 36px;
   margin-left: auto;
 
   &:focus {
@@ -110,7 +119,7 @@
 }
 
 .headerLogo {
-  width: 30px;
+  height: 35px;
 }
 
 .mobileMenu {
@@ -120,6 +129,7 @@
   background-color: $color-header-bg;
   left: -100%;
   transition: left 0.6s;
+  z-index: 9999;
 }
 
 .mobileMenuOpened {
@@ -285,6 +295,10 @@
 }
 
 @media (min-width: 768px) {
+  .headerInner {
+    height: 65px;
+  }
+
   .mobileMenu {
     width: 350px;
   }
@@ -304,15 +318,15 @@
   }
 
   .headerLogo {
-    width: 54px;
+    height: 25px;
   }
 
   .logoWrapper {
-    margin-right: 42px;
+    margin-right: 80px;
   }
 
   .item {
-    margin-right: 30px;
+    margin-right: 50px;
   }
 
   .title {
