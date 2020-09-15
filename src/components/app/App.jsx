@@ -6,6 +6,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Header from '../../layouts/Header/Header';
+import Footer from '../../layouts/Footer/Footer';
 import Overview from '../../pages/Overview/Overview';
 import styles from './App.module.scss';
 
@@ -24,6 +25,7 @@ const App = () => {
           <Redirect to="/overview" />
         </Route>
       </Switch>
+      <Footer />
     </Router>
   );
 };
