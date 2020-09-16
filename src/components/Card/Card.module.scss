@@ -19,16 +19,16 @@
 }
 
 .cardText {
-  font-size: 12px;
+  font-size: 18px;
   color: attr(data-color);
   font-weight: 700;
   margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .cardSubtitle {
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 500;
   color: $color-light-grayish-blue;
 }
 
@@ -39,7 +39,7 @@
   }
 
   .cardTitle {
-    font-size: 16px;
+    font-size: 15px;
     margin-bottom: 15px;
   }
 

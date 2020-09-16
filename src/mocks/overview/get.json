@@ -1,9 +1,12 @@
 {
   "data": {
-    "income": 20000,
-    "fixed_costs": 500,
+    "date": "2020-07-15T12:36:00Z",
+    "income": 91700,
+    "fixed_costs": 42689,
     "saving_percent": 20,
-    "spendings": [
+    "saving_sum": null,
+    "spendings_last_value": 16020,
+    "spendings_today_list": [
       {
         "id": 0,
         "categorie": "Аптека",
