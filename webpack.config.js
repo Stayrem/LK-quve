@@ -19,6 +19,7 @@ const PATH = {
   FONTS: path.join(__dirname, 'src/assets/fonts'),
   FAVICONS: path.join(__dirname, 'src/assets/favicons'),
   MOCKS: path.join(__dirname, 'src/mocks'),
+  ASSETS: path.join(__dirname, 'src/assets'),
 };
 module.exports = {
   mode: isDevelopment ? 'development' : 'production',
@@ -49,6 +50,7 @@ module.exports = {
       },
       {
         test: /\.(scss|css)$/,
+        exclude: path.join(PATH.ASSETS, '/css/vendor.scss'),
         use: [
           {
             loader: isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
@@ -76,6 +78,18 @@ module.exports = {
             options: {
               additionalData: '@import "./src/css-utils/colors.scss";',
             },
+          },
+        ],
+      },
+      {
+        test: /\.(scss|css)$/,
+        include: path.join(PATH.ASSETS, '/css/vendor.scss'),
+        use: [
+          {
+            loader: isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: 'css-loader',
           },
         ],
       },
