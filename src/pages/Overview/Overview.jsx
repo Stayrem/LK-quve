@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import * as moment from 'moment';
 import { toJS } from 'mobx';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
-import PageTitle from '../../components/PageTitle/PageTitle';
 import Card from '../../components/Card/Card';
 import ExpensesList from '../../components/ExpensesList/ExpensesList';
 import styles from './Overview.module.scss';
@@ -11,6 +10,7 @@ import { useStore } from '../../store/StoreContext';
 import Saldo from '../../components/Saldo/Saldo';
 import RestSumWidget from '../../components/RestSumWidget/RestSumWidget';
 import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
+import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 
 const Overview = observer(() => {
   const store = useStore();
@@ -21,10 +21,8 @@ const Overview = observer(() => {
   const {
     date,
 
-    isOverwiewDataFetched,
     isSaldoDataFetched,
 
-    spendingsLastSum,
     spendingsTodayList,
     spendingsTodaySum,
 

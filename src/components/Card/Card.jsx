@@ -5,7 +5,7 @@ import styles from './Card.module.scss';
 const Card = (props) => {
   const { content } = props;
   const {
-    title, text, textcolor, subTitle,
+    title, text, textColor, subTitle,
   } = content;
   const {
     card,
@@ -17,7 +17,7 @@ const Card = (props) => {
   return (
     <div className={card}>
       <p className={cardTitle}>{title}</p>
-      <span style={{ color: textcolor }} className={cardText}>{text}</span>
+      <span style={{ color: textColor }} className={cardText}>{text}</span>
       <div className={cardSubtitle}>{subTitle}</div>
     </div>
   );
@@ -27,8 +27,8 @@ Card.propTypes = {
   content: PropTypes.shape({
     title: PropTypes.string.isRequired,
     text: PropTypes.number.isRequired,
-    textcolor: PropTypes.string.isRequired,
-    subTitle: PropTypes.any.isRequired,
+    textColor: PropTypes.string.isRequired,
+    subTitle: PropTypes.node.isRequired,
   }).isRequired,
 };
 
