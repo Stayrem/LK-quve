@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './assets/css/vendor.scss';
+import './css-utils/fonts.scss';
 import './assets/css/common.scss';
-import './css-utils/_index.scss';
 import App from './components/app/App';
 import Provider from './store/StoreContext';
 

@@ -1,20 +1,21 @@
-.expences {
+.expenses {
   width: 100%;
   height: 265px;
   border-radius: 6px;
   margin-bottom: 20px;
   background-color: $color-preloader;
+  @include preloader-animation;
 }
 
 @media (min-width: 768px) {
-  .expences {
+  .expenses {
     height: 300px;
     margin-bottom: 30px;
   }
 }
 
 @media (min-width: 1280px) {
-  .expences {
+  .expenses {
     max-width: 556px;
     height: 300px;
     margin-right: 15px;
@@ -23,7 +24,7 @@
 }
 
 @media (min-width: 1700px) {
-  .expences {
+  .expenses {
     max-width: 674px;
     margin-right: 16px;
   }

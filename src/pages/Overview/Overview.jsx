@@ -44,7 +44,7 @@ const Overview = observer(() => {
   } = styles;
   return (
     (() => {
-      if (isOverwiewDataFetched && isSaldoDataFetched) {
+      if (!isOverwiewDataFetched && isSaldoDataFetched) {
         const today = moment(date).format('DD MMMM YYYY');
         const month = moment(date).format('MMMM');
         const cards = [

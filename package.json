@@ -31,6 +31,7 @@
     "react-dom": "16.13.1",
     "react-router-dom": "5.2.0",
     "react-slick": "^0.27.9",
+    "stylelint-scss": "^3.18.0",
     "webpack": "4.44.1",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "3.11.0"
@@ -67,7 +68,7 @@
     "sass": "1.26.10",
     "sass-loader": "9.0.2",
     "style-loader": "1.2.1",
-    "stylelint": "^13.6.1",
+    "stylelint": "^13.7.1",
     "stylelint-config-standard": "^20.0.0",
     "ts-loader": "8.0.1",
     "typescript": "3.9.7",

@@ -3,6 +3,7 @@
   height: 419px;
   border-radius: 6px;
   background-color: $color-preloader;
+  @include preloader-animation;
 }
 
 @media (min-width: 768px) {

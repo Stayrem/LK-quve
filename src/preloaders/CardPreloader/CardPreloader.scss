@@ -5,6 +5,7 @@
   background-color: $color-preloader;
   flex: 0 0 240px;
   height: 112px;
+  @include preloader-animation;
 }
 
 @media (min-width: 768px) {
