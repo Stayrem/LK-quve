@@ -45,4 +45,116 @@
     padding: 15px 10px;
     border-radius: 4px;
   }
+
+  .DayPickerInput {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
+    width: 28px;
+    height: 28px;
+    transform: translateY(-40px);
+    z-index: 9998;
+
+    input {
+      width: 100%;
+      padding: 0;
+      padding-left: 28px;
+      height: 100%;
+      border: none;
+      border-radius: 5px;
+      color: $color-pure-white;
+      font-size: 14px;
+      font-weight: 500;
+      background-color: $color-header-bg;
+      background-image: url('../icons/calendar.svg');
+      background-size: 12px;
+      background-repeat: no-repeat;
+      background-position: 8px center;
+      cursor: pointer;
+
+      &:focus {
+        outline: none;
+        border: none;
+      }
+    }
+
+    .DayPickerInput-OverlayWrapper {
+      transform: translateY(10px);
+      z-index: 9998;
+
+      .DayPickerInput-Overlay {
+        left: unset;
+        right: 0;
+      }
+    }
+  }
+
+  .DayPicker {
+    background-color: $color-header-bg;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
+
+    .DayPicker-wrapper {
+      background-color: $color-header-bg;
+      color: $color-pure-white;
+    }
+
+    .DayPicker-Day--today {
+      color: $color-pure-orange;
+    }
+  }
+
+  .DayPicker-TodayButton {
+    color: $color-pure-orange;
+    text-align: center;
+    margin: auto;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .DayPicker-Day, .DayPicker-Weekday {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .DayPicker-Caption {
+    font-size: 14px;
+    text-transform: capitalize;
+  }
+
+  .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
+    background-color: $color-pure-orange;
+    color: $color-pure-white;
+  }
+
+  .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):hover {
+    background-color: $color-pure-orange-2;
+  }
+
+  .DayPicker:not(.DayPicker--interactionDisabled)
+  .DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  @media (min-width: 768px) {
+    .DayPickerInput {
+      width: 220px;
+      height: unset;
+      transform: translateY(0px);
+
+      input {
+        padding: 15px 30px;
+        padding-left: 50px;
+        background-size: 16px;
+        background-position: 20px center;
+      }
+    }
+  }
+
+  @media (min-width: 1280px) {
+
+  }
+
+  @media (min-width: 1700px) {
+
+  }
 }

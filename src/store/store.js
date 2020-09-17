@@ -40,7 +40,7 @@ const createOverviewStore = () => ({
       saldo = saldo.data;
       data = data.data;
 
-      this.date = data.date;
+      this.date = moment.unix(data.date).utc();
 
       this.income = data.income;
       this.fixedCosts = data.fixed_costs;

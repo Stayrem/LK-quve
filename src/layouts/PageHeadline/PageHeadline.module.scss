@@ -7,7 +7,14 @@
   width: 100%;
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 15px;
+}
+
+.dayPickerInputContainer {
+  padding: 5px;
+  background-color: red;
 }
 
 @media (min-width: 768px) {
