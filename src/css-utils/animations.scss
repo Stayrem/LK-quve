@@ -1,0 +1,10 @@
+@keyframes pulse {
+  0%,
+  100% {
+    background-color: $color-preloader;
+  }
+
+  50% {
+    background-color: #283848;
+  }
+}

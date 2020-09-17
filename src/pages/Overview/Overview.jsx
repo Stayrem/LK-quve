@@ -10,6 +10,7 @@ import styles from './Overview.module.scss';
 import { useStore } from '../../store/StoreContext';
 import Saldo from '../../components/Saldo/Saldo';
 import RestSumWidget from '../../components/RestSumWidget/RestSumWidget';
+import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
 
 const Overview = observer(() => {
   const store = useStore();
@@ -38,67 +39,70 @@ const Overview = observer(() => {
     saldoData,
   } = store;
 
-  const today = moment(date).format('DD MMMM YYYY');
-  const month = moment(date).format('MMMM');
-  const cards = [
-    {
-      id: 0,
-      title: 'Траты за сегодня',
-      text: spendingsTodaySum,
-      textcolor: (budgetToday - spendingsTodaySum) > 0 ? '#7DC900' : '#FC4349',
-      subTitle: `Осталось: ${budgetToday - spendingsTodaySum}`,
-    },
-    {
-      id: 1,
-      title: 'Бюджет на день',
-      text: budgetToday,
-      textcolor: budgetToday > 0 ? '#7DC900' : '#FC4349',
-      subTitle: today,
-    },
-    {
-      id: 2,
-      title: 'Сбережения',
-      text: savingSum,
-      textcolor: '#ffffff',
-      subTitle: `на ${month}`,
-    },
-    {
-      id: 3,
-      title: 'Остаток до конца месяца',
-      text: restSum,
-      textcolor: '#ffffff',
-      subTitle: (<RestSumWidget restPercent={restPercent} />),
-    },
-  ];
-  const { cardElippser, cardScroller, cardWrapper, inner } = styles;
+  const {
+    cardElippser, cardScroller, cardWrapper, inner,
+  } = styles;
   return (
-    <main className="main">
-      <PageContainer>
-        <PageTitle title="Сводка" />
-        <div className={cardElippser}>
-          <div className={cardScroller}>
-            <div className={cardWrapper}>
-              {cards.map((card) => <Card key={card.id} content={card} />)}
-            </div>
-          </div>
-        </div>
-        <div className={inner}>
-          <ExpensesList
-            spendings={spendingsTodayList}
-            editSpending={editSpending}
-            addSpending={addSpending}
-          />
-          {(() => {
-            if (isSaldoDataFetched) {
-              return (
+    (() => {
+      if (!isOverwiewDataFetched && isSaldoDataFetched) {
+        const today = moment(date).format('DD MMMM YYYY');
+        const month = moment(date).format('MMMM');
+        const cards = [
+          {
+            id: 0,
+            title: 'Траты за сегодня',
+            text: spendingsTodaySum,
+            textcolor: (budgetToday - spendingsTodaySum) > 0 ? '#7DC900' : '#FC4349',
+            subTitle: `Осталось: ${budgetToday - spendingsTodaySum}`,
+          },
+          {
+            id: 1,
+            title: 'Бюджет на день',
+            text: budgetToday,
+            textcolor: budgetToday > 0 ? '#7DC900' : '#FC4349',
+            subTitle: today,
+          },
+          {
+            id: 2,
+            title: 'Сбережения',
+            text: savingSum,
+            textcolor: '#ffffff',
+            subTitle: `на ${month}`,
+          },
+          {
+            id: 3,
+            title: 'Остаток до конца месяца',
+            text: restSum,
+            textcolor: '#ffffff',
+            subTitle: (<RestSumWidget restPercent={restPercent} />),
+          },
+        ];
+        return (
+          <main className="main">
+            <PageContainer>
+              <PageTitle title="Сводка" />
+              <div className={cardElippser}>
+                <div className={cardScroller}>
+                  <div className={cardWrapper}>
+                    {cards.map((card) => <Card key={card.id} content={card} />)}
+                  </div>
+                </div>
+              </div>
+              <div className={inner}>
+                <ExpensesList
+                  spendings={spendingsTodayList}
+                  editSpending={editSpending}
+                  addSpending={addSpending}
+                />
                 <Saldo graphData={toJS(saldoData)} />
-              );
-            }
-            return null;
-          })()}
-        </div>
-      </PageContainer>
-    </main>
+              </div>
+            </PageContainer>
+          </main>
+        );
+      }
+      return <OverviewPreloader />;
+    })()
+
   );
 });
 

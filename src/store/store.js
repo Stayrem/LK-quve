@@ -9,7 +9,7 @@ const getSpendingsSum = (arr) => {
 
 const createOverviewStore = () => ({
   date: null,
-
+  fetchError: false,
   isOverwiewDataFetched: false,
   isSaldoDataFetched: false,
 
@@ -32,42 +32,40 @@ const createOverviewStore = () => ({
   restPercent: null,
 
   async getOverviewData() {
-    let data;
-    let saldo;
+    try {
+      const saldoResponse = await fetch('/mocks/saldo.json');
+      const dataResponse = await fetch('/mocks/overview/get.json');
+      let saldo = await saldoResponse.json();
+      let data = await dataResponse.json();
+      saldo = saldo.data;
+      data = data.data;
 
-    await fetch('/mocks/saldo.json')
-      .then((response) => response.json())
-      .then((json) => {
-        saldo = json.data;
-      });
+      this.date = data.date;
 
-    await fetch('/mocks/overview/get.json')
-      .then((response) => response.json())
-      .then((json) => {
-        data = json.data;
-      });
+      this.income = data.income;
+      this.fixedCosts = data.fixed_costs;
+      this.savingPercent = data.saving_percent;
+      this.savingSum = data.saving_sum === null
+        ? (data.income * data.saving_percent) / 100 : data.saving_sum;
+      this.profit = this.income - this.savingSum - this.fixedCosts;
 
-    this.date = data.date;
+      this.spendingsLastSum = data.spendings_last_value;
+      this.spendingsTodayList = data.spendings_today_list;
+      this.spendingsTodaySum = getSpendingsSum(this.spendingsTodayList);
 
-    this.income = data.income;
-    this.fixedCosts = data.fixed_costs;
-    this.savingPercent = data.saving_percent;
-    this.savingSum = data.saving_sum === null ? (data.income * data.saving_percent) / 100 : data.saving_sum;
-    this.profit = this.income - this.savingSum - this.fixedCosts;
+      this.saldoData = saldo.saldo_history;
 
-    this.spendingsLastSum = data.spendings_last_value;
-    this.spendingsTodayList = data.spendings_today_list;
-    this.spendingsTodaySum = getSpendingsSum(this.spendingsTodayList);
+      this.budgetFixed = Math.floor(this.profit / moment(this.date).daysInMonth());
+      this.budgetToday = this.saldoData[this.saldoData.length - 1].value + this.budgetFixed;
 
-    this.saldoData = saldo.saldo_history;
-    this.isSaldoDataFetched = true;
-
-    this.budgetFixed = Math.floor(this.profit / moment(this.date).daysInMonth());
-    this.budgetToday = this.saldoData[this.saldoData.length - 1].value + this.budgetFixed;
-
-    this.restSum = this.profit - this.spendingsLastSum - this.spendingsTodaySum;
-    this.restPercent = Math.floor(this.restSum / this.profit * 100);
-    this.restPercent = this.restPercent > 0 ? this.restPercent : 0;
+      this.restSum = this.profit - this.spendingsLastSum - this.spendingsTodaySum;
+      this.restPercent = Math.floor((this.restSum / this.profit) * 100);
+      this.restPercent = this.restPercent > 0 ? this.restPercent : 0;
+      this.isSaldoDataFetched = true;
+      this.isOverwiewDataFetched = true;
+    } catch (err) {
+      this.fetchError = true;
+    }
   },
   editSpending(obj) {
     const modified = toJS(this.spendingsTodayList).map((item) => {
@@ -82,7 +80,7 @@ const createOverviewStore = () => ({
     this.spendingsTodayList = modified;
     this.spendingsTodaySum = getSpendingsSum(modified);
     this.restSum = this.profit - this.spendingsLastSum - this.spendingsTodaySum;
-    this.restPercent = Math.floor(this.restSum / this.profit * 100);
+    this.restPercent = Math.floor((this.restSum / this.profit) * 100);
     this.restPercent = this.restPercent > 0 ? this.restPercent : 0;
   },
   addSpending() {

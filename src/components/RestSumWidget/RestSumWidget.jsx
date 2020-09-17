@@ -5,9 +5,10 @@ import styles from './RestSumWidget.module.scss';
 const RestSumWidget = (props) => {
   const { restPercent } = props;
   const { progressBar } = styles;
+
   return (
     <div className={progressBar}>
-      <span style={{width: `${restPercent}%`}}></span>
+      <span style={{ width: `${restPercent}%` }} />
     </div>
   );
 };

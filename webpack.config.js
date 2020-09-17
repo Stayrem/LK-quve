@@ -76,7 +76,7 @@ module.exports = {
           {
             loader: 'sass-loader',
             options: {
-              additionalData: '@import "./src/css-utils/colors.scss";',
+              additionalData: '@import "./src/css-utils/colors.scss"; @import "./src/css-utils/mixins.scss"; @import "./src/css-utils/animations.scss";',
             },
           },
         ],
