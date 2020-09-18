@@ -41,6 +41,7 @@ const PageHeadline = (props) => {
             parseDate={parseDate}
             format="LL"
             value={selectedDay}
+            keepFocus={false}
             dayPickerProps={{
               locale: 'ru',
               localeUtils: MomentLocaleUtils,
