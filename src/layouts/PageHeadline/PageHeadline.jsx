@@ -22,7 +22,7 @@ const PageHeadline = (props) => {
     pageHeadlineFlexInner,
   } = styles;
 
-  const [selectedDay, setSelectedDay] = useState(date);
+  const [selectedDay, setSelectedDay] = useState(formatDate(date, 'LL', 'ru'));
 
   useLayoutEffect(() => {
     // TODO: Функция запроса данных с сервера на основе даты. Необходимо переводить дату в UNIX.
@@ -39,9 +39,8 @@ const PageHeadline = (props) => {
           <DayPickerInput
             formatDate={formatDate}
             parseDate={parseDate}
-            placeholder={`${formatDate(date, 'LL', 'ru')}`}
             format="LL"
-            value={new Date(formatDate(date))}
+            value={selectedDay}
             dayPickerProps={{
               locale: 'ru',
               localeUtils: MomentLocaleUtils,
