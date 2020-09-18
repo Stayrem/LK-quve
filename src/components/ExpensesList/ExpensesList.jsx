@@ -21,7 +21,7 @@ const ExpensesList = (props) => {
       find = toJS(spendings).find((item) => item.id === id);
       return find === undefined;
     };
-    const content = type === 'value' ? { value: text === '' ? 0 : text } : { categorie: text };
+    const content = type === 'value' ? { value: text === '' ? 0 : text } : { category: text };
     if (isNew()) {
       editSpending(
         {
@@ -48,7 +48,7 @@ const ExpensesList = (props) => {
           return (
             <li key={item.id} className={expensesListItem}>
               <button type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
-                <input className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHanler('categorie', item.id, evt)} type="text" defaultValue={item.categorie} />
+                <input className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHanler('category', item.id, evt)} type="text" defaultValue={item.category} />
                 <input className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHanler('value', item.id, evt)} type="text" defaultValue={item.value} />
               </button>
             </li>

@@ -1,6 +1,6 @@
 {
   "data": {
-    "date": "2020-07-15T12:36:00Z",
+    "date": 1594771200,
     "income": 91700,
     "fixed_costs": 42689,
     "saving_percent": 20,
@@ -9,22 +9,22 @@
     "spendings_today_list": [
       {
         "id": 0,
-        "categorie": "Аптека",
+        "category": "Аптека",
         "value": 100
       },
       {
         "id": 1,
-        "categorie": "Транспорт",
+        "category": "Транспорт",
         "value": 100
       },
       {
         "id": 2,
-        "categorie": "Ресторан",
+        "category": "Ресторан",
         "value": 100
       },
       {
         "id": 3,
-        "categorie": "Такси",
+        "category": "Такси",
         "value": 100
       }
     ]
