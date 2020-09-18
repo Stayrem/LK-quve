@@ -37,6 +37,7 @@ const PageHeadline = (props) => {
         <div className={pageHeadlineFlexInner}>
           <PageTitle title={title} />
           <DayPickerInput
+            spellcheck="false"
             formatDate={formatDate}
             parseDate={parseDate}
             format="LL"
@@ -49,6 +50,7 @@ const PageHeadline = (props) => {
               todayButton: 'Сегодня',
             }}
             onDayChange={((day) => setSelectedDay(day))}
+            style={{ transform: breadcrumbs.length > 0 ? 'translateY(-40px)' : 'none' }}
           />
         </div>
       </PageContainer>
