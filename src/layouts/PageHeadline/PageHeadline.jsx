@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import MomentLocaleUtils, {
@@ -24,7 +24,7 @@ const PageHeadline = (props) => {
 
   const [selectedDay, setSelectedDay] = useState(formatDate(date, 'LL', 'ru'));
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // TODO: Функция запроса данных с сервера на основе даты. Необходимо переводить дату в UNIX.
     console.log(selectedDay);
   }, [selectedDay]);
