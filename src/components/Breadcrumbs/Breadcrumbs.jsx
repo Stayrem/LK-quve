@@ -17,7 +17,7 @@ const Breadcrumbs = (props) => {
     <Container>
       <div className={breadcrumbs}>
         <ul className={breadcrumbsItems}>
-          <li className={`${breadcrumbsItem} ${breadcrumbsHome}`}>
+          <li className={[breadcrumbsItem, breadcrumbsHome].join(' ')}>
             <a href="/">
               <FontAwesomeIcon icon={faHome} />
             </a>
