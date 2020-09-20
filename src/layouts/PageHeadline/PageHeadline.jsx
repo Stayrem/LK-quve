@@ -65,7 +65,7 @@ PageHeadline.defaultProps = {
 PageHeadline.propTypes = {
   breadcrumbs: PropTypes.arrayOf(PropTypes.object),
   title: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
 };
 
 export default PageHeadline;

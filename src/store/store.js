@@ -7,33 +7,27 @@ const getSpendingsSum = (arr) => {
   return arr.reduce(reducer, 0);
 };
 
-const createOverviewStore = () => ({
+const createStore = () => ({
   date: null,
+  incomesSum: null,
+  incomesList: [],
+  costsSum: null,
+  costsList: null,
+  savingsPercent: null,
+  savingsSum: null,
+  spendingsPreviousSum: null,
+  spendingsTodayList: [],
+  spendingsTodaySum: null,
+  saldoData: [],
+
   fetchError: false,
   isOverwiewDataFetched: false,
   isSaldoDataFetched: false,
-
-  income: null,
-  fixedCosts: null,
-  savingPercent: null,
-  savingSum: null,
-  profit: null,
-
-  spendingsLastSum: null,
-  spendingsTodayList: [],
-  spendingsTodaySum: null,
-
-  saldoData: [],
-
-  budgetFixed: null,
-  budgetToday: null,
-
-  restSum: null,
-  restPercent: null,
+  isInputDataFetched: false,
 
   async getOverviewData() {
     try {
-      const saldoResponse = await fetch('/mocks/saldo.json');
+      const saldoResponse = await fetch('/mocks/overview/saldo.json');
       const dataResponse = await fetch('/mocks/overview/get.json');
       let saldo = await saldoResponse.json();
       let data = await dataResponse.json();
@@ -41,28 +35,31 @@ const createOverviewStore = () => ({
       data = data.data;
 
       this.date = moment.unix(data.date).utc();
-
-      this.income = data.income;
-      this.fixedCosts = data.fixed_costs;
-      this.savingPercent = data.saving_percent;
-      this.savingSum = data.saving_sum === null
-        ? (data.income * data.saving_percent) / 100 : data.saving_sum;
-      this.profit = this.income - this.savingSum - this.fixedCosts;
-
-      this.spendingsLastSum = data.spendings_last_value;
+      this.incomesSum = data.incomes_sum;
+      this.costsSum = data.costs_sum;
+      this.savingsPercent = data.savings_percent;
+      this.savingsSum = data.savings_sum === null
+        ? (data.incomes_sum * data.savings_percent) / 100 : data.savings_sum;
+      this.spendingsPreviousSum = data.spendings_previous_sum;
       this.spendingsTodayList = data.spendings_today_list;
-      this.spendingsTodaySum = getSpendingsSum(this.spendingsTodayList);
-
       this.saldoData = saldo.saldo_history;
-
-      this.budgetFixed = Math.floor(this.profit / moment(this.date).daysInMonth());
-      this.budgetToday = this.saldoData[this.saldoData.length - 1].value + this.budgetFixed;
-
-      this.restSum = this.profit - this.spendingsLastSum - this.spendingsTodaySum;
-      this.restPercent = Math.floor((this.restSum / this.profit) * 100);
-      this.restPercent = this.restPercent > 0 ? this.restPercent : 0;
+      this.spendingsTodaySum = getSpendingsSum(this.spendingsTodayList);
       this.isSaldoDataFetched = true;
       this.isOverwiewDataFetched = true;
+    } catch (err) {
+      this.fetchError = true;
+    }
+  },
+  async getInputData() {
+    try {
+      const dataResponse = await fetch('/mocks/incomes/get.json');
+      let data = await dataResponse.json();
+      data = data.data;
+
+      this.date = moment.unix(data.date).utc();
+      this.incomesSum = data.incomes_sum;
+      this.incomesList = data.incomes_list;
+      this.isInputDataFetched = true;
     } catch (err) {
       this.fetchError = true;
     }
@@ -88,4 +85,4 @@ const createOverviewStore = () => ({
   },
 });
 
-export default createOverviewStore;
+export default createStore;

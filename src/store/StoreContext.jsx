@@ -1,13 +1,13 @@
 import React, { createContext } from 'react';
 import PropTypes from 'prop-types';
 import { useLocalStore } from 'mobx-react-lite';
-import createOverviewStore from './store';
+import createStore from './store';
 
 const StoreContext = createContext(null);
 
 const Provider = (props) => {
   const { children } = props;
-  const store = useLocalStore(createOverviewStore);
+  const store = useLocalStore(createStore);
   return (
     <StoreContext.Provider value={store}>
       {children}
