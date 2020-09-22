@@ -5,6 +5,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { toJS } from 'mobx';
 import styles from './ExpensesList.module.scss';
+import inputTypesDict from './inputTypesDict';
 
 const ExpensesList = (props) => {
   const {
@@ -56,13 +57,13 @@ const ExpensesList = (props) => {
   const [focusedId, focusItem] = useState(-1);
 
   const keyDownHandler = (evt, type, id) => {
-    if (evt.key === 'Enter' && type === 'value') {
+    if (evt.key === 'Enter' && type === inputTypesDict.value) {
       addSpending();
     }
     if (evt.key === 'Tab') {
       evt.target.focus();
     }
-    if (evt.key === 'Delete' && type === 'category') {
+    if (evt.key === 'Delete' && type === inputTypesDict.category) {
       removeSpending(id);
       lastItem.current.focus();
     }
@@ -77,8 +78,26 @@ const ExpensesList = (props) => {
           return (
             <li key={item.id} className={expensesListItem}>
               <div type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
-                <input ref={lastItem} onFocus={() => focusItem(item.id)} onKeyDown={(evt) => keyDownHandler(evt, 'category', item.id)} autoFocus className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHanler('category', item.id, evt)} type="text" defaultValue={item.category} />
-                <input onFocus={() => focusItem(item.id)} onKeyDown={(evt) => keyDownHandler(evt, 'value', item.id)} className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHanler('value', item.id, evt)} type="number" defaultValue={item.value} />
+                <input
+                  ref={lastItem}
+                  onFocus={() => focusItem(item.id)}
+                  onKeyDown={(evt) => keyDownHandler(evt, inputTypesDict.category, item.id)}
+                  autoFocus
+                  className={expensesListInput}
+                  placeholder="Категория"
+                  onChange={(evt) => onChangeHanler(inputTypesDict.category, item.id, evt)}
+                  type="text"
+                  defaultValue={item.category}
+                />
+                <input
+                  onFocus={() => focusItem(item.id)}
+                  onKeyDown={(evt) => keyDownHandler(evt, inputTypesDict.value, item.id)}
+                  className={expensesListInput}
+                  placeholder="Сумма"
+                  onChange={(evt) => onChangeHanler(inputTypesDict.value, item.id, evt)}
+                  type="number"
+                  defaultValue={item.value}
+                />
               </div>
             </li>
           );
