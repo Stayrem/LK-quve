@@ -84,7 +84,10 @@ const createOverviewStore = () => ({
     this.restPercent = this.restPercent > 0 ? this.restPercent : 0;
   },
   addSpending() {
-    this.spendingsTodayList.push({ id: this.spendingsTodayList.length });
+    this.spendingsTodayList.push({ id: this.spendingsTodayList.length, value: 0 });
+  },
+  removeSpending(id) {
+    this.spendingsTodayList = this.spendingsTodayList.slice(0, id);
   },
 });
 

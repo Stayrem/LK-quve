@@ -38,6 +38,13 @@
 .expensesListButton {
   display: flex;
   width: 100%;
+  border-right: 1px solid transparent;
+  border-left: 1px solid transparent;
+
+  &:focus {
+    border-right: 1px solid $color-dividers;
+    border-left: 1px solid $color-dividers;
+  }
 }
 
 .expensesTitle {

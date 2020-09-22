@@ -36,6 +36,7 @@ const Overview = observer(() => {
     editSpending,
     addSpending,
     saldoData,
+    removeSpending,
   } = store;
 
   const {
@@ -102,6 +103,7 @@ const Overview = observer(() => {
                   spendings={spendingsTodayList}
                   editSpending={editSpending}
                   addSpending={addSpending}
+                  removeSpending={removeSpending}
                 />
                 <Saldo graphData={toJS(saldoData)} />
               </div>

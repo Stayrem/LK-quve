@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/no-autofocus */
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { toJS } from 'mobx';
 import styles from './ExpensesList.module.scss';
 
 const ExpensesList = (props) => {
-  const { spendings, editSpending, addSpending } = props;
+  const {
+    spendings,
+    editSpending,
+    addSpending,
+    removeSpending,
+  } = props;
+
   const {
     expenses,
     expensesTitle,
@@ -14,6 +23,11 @@ const ExpensesList = (props) => {
     focus,
     addExpenseButton,
   } = styles;
+
+  useEffect(() => {
+    document.activeElement.blur();
+  }, []);
+
   const onChangeHanler = (type, id, evt) => {
     const text = evt.target.value;
     let find;
@@ -21,7 +35,7 @@ const ExpensesList = (props) => {
       find = toJS(spendings).find((item) => item.id === id);
       return find === undefined;
     };
-    const content = type === 'value' ? { value: text === '' ? 0 : text } : { category: text };
+    const content = type === 'value' ? { value: text === '' ? 0 : parseInt(text, 10) } : { category: text };
     if (isNew()) {
       editSpending(
         {
@@ -37,7 +51,22 @@ const ExpensesList = (props) => {
     }
   };
 
+  const lastItem = useRef(null);
+
   const [focusedId, focusItem] = useState(-1);
+
+  const keyDownHandler = (evt, type, id) => {
+    if (evt.key === 'Enter' && type === 'value') {
+      addSpending();
+    }
+    if (evt.key === 'Tab') {
+      evt.target.focus();
+    }
+    if (evt.key === 'Delete' && type === 'category') {
+      removeSpending(id);
+      lastItem.current.focus();
+    }
+  };
 
   return (
     <div className={expenses}>
@@ -47,10 +76,10 @@ const ExpensesList = (props) => {
           const focusClassname = focusedId === item.id ? focus : '';
           return (
             <li key={item.id} className={expensesListItem}>
-              <button type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
-                <input className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHanler('category', item.id, evt)} type="text" defaultValue={item.category} />
-                <input className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHanler('value', item.id, evt)} type="number" defaultValue={item.value} />
-              </button>
+              <div type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
+                <input ref={lastItem} onFocus={() => focusItem(item.id)} onKeyDown={(evt) => keyDownHandler(evt, 'category', item.id)} autoFocus className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHanler('category', item.id, evt)} type="text" defaultValue={item.category} />
+                <input onFocus={() => focusItem(item.id)} onKeyDown={(evt) => keyDownHandler(evt, 'value', item.id)} className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHanler('value', item.id, evt)} type="number" defaultValue={item.value} />
+              </div>
             </li>
           );
         })}
@@ -64,6 +93,7 @@ ExpensesList.propTypes = {
   spendings: PropTypes.arrayOf(PropTypes.object).isRequired,
   editSpending: PropTypes.func.isRequired,
   addSpending: PropTypes.func.isRequired,
+  removeSpending: PropTypes.func.isRequired,
 };
 
 export default ExpensesList;
