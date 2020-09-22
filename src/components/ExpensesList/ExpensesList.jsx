@@ -49,7 +49,7 @@ const ExpensesList = (props) => {
             <li key={item.id} className={expensesListItem}>
               <button type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
                 <input className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHanler('category', item.id, evt)} type="text" defaultValue={item.category} />
-                <input className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHanler('value', item.id, evt)} type="text" defaultValue={item.value} />
+                <input className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHanler('value', item.id, evt)} type="number" defaultValue={item.value} />
               </button>
             </li>
           );
