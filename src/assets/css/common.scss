@@ -50,7 +50,6 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
     width: 28px;
     height: 28px;
-    transform: translateY(-40px);
     z-index: 9998;
 
     input {
@@ -139,7 +138,7 @@
     .DayPickerInput {
       width: 220px;
       height: unset;
-      transform: translateY(0px);
+      transform: translateY(0px) !important;
 
       input {
         padding: 15px 30px;
