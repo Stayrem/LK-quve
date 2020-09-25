@@ -4,6 +4,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { toJS } from 'mobx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import styles from './ExpensesList.module.scss';
 import inputTypesDict from './inputTypesDict';
 
@@ -23,6 +25,8 @@ const ExpensesList = (props) => {
     expensesListButton,
     focus,
     addExpenseButton,
+    removeBtn,
+    expensesListInputTitle,
   } = styles;
 
   useEffect(() => {
@@ -73,6 +77,11 @@ const ExpensesList = (props) => {
     <div className={expenses}>
       <p className={expensesTitle}>Список трат за сегодня</p>
       <ul className="expensesList">
+        <li className={expensesListItem}>
+          <input type="text" value="Категория" disabled className={[expensesListInput, expensesListInputTitle].join(' ')} />
+          <input type="text" value="Сумма" disabled className={[expensesListInput, expensesListInputTitle].join(' ')} />
+
+        </li>
         {spendings.map((item) => {
           const focusClassname = focusedId === item.id ? focus : '';
           return (
@@ -98,6 +107,9 @@ const ExpensesList = (props) => {
                   type="number"
                   defaultValue={item.value}
                 />
+                <button className={['s_button', removeBtn].join(' ')} type="button" onClick={() => removeSpending(item.id)}>
+                  <FontAwesomeIcon icon={faTimesCircle} color="#ffffff" />
+                </button>
               </div>
             </li>
           );

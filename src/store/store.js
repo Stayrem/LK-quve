@@ -87,7 +87,7 @@ const createOverviewStore = () => ({
     this.spendingsTodayList.push({ id: this.spendingsTodayList.length, value: 0 });
   },
   removeSpending(id) {
-    this.spendingsTodayList = this.spendingsTodayList.slice(0, id);
+    this.spendingsTodayList = this.spendingsTodayList.filter((spending) => spending.id !== id);
   },
 });
 

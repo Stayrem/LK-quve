@@ -31,6 +31,10 @@
   }
 }
 
+.expensesListInputTitle {
+  font-weight: 600;
+}
+
 .focus .expensesListInput {
   background-color: $color-very-dark-desaturated-blue;
 }
@@ -38,6 +42,7 @@
 .expensesListButton {
   display: flex;
   width: 100%;
+  position: relative;
   border-right: 1px solid transparent;
   border-left: 1px solid transparent;
 
@@ -45,6 +50,13 @@
     border-right: 1px solid $color-dividers;
     border-left: 1px solid $color-dividers;
   }
+}
+
+.removeBtn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .expensesTitle {
