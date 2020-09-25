@@ -54,7 +54,7 @@ const Saldo = (props) => {
   const { graphData } = props;
   const graph = useRef(null);
   const data = graphData.map((it) => it.value);
-  const categories = graphData.map((it) => it.date * 1000);
+  const categories = graphData.map((expensesItem) => expensesItem.date * 1000);
   const options = createOptions(data, categories);
   useEffect(() => {
     const chart = new ApexCharts(graph.current, options);

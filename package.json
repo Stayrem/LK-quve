@@ -24,7 +24,6 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
     "apexcharts": "^3.20.2",
-    "chart.js": "2.9.3",
     "cross-env": "7.0.2",
     "mobx": "5.15.5",
     "mobx-react": "6.2.5",
