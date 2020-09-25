@@ -9,6 +9,9 @@ import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import styles from './ExpensesList.module.scss';
 import inputTypesDict from './inputTypesDict';
 
+// TODO убрать функции добавления и удаленияэлементов
+// списка из хранилища и перенести их в /utils на уровень компонента.
+// Это позволит сделать компонент более абстрактным и улучшит переиспользованность
 const ExpensesList = (props) => {
   const {
     spendings,
