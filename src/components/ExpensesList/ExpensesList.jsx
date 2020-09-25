@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import styles from './ExpensesList.module.scss';
 import inputTypesDict from './inputTypesDict';
+import { removeItem, addItem, keyDownHandler } from './utils/listController';
 
 // TODO убрать функции добавления и удаленияэлементов
 // списка из хранилища и перенести их в /utils на уровень компонента.
@@ -16,8 +17,7 @@ const ExpensesList = (props) => {
   const {
     spendings,
     editSpending,
-    addSpending,
-    removeSpending,
+    updateSpending,
   } = props;
 
   const {
@@ -59,21 +59,14 @@ const ExpensesList = (props) => {
     }
   };
 
+  const JSSpendings = toJS(spendings);
+
   const lastItem = useRef(null);
 
   const [focusedId, focusItem] = useState(-1);
 
-  const keyDownHandler = (evt, type, id) => {
-    if (evt.key === 'Enter' && type === inputTypesDict.value) {
-      addSpending();
-    }
-    if (evt.key === 'Tab') {
-      evt.target.focus();
-    }
-    if (evt.key === 'Delete' && type === inputTypesDict.category) {
-      removeSpending(id);
-      lastItem.current.focus();
-    }
+  const keyEventsWrapper = (list, evt, type, id, ref) => {
+    updateSpending(keyDownHandler(list, evt, type, id, ref));
   };
 
   return (
@@ -93,7 +86,9 @@ const ExpensesList = (props) => {
                 <input
                   ref={lastItem}
                   onFocus={() => focusItem(item.id)}
-                  onKeyDown={(evt) => keyDownHandler(evt, inputTypesDict.category, item.id)}
+                  onKeyDown={(evt) => {
+                    keyEventsWrapper(JSSpendings, evt, inputTypesDict.category, item.id, lastItem);
+                  }}
                   autoFocus
                   className={expensesListInput}
                   placeholder="Категория"
@@ -103,14 +98,16 @@ const ExpensesList = (props) => {
                 />
                 <input
                   onFocus={() => focusItem(item.id)}
-                  onKeyDown={(evt) => keyDownHandler(evt, inputTypesDict.value, item.id)}
+                  onKeyDown={(evt) => {
+                    keyEventsWrapper(JSSpendings, evt, inputTypesDict.category, item.id, lastItem);
+                  }}
                   className={expensesListInput}
                   placeholder="Сумма"
                   onChange={(evt) => onChangeHanler(inputTypesDict.value, item.id, evt)}
                   type="number"
                   defaultValue={item.value}
                 />
-                <button className={['s_button', removeBtn].join(' ')} type="button" onClick={() => removeSpending(item.id)}>
+                <button className={['s_button', removeBtn].join(' ')} type="button" onClick={() => updateSpending(removeItem(JSSpendings, item.id))}>
                   <FontAwesomeIcon icon={faTimesCircle} color="#ffffff" />
                 </button>
               </div>
@@ -118,7 +115,7 @@ const ExpensesList = (props) => {
           );
         })}
       </ul>
-      <button className={['s_button', addExpenseButton].join(' ')} type="button" onClick={() => addSpending()}>Добавить строчку</button>
+      <button className={['s_button', addExpenseButton].join(' ')} type="button" onClick={() => updateSpending(addItem(JSSpendings))}>Добавить строчку</button>
     </div>
   );
 };
@@ -126,8 +123,7 @@ const ExpensesList = (props) => {
 ExpensesList.propTypes = {
   spendings: PropTypes.arrayOf(PropTypes.object).isRequired,
   editSpending: PropTypes.func.isRequired,
-  addSpending: PropTypes.func.isRequired,
-  removeSpending: PropTypes.func.isRequired,
+  updateSpending: PropTypes.func.isRequired,
 };
 
 export default ExpensesList;

@@ -83,6 +83,9 @@ const createOverviewStore = () => ({
     this.restPercent = Math.floor((this.restSum / this.profit) * 100);
     this.restPercent = this.restPercent > 0 ? this.restPercent : 0;
   },
+  updateSpending(list) {
+    this.spendingsTodayList = list;
+  },
   addSpending() {
     this.spendingsTodayList.push({ id: this.spendingsTodayList.length, value: 0 });
   },
