@@ -1,74 +1,72 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-new */
 import React, { useRef, useEffect } from 'react';
-import Chart from 'chart.js';
 import PropTypes from 'prop-types';
-import * as moment from 'moment';
+import ApexCharts from 'apexcharts';
 import styles from './Saldo.module.scss';
 
-const createGraph = (ctx, labels, values) => {
-  const saldoGraph = ctx;
-
-  Chart.defaults.global.defaultFontFamily = 'Montserrat';
-  Chart.defaults.global.defaultFontSize = 10;
-  Chart.defaults.global.defaultFontColor = '#929FAC';
-
-  const saldoData = {
-    labels,
-    datasets: [{
-      data: values,
-      borderColor: 'rgba(255, 165, 0, 1)',
-      backgroundColor: 'rgba(255, 165, 0, 0.2)',
-    }],
-  };
-
-  const chartOptions = {
-    tooltips: {
+const createOptions = (data, categories) => {
+  const options = {
+    series: [
+      {
+        name: 'сумма трат',
+        data,
+      },
+    ],
+    chart: {
+      zoom: {
+        enabled: false,
+      },
+      toolbar: {
+        show: false,
+      },
+      height: 300,
+      width: '100%',
+      type: 'area',
+      foreColor: '#D7DADB',
+      fontFamily: 'Montserrat, sans-serif',
+    },
+    grid: {
+      borderColor: '#707070',
+    },
+    colors: ['#FFA500'],
+    tooltip: {
+      enabled: true,
+    },
+    dataLabels: {
       enabled: false,
     },
-    legend: {
-      display: false,
+    stroke: {
+      curve: 'smooth',
     },
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      xAxes: [{
-        gridLines: {
-          color: 'transparent',
-          zeroLineColor: 'transparent',
-        },
-      }],
-      yAxes: [{
-        gridLines: {
-          color: 'rgba(255, 255, 255, 0.1)',
-        },
-      }],
+    xaxis: {
+      type: 'datetime',
+      labels: {
+        format: 'dd',
+      },
     },
+    labels: categories,
   };
-
-  new Chart(saldoGraph, {
-    type: 'line',
-    data: saldoData,
-    options: chartOptions,
-  });
+  return options;
 };
 
 const Saldo = (props) => {
   const { graphData } = props;
-  const dates = graphData.map((it) => moment(it.date).format('DD.MM'));
-  const fullDates = graphData.map((it) => moment(it.date).format('DD MMMM YYYY'));
-  const values = graphData.map((it) => it.value);
-  const { saldo, title, graphWrapper } = styles;
   const graph = useRef(null);
+  const data = graphData.map((it) => it.value);
+  const categories = graphData.map((expensesItem) => expensesItem.date * 1000);
+  const options = createOptions(data, categories);
   useEffect(() => {
-    const context = graph.current.getContext('2d');
-    createGraph(context, dates, values, fullDates);
+    const chart = new ApexCharts(graph.current, options);
+    chart.render();
   }, []);
+
+  const { saldo, title, graphWrapper } = styles;
   return (
     <div className={saldo}>
       <p className={title}>Динамика дневного сальдо</p>
       <div className={graphWrapper}>
-        <canvas ref={graph} />
+        <div ref={graph} />
       </div>
     </div>
   );
