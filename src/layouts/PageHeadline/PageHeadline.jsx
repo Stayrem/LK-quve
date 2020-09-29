@@ -26,7 +26,6 @@ const PageHeadline = (props) => {
 
   useEffect(() => {
     // TODO: Функция запроса данных с сервера на основе даты. Необходимо переводить дату в UNIX.
-    console.log(selectedDay);
   }, [selectedDay]);
 
   return (

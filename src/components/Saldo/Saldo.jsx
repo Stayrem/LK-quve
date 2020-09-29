@@ -9,7 +9,7 @@ const createOptions = (data, categories) => {
   const options = {
     series: [
       {
-        name: 'сумма трат',
+        name: 'Остаток на конец дня: ',
         data,
       },
     ],
@@ -64,7 +64,7 @@ const Saldo = (props) => {
   const { saldo, title, graphWrapper } = styles;
   return (
     <div className={saldo}>
-      <p className={title}>Динамика дневного сальдо</p>
+      <p className={title}>Динамика дневных остатков</p>
       <div className={graphWrapper}>
         <div ref={graph} />
       </div>

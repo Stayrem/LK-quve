@@ -28,6 +28,10 @@
     color: inherit;
   }
 
+  input:focus, button:focus, *[contenteditable] {
+    outline: none;
+  }
+
   #root {
     flex-grow: 1;
     display: flex;
@@ -152,6 +156,7 @@
     color: $color-pure-white;
     transition: background-color 0.2s ease-in-out;
     cursor: pointer;
+    white-space: nowrap;
 
     &.label-active {
       background-color: $color-strong-green;
@@ -173,6 +178,11 @@
     &:hover {
       opacity: 1;
     }
+  }
+
+  .py-0 {
+    padding-top: 0!important;
+    padding-bottom: 0!important;
   }
 
   @media (min-width: 768px) {

@@ -41,6 +41,10 @@
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
   overflow: -moz-scrollbars-none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .dataInputListTable {
@@ -74,6 +78,21 @@
     td {
       padding: 10px 20px;
       font-weight: 500;
+
+      input {
+        background-color: transparent;
+        border: none;
+        width: 100%;
+        height: 100%;
+        color: $color-pure-white;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        text-decoration: inherit;
+
+        &::placeholder {
+          color: $color-gray;
+        }
+      }
     }
   }
 
@@ -112,6 +131,10 @@
   border: none;
   cursor: pointer;
   text-align: left;
+
+  sub {
+    color: #a4adb6;
+  }
 }
 
 @media (min-width: 768px) {
@@ -144,6 +167,15 @@
 
       td {
         padding: 15px 30px;
+
+        input {
+          background-color: transparent;
+          border: none;
+          width: 100%;
+          height: 100%;
+          padding-top: 15px;
+          padding-bottom: 15px;
+        }
       }
     }
   }

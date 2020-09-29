@@ -14,7 +14,7 @@ const ExpensesList = (props) => {
     focus,
     addExpenseButton,
   } = styles;
-  const onChangeHanler = (type, id, evt) => {
+  const onChangeHandler = (type, id, evt) => {
     const text = evt.target.value;
     let find;
     const isNew = () => {
@@ -48,8 +48,8 @@ const ExpensesList = (props) => {
           return (
             <li key={item.id} className={expensesListItem}>
               <button type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
-                <input className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHanler('category', item.id, evt)} type="text" defaultValue={item.category} />
-                <input className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHanler('value', item.id, evt)} type="text" defaultValue={item.value} />
+                <input className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHandler('category', item.id, evt)} type="text" defaultValue={item.category} />
+                <input className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHandler('value', item.id, evt)} type="text" defaultValue={item.value} />
               </button>
             </li>
           );

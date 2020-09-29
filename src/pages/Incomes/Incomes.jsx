@@ -20,8 +20,10 @@ const Incomes = observer(() => {
     isInputDataFetched,
     incomesSum,
     incomesList,
+    addInputListItem,
+    deleteInputListItem,
+    editInputListItem,
   } = store;
-
   const {
     inner,
   } = styles;
@@ -41,10 +43,19 @@ const Incomes = observer(() => {
               <PageText text="Введите все Ваши источники дохода за месяц." />
               <div className={inner}>
                 <div className="flex-70">
-                  <DataInputList title="Добавленные доходы" date={moment(date).format('MMMM YYYY')} sum={incomesSum} data={incomesList} />
+                  <DataInputList
+                    type="income"
+                    title="Добавленные доходы"
+                    date={moment(date).format('MMMM YYYY')}
+                    sum={incomesSum}
+                    data={incomesList}
+                    addInputListItem={addInputListItem}
+                    deleteInputListItem={deleteInputListItem}
+                    editInputListItem={editInputListItem}
+                  />
                 </div>
                 <div className="flex-30">
-                  2
+
                 </div>
               </div>
             </PageContainer>
