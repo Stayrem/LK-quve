@@ -29,6 +29,41 @@ const DataInputList = (props) => {
     addRowButton,
   } = styles;
   const [focusedRowId, setFocusedRowId] = useState(null);
+  const [focusedInputType, setFocusedInputType] = useState(null);
+  const setFocusToItem = ((itemId, inputType, neighbour) => {
+    let id;
+    if (neighbour === 'next') {
+      const nextIndex = data.findIndex((item) => item.id === itemId) + 1;
+      id = data[nextIndex].id;
+    } else if (neighbour === 'prev') {
+      const nextIndex = data.findIndex((item) => item.id === itemId) - 1;
+      id = data[nextIndex].id;
+    } else {
+      id = itemId;
+    }
+    setFocusedRowId(id);
+    setFocusedInputType(inputType);
+  });
+  const addInputListItemHandler = (() => {
+    addInputListItem(type);
+    setFocusToItem(data[data.length - 1].id, 'first');
+  });
+  const deleteInputListItemHandler = ((id) => {
+    const prevIndex = data.findIndex((item) => item.id === id) - 1;
+    if (data.length > 1) {
+      deleteInputListItem(type, id);
+      setFocusToItem(data[prevIndex].id, 'last');
+    } else {
+      const editedItem = {
+        id,
+        name: '',
+        value: '',
+        status: true,
+      };
+      editInputListItem(type, editedItem);
+      setFocusToItem(editedItem.id, 'first');
+    }
+  });
 
   return (
     <div className={dataInputList}>
@@ -55,7 +90,7 @@ const DataInputList = (props) => {
             <tfoot>
               <tr>
                 <td colSpan="5">
-                  <button className={addRowButton} type="button" onClick={() => addInputListItem(type)}>
+                  <button className={addRowButton} type="button" onClick={() => addInputListItemHandler()}>
                     <FontAwesomeIcon icon={faPlus} />
                     &nbsp; Добавить строчку &nbsp;
                     <sub>↳ Enter</sub>
@@ -72,9 +107,12 @@ const DataInputList = (props) => {
               value={item.value}
               status={item.status}
               isFocused={item.id === focusedRowId}
-              deleteInputListItem={deleteInputListItem}
+              focusedInputType={focusedInputType}
+              isLast={item.id === data[data.length - 1].id}
+              deleteInputListItem={deleteInputListItemHandler}
               editInputListItem={editInputListItem}
-              addInputListItem={addInputListItem}
+              addInputListItem={addInputListItemHandler}
+              setFocusToItem={setFocusToItem}
             />)) }
             </tbody>
           </table>

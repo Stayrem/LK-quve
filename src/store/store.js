@@ -7,7 +7,7 @@ const TYPE_COSTS = 'costs';
 
 const getSumByArray = (arr) => {
   const reducer = (accumulator, currentItem) => {
-    if (currentItem.value !== undefined && currentItem.status !== false) {
+    if (currentItem.value !== '' && currentItem.status !== false) {
       return accumulator + parseInt(currentItem.value, 10);
     }
     return accumulator;
@@ -96,12 +96,22 @@ const createStore = () => ({
     if (type === TYPE_INCOME) {
       const incomesListLength = this.incomesList.length;
       if (incomesListLength === 0) {
-        this.incomesList.push({ id: 0 });
+        this.incomesList.push({
+          id: 0,
+          name: '',
+          value: '',
+          status: true,
+        });
       } else if (
         this.incomesList[incomesListLength - 1].name
         && this.incomesList[incomesListLength - 1].value
       ) {
-        this.incomesList.push({ id: this.incomesList[incomesListLength - 1].id + 1 });
+        this.incomesList.push({
+          id: this.incomesList[incomesListLength - 1].id + 1,
+          name: '',
+          value: '',
+          status: true,
+        });
         this.incomesSum = getSumByArray(this.incomesList);
       }
     } else if (type === TYPE_COSTS) {

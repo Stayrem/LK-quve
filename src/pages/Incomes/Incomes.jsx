@@ -8,6 +8,7 @@ import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloa
 import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 import PageText from '../../components/PageText/PageText';
 import DataInputList from '../../components/DataInputList/DataInputList';
+import DataPieChart from '../../components/DataPieChart/DataPieChart';
 
 const Incomes = observer(() => {
   const store = useStore();
@@ -55,7 +56,7 @@ const Incomes = observer(() => {
                   />
                 </div>
                 <div className="flex-30">
-
+                  <DataPieChart graphData={incomesList} />
                 </div>
               </div>
             </PageContainer>
