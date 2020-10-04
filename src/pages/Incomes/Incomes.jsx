@@ -9,6 +9,7 @@ import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 import PageText from '../../components/PageText/PageText';
 import DataInputList from '../../components/DataInputList/DataInputList';
 import DataPieChart from '../../components/DataPieChart/DataPieChart';
+import dictionary from '../../utils/dictionary';
 
 const Incomes = observer(() => {
   const store = useStore();
@@ -21,9 +22,7 @@ const Incomes = observer(() => {
     isInputDataFetched,
     incomesSum,
     incomesList,
-    addInputListItem,
-    deleteInputListItem,
-    editInputListItem,
+    updateDataList,
   } = store;
   const {
     inner,
@@ -45,14 +44,12 @@ const Incomes = observer(() => {
               <div className={inner}>
                 <div className="flex-70">
                   <DataInputList
-                    type="income"
+                    listType={dictionary.DATA_LIST_TYPE_INCOMES}
                     title="Добавленные доходы"
                     date={moment(date).format('MMMM YYYY')}
                     sum={incomesSum}
                     data={incomesList}
-                    addInputListItem={addInputListItem}
-                    deleteInputListItem={deleteInputListItem}
-                    editInputListItem={editInputListItem}
+                    updateDataList={updateDataList}
                   />
                 </div>
                 <div className="flex-30">

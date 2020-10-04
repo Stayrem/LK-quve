@@ -1,9 +1,12 @@
 import 'moment/locale/ru';
 import moment from 'moment';
 import { toJS } from 'mobx';
-
-const TYPE_INCOME = 'income';
-const TYPE_COSTS = 'costs';
+import {
+  addDataListItem,
+  deleteDataListItem,
+  editDataListItem,
+} from '../utils/data-list-controllers';
+import dictionary from '../utils/dictionary';
 
 const getSumByArray = (arr) => {
   const reducer = (accumulator, currentItem) => {
@@ -33,7 +36,6 @@ const createStore = () => ({
   isSaldoDataFetched: false,
   isInputDataFetched: false,
 
-  /* OVERVIEW DATA */
   async getOverviewData() {
     try {
       const saldoResponse = await fetch('/mocks/overview/saldo.json');
@@ -59,7 +61,6 @@ const createStore = () => ({
       this.fetchError = true;
     }
   },
-  /* INPUT LIST DATA */
   async getInputData() {
     try {
       const dataResponse = await fetch('/mocks/incomes/get.json');
@@ -74,7 +75,6 @@ const createStore = () => ({
       this.fetchError = true;
     }
   },
-  /* OVERVIEW ACTIONS */
   editSpending(obj) {
     const modified = toJS(this.spendingsTodayList).map((item) => {
       if (item.id !== obj.id) {
@@ -91,44 +91,37 @@ const createStore = () => ({
   addSpending() {
     this.spendingsTodayList.push({ id: this.spendingsTodayList.length });
   },
-  /* INPUT LIST ACTIONS */
-  addInputListItem(type) {
-    if (type === TYPE_INCOME) {
-      const incomesListLength = this.incomesList.length;
-      if (incomesListLength === 0) {
-        this.incomesList.push({
-          id: 0,
-          name: '',
-          value: '',
-          status: true,
-        });
-      } else if (
-        this.incomesList[incomesListLength - 1].name
-        && this.incomesList[incomesListLength - 1].value
-      ) {
-        this.incomesList.push({
-          id: this.incomesList[incomesListLength - 1].id + 1,
-          name: '',
-          value: '',
-          status: true,
-        });
-        this.incomesSum = getSumByArray(this.incomesList);
+  updateDataList(listType, actionType, mutableObject) {
+    if (listType === dictionary.DATA_LIST_TYPE_INCOMES) {
+      switch (actionType) {
+        case 'add':
+          this.incomesList = addDataListItem(this.incomesList);
+          break;
+        case 'delete':
+          this.incomesList = deleteDataListItem(mutableObject.id, this.incomesList);
+          break;
+        case 'edit':
+          this.incomesList = editDataListItem(mutableObject, this.incomesList);
+          break;
+        default:
+          break;
       }
-    } else if (type === TYPE_COSTS) {
-      // TODO: Добавление коста
-    }
-  },
-  deleteInputListItem(type, id) {
-    if (type === TYPE_INCOME) {
-      this.incomesList.splice(this.incomesList.findIndex((i) => i.id === id), 1);
       this.incomesSum = getSumByArray(this.incomesList);
-    }
-  },
-  editInputListItem(type, editedItem) {
-    if (type === TYPE_INCOME) {
-      const foundIndex = this.incomesList.findIndex((i) => i.id === editedItem.id);
-      this.incomesList[foundIndex] = editedItem;
-      this.incomesSum = getSumByArray(this.incomesList);
+    } else if (listType === dictionary.DATA_LIST_TYPE_COSTS) {
+      switch (actionType) {
+        case 'add':
+          this.costsList = addDataListItem(this.costsList);
+          break;
+        case 'delete':
+          this.costsList = deleteDataListItem(mutableObject.id, this.costsList);
+          break;
+        case 'edit':
+          this.costsList = editDataListItem(mutableObject, this.costsList);
+          break;
+        default:
+          break;
+      }
+      this.costsList = getSumByArray(this.costsList);
     }
   },
 });

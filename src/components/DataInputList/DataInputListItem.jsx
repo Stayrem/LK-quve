@@ -6,7 +6,6 @@ import styles from './DataInputListItem.module.scss';
 
 const DataInputListItem = (props) => {
   const {
-    type,
     id,
     name,
     value,
@@ -14,9 +13,9 @@ const DataInputListItem = (props) => {
     isFocused,
     focusedInputType,
     isLast,
+    addInputListItem,
     deleteInputListItem,
     editInputListItem,
-    addInputListItem,
     setFocusToItem,
   } = props;
   const {
@@ -43,7 +42,7 @@ const DataInputListItem = (props) => {
       value: currentValue,
       status: currentStatus,
     };
-    editInputListItem(type, editedItem);
+    editInputListItem(editedItem);
   }, [currentName, currentValue, currentStatus]);
 
   useEffect(() => {
@@ -80,7 +79,7 @@ const DataInputListItem = (props) => {
       case 'Tab':
         event.preventDefault();
         if (name && value && isAddingAccepted && isLast) {
-          addInputListItem(type);
+          addInputListItem();
         }
         if (!isAddingAccepted) {
           valueInput.current.focus();
@@ -157,7 +156,6 @@ DataInputListItem.defaultProps = {
 };
 
 DataInputListItem.propTypes = {
-  type: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   name: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
