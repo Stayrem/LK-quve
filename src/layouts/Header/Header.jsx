@@ -29,7 +29,7 @@ const menuItems = [
   {
     title: 'Постоянные расходы',
     icon: costs,
-    url: '/',
+    url: '/costs',
     id: 2,
   },
   {

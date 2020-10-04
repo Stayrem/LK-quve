@@ -70,6 +70,8 @@ const createStore = () => ({
       this.date = moment.unix(data.date).utc();
       this.incomesList = data.incomes_list;
       this.incomesSum = getSumByArray(this.incomesList);
+      this.costsList = data.costs_list;
+      this.costsSum = getSumByArray(this.costsList);
       this.isInputDataFetched = true;
     } catch (err) {
       this.fetchError = true;
@@ -121,7 +123,7 @@ const createStore = () => ({
         default:
           break;
       }
-      this.costsList = getSumByArray(this.costsList);
+      this.costsSum = getSumByArray(this.costsList);
     }
   },
 });
