@@ -36,7 +36,7 @@ const ExpensesList = (props) => {
     document.activeElement.blur();
   }, []);
 
-  const onChangeHanler = (type, id, evt) => {
+  const onChangeHandler = (type, id, evt) => {
     const text = evt.target.value;
     let find;
     const isNew = () => {
@@ -92,7 +92,7 @@ const ExpensesList = (props) => {
                   autoFocus
                   className={expensesListInput}
                   placeholder="Категория"
-                  onChange={(evt) => onChangeHanler(inputTypesDict.category, item.id, evt)}
+                  onChange={(evt) => onChangeHandler(inputTypesDict.category, item.id, evt)}
                   type="text"
                   defaultValue={item.category}
                 />
@@ -103,7 +103,7 @@ const ExpensesList = (props) => {
                   }}
                   className={expensesListInput}
                   placeholder="Сумма"
-                  onChange={(evt) => onChangeHanler(inputTypesDict.value, item.id, evt)}
+                  onChange={(evt) => onChangeHandler(inputTypesDict.value, item.id, evt)}
                   type="number"
                   defaultValue={item.value}
                 />
