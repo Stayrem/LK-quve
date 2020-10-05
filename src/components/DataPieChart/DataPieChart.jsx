@@ -4,37 +4,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
 import styles from './DataPieChart.module.scss';
+import { defaultOptions } from './chart-options';
 
-const createOptions = (series, labels) => {
+const createOptions = (labels) => {
   const options = {
-    chart: {
-      type: 'donut',
-      zoom: {
-        enabled: false,
-      },
-      toolbar: {
-        show: false,
-      },
-      foreColor: '#D7DADB',
-      fontFamily: 'Montserrat, sans-serif',
-    },
-    legend: {
-      position: 'bottom',
-      horizontalAlign: 'center',
-      floating: false,
-    },
-    plotOptions: {
-      pie: {
-        expandOnClick: false,
-        donut: {
-          size: '65%',
-        },
-      },
-    },
-    stroke: {
-      width: 0,
-    },
     labels,
+    ...defaultOptions,
   };
   return options;
 };
@@ -53,7 +28,7 @@ const DataPieChart = (props) => {
   const labels = graphData
     .filter((item) => item.status && item.name)
     .map((item) => item.name);
-  const options = createOptions(series, labels);
+  const options = createOptions(labels);
 
   return (
     <div className={dataPieChart}>
