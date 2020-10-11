@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome } from '@fortawesome/free-solid-svg-icons'
+import { faHome } from '@fortawesome/free-solid-svg-icons';
 import Container from '../../hocs/PageContainer/PageContainer';
 import styles from './Breadcrumbs.module.scss';
 
@@ -35,11 +35,12 @@ const Breadcrumbs = (props) => {
   );
 };
 
+Breadcrumbs.defaultProps = {
+  items: [],
+};
+
 Breadcrumbs.propTypes = {
-  items: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
-  }).isRequired,
+  items: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default Breadcrumbs;

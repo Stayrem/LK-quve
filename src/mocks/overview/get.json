@@ -1,11 +1,11 @@
 {
   "data": {
     "date": 1594771200,
-    "income": 91700,
-    "fixed_costs": 42689,
-    "saving_percent": 20,
-    "saving_sum": null,
-    "spendings_last_value": 16020,
+    "incomes_sum": 91700,
+    "costs_sum": 42689,
+    "savings_percent": 20,
+    "savings_sum": null,
+    "spendings_previous_sum": 16020,
     "spendings_today_list": [
       {
         "id": 0,

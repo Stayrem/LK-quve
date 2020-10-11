@@ -17,26 +17,31 @@ const menuItems = [
   {
     title: 'Сводка',
     icon: overview,
+    url: '/overview',
     id: 0,
   },
   {
     title: 'Доходы',
     icon: profits,
+    url: '/incomes',
     id: 1,
   },
   {
     title: 'Постоянные расходы',
     icon: costs,
+    url: '/costs',
     id: 2,
   },
   {
     title: 'Сбережения',
     icon: savings,
+    url: '/',
     id: 3,
   },
   {
     title: 'Дополнительные бюджеты',
     icon: budjets,
+    url: '/',
     id: 4,
   },
 ];
@@ -75,7 +80,7 @@ const Header = () => {
             <ul className={list}>
               {menuItems.map((listItem) => (
                 <li key={listItem.id} className={item}>
-                  <Link to="/" className={link}>{listItem.title}</Link>
+                  <Link to={listItem.url} className={link}>{listItem.title}</Link>
                 </li>
               ))}
             </ul>

@@ -20,11 +20,16 @@
     -webkit-font-smoothing: antialiased; /* Chrome, Safari */
     -moz-osx-font-smoothing: grayscale; /* Firefox */
     background-color: $color-dark-desaturated-blue;
+    color: $color-pure-white;
   }
 
   a {
     text-decoration: none;
     color: inherit;
+  }
+
+  input:focus, button:focus, *[contenteditable] {
+    outline: none;
   }
 
   #root {
@@ -134,13 +139,54 @@
     background-color: rgba(255, 255, 255, 0.2);
   }
 
-  input[type='number'] {
-    -moz-appearance:textfield;
+  .flex-70 {
+    flex: 0 0 1;
   }
 
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
+  .flex-30 {
+    flex: 0 0 1;
+  }
+
+  .label {
+    display: inline-block;
+    padding: 5px 15px;
+    background-color: $color-dark-desaturated-blue;
+    border-radius: 30px;
+    font-size: 90%;
+    color: $color-pure-white;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &.label-active {
+      background-color: $color-strong-green;
+      color: $color-pure-white;
+    }
+  }
+
+  .btn-delete {
+    border: none;
+    background-color: $color-dark-desaturated-blue;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    color: #3F5367;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .py-0 {
+    padding-top: 0!important;
+    padding-bottom: 0!important;
+  }
+
+  .apexcharts-canvas {
+    margin: auto;
   }
 
   @media (min-width: 768px) {
@@ -159,7 +205,13 @@
   }
 
   @media (min-width: 1280px) {
+    .flex-70 {
+      flex: 0 0 70%;
+    }
 
+    .flex-30 {
+      flex: 0 0 30%;
+    }
   }
 
   @media (min-width: 1700px) {

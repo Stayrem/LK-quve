@@ -31,11 +31,6 @@ const ExpensesList = (props) => {
     removeBtn,
     expensesListInputTitle,
   } = styles;
-
-  useEffect(() => {
-    document.activeElement.blur();
-  }, []);
-
   const onChangeHandler = (type, id, evt) => {
     const text = evt.target.value;
     let find;
@@ -82,35 +77,10 @@ const ExpensesList = (props) => {
           const focusClassname = focusedId === item.id ? focus : '';
           return (
             <li key={item.id} className={expensesListItem}>
-              <div type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
-                <input
-                  ref={lastItem}
-                  onFocus={() => focusItem(item.id)}
-                  onKeyDown={(evt) => {
-                    keyEventsWrapper(JSSpendings, evt, inputTypesDict.category, item.id, lastItem);
-                  }}
-                  autoFocus
-                  className={expensesListInput}
-                  placeholder="Категория"
-                  onChange={(evt) => onChangeHandler(inputTypesDict.category, item.id, evt)}
-                  type="text"
-                  defaultValue={item.category}
-                />
-                <input
-                  onFocus={() => focusItem(item.id)}
-                  onKeyDown={(evt) => {
-                    keyEventsWrapper(JSSpendings, evt, inputTypesDict.category, item.id, lastItem);
-                  }}
-                  className={expensesListInput}
-                  placeholder="Сумма"
-                  onChange={(evt) => onChangeHandler(inputTypesDict.value, item.id, evt)}
-                  type="number"
-                  defaultValue={item.value}
-                />
-                <button className={['s_button', removeBtn].join(' ')} type="button" onClick={() => updateSpending(removeItem(JSSpendings, item.id))}>
-                  <FontAwesomeIcon icon={faTimesCircle} color="#ffffff" />
-                </button>
-              </div>
+              <button type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
+                <input className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHandler('category', item.id, evt)} type="text" defaultValue={item.category} />
+                <input className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHandler('value', item.id, evt)} type="text" defaultValue={item.value} />
+              </button>
             </li>
           );
         })}

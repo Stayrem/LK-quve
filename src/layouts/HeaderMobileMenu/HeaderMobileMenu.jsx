@@ -20,7 +20,7 @@ const HeaderMobileMenu = (props) => {
         <ul className={list}>
           {menuItems.map((listItem) => (
             <li key={listItem.id}>
-              <Link to="/" className={link}>
+              <Link to={listItem.url} className={link}>
                 <div className={iconWrapper}>
                   <img src={listItem.icon} alt="иконка меню" />
                 </div>

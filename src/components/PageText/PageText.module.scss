@@ -1,0 +1,30 @@
+.pageText {
+  width: 100%;
+  color: $color-light-grayish-blue-2;
+  font-weight: 500;
+  margin-bottom: 20px;
+
+  p {
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .pageText {
+    margin-bottom: 50px;
+
+    p {
+      font-size: 15px;
+    }
+  }
+}
+
+@media (min-width: 1280px) {
+  .progressBar {
+    height: 6px;
+  }
+}
+
+@media (min-width: 1700px) {
+
+}

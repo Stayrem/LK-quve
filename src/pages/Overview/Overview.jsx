@@ -20,34 +20,31 @@ const Overview = observer(() => {
   }, []);
   const {
     date,
-
-    isOverwiewDataFetched,
-    isSaldoDataFetched,
-
+    incomesSum,
+    costsSum,
+    savingsSum,
+    spendingsPreviousSum,
     spendingsTodayList,
     spendingsTodaySum,
-
-    budgetToday,
-    savingSum,
-
-    restSum,
-    restPercent,
-
+    saldoData,
     editSpending,
     addSpending,
-    saldoData,
-    removeSpending,
-    updateSpending,
+    isOverwiewDataFetched,
+    isSaldoDataFetched,
   } = store;
-
   const {
     cardElippser, cardScroller, cardWrapper, inner,
   } = styles;
   return (
     (() => {
       if (isOverwiewDataFetched && isSaldoDataFetched) {
-        const today = moment(date).format('DD MMMM YYYY');
+        const day = moment(date).format('DD MMMM YYYY');
         const month = moment(date).format('MMMM');
+        const profit = incomesSum - costsSum - savingsSum;
+        const budgetFixed = Math.floor(profit / moment(date).daysInMonth());
+        const budgetToday = saldoData[saldoData.length - 1].value + budgetFixed;
+        const restSum = profit - spendingsPreviousSum - spendingsTodaySum;
+        const restPercent = Math.floor((restSum / profit) * 100);
         const cards = [
           {
             id: 0,
@@ -61,12 +58,12 @@ const Overview = observer(() => {
             title: 'Бюджет на день',
             text: budgetToday,
             textColor: budgetToday > 0 ? '#7DC900' : '#FC4349',
-            subTitle: today,
+            subTitle: day,
           },
           {
             id: 2,
             title: 'Сбережения',
-            text: savingSum,
+            text: savingsSum,
             textColor: '#ffffff',
             subTitle: `на ${month}`,
           },
@@ -75,22 +72,12 @@ const Overview = observer(() => {
             title: 'Остаток до конца месяца',
             text: restSum,
             textColor: '#ffffff',
-            subTitle: (<RestSumWidget restPercent={restPercent} />),
+            subTitle: (<RestSumWidget restPercent={restPercent > 0 ? restPercent : 0} />),
           },
-        ];
-        const breadcrumbs = [
-          // {
-          //   name: 'Меню 1',
-          //   url: '#',
-          // },
-          // {
-          //   name: 'Меню 2',
-          //   url: '#',
-          // },
         ];
         return (
           <main className="main">
-            <PageHeadline breadcrumbs={breadcrumbs} title="Сводка" date={date} />
+            <PageHeadline title="Сводка" date={date} />
             <PageContainer>
               <div className={cardElippser}>
                 <div className={cardScroller}>
