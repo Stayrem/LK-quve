@@ -9,7 +9,7 @@ const createOptions = (data, categories) => {
   const options = {
     series: [
       {
-        name: 'сумма трат',
+        name: 'Остаток на конец дня: ',
         data,
       },
     ],
@@ -20,7 +20,7 @@ const createOptions = (data, categories) => {
       toolbar: {
         show: false,
       },
-      height: 300,
+      height: '100%',
       width: '100%',
       type: 'area',
       foreColor: '#D7DADB',
@@ -56,6 +56,7 @@ const Saldo = (props) => {
   const data = graphData.map((it) => it.value);
   const categories = graphData.map((expensesItem) => expensesItem.date * 1000);
   const options = createOptions(data, categories);
+
   useEffect(() => {
     const chart = new ApexCharts(graph.current, options);
     chart.render();
@@ -64,7 +65,7 @@ const Saldo = (props) => {
   const { saldo, title, graphWrapper } = styles;
   return (
     <div className={saldo}>
-      <p className={title}>Динамика дневного сальдо</p>
+      <p className={title}>Динамика дневных остатков</p>
       <div className={graphWrapper}>
         <div ref={graph} />
       </div>

@@ -8,6 +8,8 @@ import {
 import Header from '../../layouts/Header/Header';
 import Footer from '../../layouts/Footer/Footer';
 import Overview from '../../pages/Overview/Overview';
+import Incomes from '../../pages/Incomes/Incomes';
+import Costs from '../../pages/Costs/Costs';
 import styles from './App.module.scss';
 
 const App = () => {
@@ -20,6 +22,12 @@ const App = () => {
       <Switch>
         <Route path="/overview">
           <Overview />
+        </Route>
+        <Route path="/incomes">
+          <Incomes />
+        </Route>
+        <Route path="/costs">
+          <Costs />
         </Route>
         <Route path="/">
           <Redirect to="/overview" />
