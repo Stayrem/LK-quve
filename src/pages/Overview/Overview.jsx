@@ -31,6 +31,7 @@ const Overview = observer(() => {
     addSpending,
     isOverwiewDataFetched,
     isSaldoDataFetched,
+    updateSpending,
   } = store;
   const {
     cardElippser, cardScroller, cardWrapper, inner,
@@ -91,7 +92,6 @@ const Overview = observer(() => {
                   spendings={spendingsTodayList}
                   editSpending={editSpending}
                   addSpending={addSpending}
-                  removeSpending={removeSpending}
                   updateSpending={updateSpending}
                 />
                 <Saldo graphData={toJS(saldoData)} />

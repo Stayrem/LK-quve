@@ -1,14 +1,10 @@
+import { addItem, removeItem } from '@utils/data-list-controllers.js';
 import inputTypesDict from '../inputTypesDict';
 
-export const removeItem = (list, id) => list.filter((spending) => spending.id !== id);
-
-export const addItem = (list) => {
-  list.push({ id: list.length, value: 0 });
-  return list;
-};
-
-export const keyDownHandler = (list, evt, type, id, ref) => {
+const keyDownHandler = (list, evt, type, id, ref) => {
+  console.log(evt.key, type);
   if (evt.key === 'Enter' && type === inputTypesDict.value) {
+    console.log(1)
     return addItem(list);
   }
   if (evt.key === 'Tab') {
@@ -20,3 +16,5 @@ export const keyDownHandler = (list, evt, type, id, ref) => {
   }
   return list;
 };
+
+export default keyDownHandler;

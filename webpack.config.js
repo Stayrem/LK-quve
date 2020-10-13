@@ -38,6 +38,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.jsx', '.js'],
+    alias: {
+      '@utils': path.join(PATH.SRC, 'utils'),
+    },
   },
   module: {
     rules: [

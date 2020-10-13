@@ -1,14 +1,15 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/no-autofocus */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { toJS } from 'mobx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { addItem, removeItem } from '@utils/data-list-controllers.js';
 import styles from './ExpensesList.module.scss';
 import inputTypesDict from './inputTypesDict';
-import { removeItem, addItem, keyDownHandler } from './utils/listController';
+import keyDownHandler from './utils/listController';
 
 // TODO убрать функции добавления и удаленияэлементов
 // списка из хранилища и перенести их в /utils на уровень компонента.
@@ -77,10 +78,35 @@ const ExpensesList = (props) => {
           const focusClassname = focusedId === item.id ? focus : '';
           return (
             <li key={item.id} className={expensesListItem}>
-              <button type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
-                <input className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHandler('category', item.id, evt)} type="text" defaultValue={item.category} />
-                <input className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHandler('value', item.id, evt)} type="text" defaultValue={item.value} />
-              </button>
+              <div type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
+                <input
+                  ref={lastItem}
+                  onFocus={() => focusItem(item.id)}
+                  onKeyDown={(evt) => {
+                    keyEventsWrapper(JSSpendings, evt, inputTypesDict.category, item.id, lastItem);
+                  }}
+                  autoFocus
+                  className={expensesListInput}
+                  placeholder="Категория"
+                  onChange={(evt) => onChangeHandler(inputTypesDict.category, item.id, evt)}
+                  type="text"
+                  defaultValue={item.category}
+                />
+                <input
+                  onFocus={() => focusItem(item.id)}
+                  onKeyDown={(evt) => {
+                    keyEventsWrapper(JSSpendings, evt, inputTypesDict.value, item.id, lastItem);
+                  }}
+                  className={expensesListInput}
+                  placeholder="Сумма"
+                  onChange={(evt) => onChangeHandler(inputTypesDict.value, item.id, evt)}
+                  type="number"
+                  defaultValue={item.value}
+                />
+                <button className={['s_button', removeBtn].join(' ')} type="button" onClick={() => updateSpending(removeItem(JSSpendings, item.id))}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+              </div>
             </li>
           );
         })}

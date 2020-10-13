@@ -2,8 +2,8 @@ import 'moment/locale/ru';
 import moment from 'moment';
 import { toJS } from 'mobx';
 import {
-  addDataListItem,
-  deleteDataListItem,
+  addItem,
+  removeItem,
   editDataListItem,
 } from '../utils/data-list-controllers';
 import dictionary from '../utils/dictionary';
@@ -103,10 +103,10 @@ const createStore = () => ({
     if (listType === dictionary.DATA_LIST_TYPE_INCOMES) {
       switch (actionType) {
         case 'add':
-          this.incomesList = addDataListItem(this.incomesList);
+          this.incomesList = addItem(this.incomesList);
           break;
         case 'delete':
-          this.incomesList = deleteDataListItem(mutableObject.id, this.incomesList);
+          this.incomesList = removeItem(mutableObject.id, this.incomesList);
           break;
         case 'edit':
           this.incomesList = editDataListItem(mutableObject, this.incomesList);
@@ -118,10 +118,10 @@ const createStore = () => ({
     } else if (listType === dictionary.DATA_LIST_TYPE_COSTS) {
       switch (actionType) {
         case 'add':
-          this.costsList = addDataListItem(this.costsList);
+          this.costsList = addItem(this.costsList);
           break;
         case 'delete':
-          this.costsList = deleteDataListItem(mutableObject.id, this.costsList);
+          this.costsList = removeItem(mutableObject.id, this.costsList);
           break;
         case 'edit':
           this.costsList = editDataListItem(mutableObject, this.costsList);

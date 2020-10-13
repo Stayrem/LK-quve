@@ -1,3 +1,6 @@
+$title-height: 58px;
+$title-height--mob: 41px;
+
 .saldo {
   display: flex;
   flex-direction: column;
@@ -12,7 +15,8 @@
 }
 
 .graphWrapper {
-  flex-grow: 1;
+  height: calc(100% - #{$title-height--mob});
+  overflow: hidden;
 }
 
 .title {
@@ -32,6 +36,10 @@
   .title {
     font-size: 16px;
     margin-bottom: 33px;
+  }
+
+  .graphWrapper {
+    height: calc(100% - #{$title-height});
   }
 }
 
