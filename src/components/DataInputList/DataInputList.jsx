@@ -122,7 +122,7 @@ const DataInputList = (props) => {
               { data.map((item, i) => (
                 <DataInputListItem
                   key={item.id}
-                  id={i}
+                  index={i}
                   name={item.name}
                   value={item.value}
                   status={item.status}
