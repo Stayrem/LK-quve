@@ -154,7 +154,7 @@ DataInputList.propTypes = {
   sum: PropTypes.number.isRequired,
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   title: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   updateDataList: PropTypes.func.isRequired,
 };
 

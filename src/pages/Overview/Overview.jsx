@@ -52,7 +52,7 @@ const Overview = () => {
         const spendingsTodaySum = getSumByArray(spendings);
         const day = moment(date).format('DD MMMM YYYY');
         const month = moment(date).format('MMMM');
-        const profit = incomesSum - costsSum - savingSum;
+        const profit = incomesSum - costsSum - savingsCurrent;
         const budgetFixed = Math.floor(profit / moment(date).daysInMonth());
         const budgetToday = saldoData[saldoData.length - 1].value + budgetFixed;
         const restSum = profit - spendingsPreviousSum - spendingsTodaySum;
@@ -75,7 +75,7 @@ const Overview = () => {
           {
             id: 2,
             title: 'Сбережения',
-            text: savingSum,
+            text: savingsCurrent,
             textColor: '#ffffff',
             subTitle: `на ${month}`,
           },

@@ -52,7 +52,7 @@ const Costs = observer(() => {
                   />
                 </div>
                 <div className="flex-30">
-                  <DataPieChart graphData={costsList} />
+                  <DataPieChart title="Структура постоянных расходов" graphData={costsList} />
                 </div>
               </div>
             </PageContainer>

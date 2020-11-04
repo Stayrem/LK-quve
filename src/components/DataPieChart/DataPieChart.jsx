@@ -15,7 +15,7 @@ const createOptions = (labels) => {
 };
 
 const DataPieChart = (props) => {
-  const { graphData } = props;
+  const { title, graphData } = props;
   const {
     dataPieChart,
     dataPieChartHeader,
@@ -34,7 +34,7 @@ const DataPieChart = (props) => {
     <div className={dataPieChart}>
       <div className={dataPieChartHeader}>
         <div className={dataPieChartTitle}>
-          Структура постоянных расходов
+          {title}
         </div>
       </div>
       <div className={dataPieChartBody}>
@@ -49,6 +49,7 @@ const DataPieChart = (props) => {
 };
 
 DataPieChart.propTypes = {
+  title: PropTypes.string.isRequired,
   graphData: PropTypes.arrayOf(PropTypes.any).isRequired,
 };
 

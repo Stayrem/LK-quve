@@ -4,9 +4,8 @@ import styles from './PageContainer.module.scss';
 
 const PageContainer = (props) => {
   const { children } = props;
-  const { container } = styles;
   return (
-    <div className={container}>
+    <div className="container">
       {children}
     </div>
   );

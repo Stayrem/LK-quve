@@ -51,7 +51,7 @@ const Incomes = () => {
                   />*/}
                 </div>
                 <div className="flex-30">
-                  <DataPieChart graphData={incomesList} />
+                  <DataPieChart title="Структура постоянных доходов" graphData={incomesList} />
                 </div>
               </div>
             </PageContainer>
