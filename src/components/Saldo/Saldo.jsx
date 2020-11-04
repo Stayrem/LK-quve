@@ -1,22 +1,43 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
+import * as moment from 'moment';
 
-import createOptions from './utils';
 import styles from './Saldo.module.scss';
+import defaultOptions from './chart-options';
+
+const createOptions = (labels, series) => {
+  return {
+    labels,
+    series: [
+      {
+
+        data: series,
+      },
+    ],
+    ...defaultOptions,
+  };
+};
 
 const Saldo = (props) => {
   const { graphData } = props;
-  const data = graphData.map((it) => it.value);
-  const categories = graphData.map((expensesItem) => expensesItem.date * 1000);
-  const [chartOptions] = useState(createOptions(data, categories));
-  const { options, series } = chartOptions;
-  const { saldo, title, graphWrapper } = styles;
+  const {
+    saldo,
+    title,
+    graphWrapper,
+  } = styles;
+  const series = [{
+    name: '',
+    data: graphData.map((item) => item.value),
+  }];
+  const labels = graphData.map((item) => moment.unix(item.date).utc().format('DD MMM'));
+  const options = createOptions(labels, series);
+
   return (
     <div className={saldo}>
       <p className={title}>Динамика дневных остатков</p>
       <div className={graphWrapper}>
-        <Chart options={options} series={series} height="100%" />
+        <Chart options={options} series={series} type="area" />
       </div>
     </div>
   );

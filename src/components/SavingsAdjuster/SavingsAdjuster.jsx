@@ -6,8 +6,8 @@ import dictionary from '../../utils/dictionary';
 const SavingsAdjuster = (props) => {
   const {
     date,
-    incomesSum,
-    savingsCurrent,
+    incomesCurrentMonthSum,
+    savingsCurrentMonthSum,
   } = props;
   const {
     savingsAdjuster,
@@ -25,9 +25,9 @@ const SavingsAdjuster = (props) => {
     savingsAdjusterRangeFiller,
   } = styles;
 
-  const [newSavingsValue, setNewSavingsValue] = useState(savingsCurrent);
+  const [newSavingsValue, setNewSavingsValue] = useState(savingsCurrentMonthSum);
   const [newSavingsPercent, setNewSavingsPercent] = useState(Math
-    .round((savingsCurrent / incomesSum) * 100));
+    .round((savingsCurrentMonthSum / incomesCurrentMonthSum) * 100));
   const rangeInput = useRef(null);
   const newSavingsPercentInput = useRef(null);
   const newSavingsValueInput = useRef(null);
@@ -37,10 +37,10 @@ const SavingsAdjuster = (props) => {
 
     if (type === dictionary.SAVINGS_INPUT_TYPE_PERCENTS) {
       newPercent = value > 100 ? 100 : value;
-      newValue = ((incomesSum * newPercent) / 100);
+      newValue = ((incomesCurrentMonthSum * newPercent) / 100);
     } else if (type === dictionary.SAVINGS_INPUT_TYPE_VALUE) {
-      newValue = value > incomesSum ? incomesSum : value;
-      newPercent = Math.round((newValue / incomesSum) * 100);
+      newValue = value > incomesCurrentMonthSum ? incomesCurrentMonthSum : value;
+      newPercent = Math.round((newValue / incomesCurrentMonthSum) * 100);
     }
 
     setNewSavingsPercent(newPercent);
@@ -106,10 +106,10 @@ const SavingsAdjuster = (props) => {
         </div>
         <div className={savingsAdjusterCalculationsWrapper}>
           <div className={[savingsAdjusterCalculation, 'mb-2'].join(' ')}>
-            =&nbsp;{newSavingsValue}&nbsp;в месяц
+            {`= ${newSavingsValue} в месяц`}
           </div>
           <div className={savingsAdjusterCalculation}>
-            =&nbsp;{newSavingsValue * 12}&nbsp;в год
+            {`= ${newSavingsValue * 12} в год`}
           </div>
         </div>
       </div>
@@ -119,8 +119,8 @@ const SavingsAdjuster = (props) => {
 
 SavingsAdjuster.propTypes = {
   date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-  incomesSum: PropTypes.number.isRequired,
-  savingsCurrent: PropTypes.number.isRequired,
+  incomesCurrentMonthSum: PropTypes.number.isRequired,
+  savingsCurrentMonthSum: PropTypes.number.isRequired,
 };
 
 export default SavingsAdjuster;

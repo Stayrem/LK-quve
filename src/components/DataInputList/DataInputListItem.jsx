@@ -13,6 +13,7 @@ const DataInputListItem = (props) => {
     isFocused,
     focusedInputType,
     isLast,
+    useStatus,
     addInputListItem,
     deleteInputListItem,
     editInputListItem,
@@ -132,12 +133,12 @@ const DataInputListItem = (props) => {
           onClick={(event) => setFocusOnRow(event, 'none')}
         />
       </td>
-      <td onClick={(event) => setFocusOnRow(event, 'last')}>
+      {useStatus && <td onClick={(event) => setFocusOnRow(event, 'last')}>
         { currentStatus
           ? <span role="button" onClick={() => setCurrentStatus(!currentStatus)} className="label label-active">Учитывать</span>
           : <span role="button" onClick={() => setCurrentStatus(!currentStatus)} className="label">Не учитывать</span>
         }
-      </td>
+      </td>}
       <td onClick={(event) => setFocusOnRow(event, 'none')}>
         <button className="btn-delete" type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
           <FontAwesomeIcon icon={faTimes} />
@@ -154,6 +155,7 @@ DataInputListItem.defaultProps = {
   isFocused: false,
   focusedInputType: 'none',
   isLast: false,
+  useStatus: true,
 };
 
 DataInputListItem.propTypes = {
@@ -165,6 +167,7 @@ DataInputListItem.propTypes = {
   isFocused: PropTypes.bool,
   focusedInputType: PropTypes.string,
   isLast: PropTypes.bool,
+  useStatus: PropTypes.bool,
   deleteInputListItem: PropTypes.func.isRequired,
   editInputListItem: PropTypes.func.isRequired,
   addInputListItem: PropTypes.func.isRequired,

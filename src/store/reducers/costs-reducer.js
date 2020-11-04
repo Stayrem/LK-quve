@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 import Type from '../action-types';
 
-const incomesDataReducer = (state = [], action) => {
+const costsDataReducer = (state = [], action) => {
   switch (action.type) {
-    case Type.FETCH_INCOMES_DATA:
+    case Type.FETCH_COSTS_DATA:
       return action.payload;
     default:
       return state;
@@ -11,5 +11,5 @@ const incomesDataReducer = (state = [], action) => {
 };
 
 export default combineReducers({
-  data: incomesDataReducer,
+  data: costsDataReducer,
 });

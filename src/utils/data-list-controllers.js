@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { MAX_ID_LENGTH } from '../constants';
+import { MAX_ID_LENGTH } from './constants';
 
 export const addItem = (list) => {
   list.push({ id: nanoid(MAX_ID_LENGTH), value: 0 });

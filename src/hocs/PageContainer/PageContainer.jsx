@@ -1,6 +1,5 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import styles from './PageContainer.module.scss';
 
 const PageContainer = (props) => {
   const { children } = props;

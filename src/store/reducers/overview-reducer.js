@@ -20,17 +20,7 @@ const saldoDataReducer = (state = [], action) => {
   }
 };
 
-const daySpendingsReducer = (state = [], action) => {
-  switch (action.type) {
-    case Type.SET_SPENDINGS_DATA:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
 export default combineReducers({
   data: overviewDataReducer,
   saldo: saldoDataReducer,
-  spendings: daySpendingsReducer,
 });

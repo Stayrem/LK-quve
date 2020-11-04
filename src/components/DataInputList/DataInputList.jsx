@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import styles from './DataInputList.module.scss';
@@ -7,11 +9,12 @@ import DataInputListItem from './DataInputListItem';
 
 const DataInputList = (props) => {
   const {
+    date,
     listType,
     sum,
     data,
     title,
-    date,
+    useStatus,
     updateDataList,
   } = props;
   const {
@@ -92,7 +95,7 @@ const DataInputList = (props) => {
           {title}
         </div>
         <div className={dataInputListHeaderDate}>
-          {date}
+          {moment(date).format('MMMM YYYY')}
         </div>
       </div>
       <div className={dataInputListBody}>
@@ -103,7 +106,7 @@ const DataInputList = (props) => {
                 <th>#</th>
                 <th>Название</th>
                 <th>Размер</th>
-                <th>Статус</th>
+                {useStatus && <th>Статус</th>}
                 <th>&nbsp;</th>
               </tr>
             </thead>
@@ -123,12 +126,14 @@ const DataInputList = (props) => {
                 <DataInputListItem
                   key={item.id}
                   index={i}
+                  id={item.id}
                   name={item.name}
                   value={item.value}
                   status={item.status}
                   isFocused={item.id === focusedRowId}
                   focusedInputType={focusedInputType}
                   isLast={item.id === data[data.length - 1].id}
+                  useStatus={useStatus}
                   addInputListItem={addInputListItemHandler}
                   deleteInputListItem={deleteInputListItemHandler}
                   editInputListItem={editInputListItemHandler}
@@ -149,12 +154,17 @@ const DataInputList = (props) => {
   );
 };
 
+DataInputList.defaultProps = {
+  useStatus: true,
+};
+
 DataInputList.propTypes = {
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   listType: PropTypes.string.isRequired,
   sum: PropTypes.number.isRequired,
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   title: PropTypes.string.isRequired,
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  useStatus: PropTypes.bool,
   updateDataList: PropTypes.func.isRequired,
 };
 

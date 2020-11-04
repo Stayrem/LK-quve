@@ -14,7 +14,7 @@ const RestSumWidget = (props) => {
 };
 
 RestSumWidget.propTypes = {
-  restPercent: PropTypes.number,
+  restPercent: PropTypes.number.isRequired,
 };
 
 export default RestSumWidget;

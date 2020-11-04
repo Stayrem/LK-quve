@@ -11,50 +11,63 @@ export const setSaldoData = (data) => ({
   payload: data,
 });
 
-export const setSavingSum = (data) => ({
-  type: Type.SET_SAVING_SUM,
+export const setIncomesData = (data) => ({
+  type: Type.FETCH_INCOMES_DATA,
   payload: data,
 });
 
-export const setSpendingsData = (data) => ({
-  type: Type.SET_SPENDINGS_DATA,
+export const setCostsData = (data) => ({
+  type: Type.FETCH_COSTS_DATA,
   payload: data,
 });
 
-export const setTotalIncomesData = (data) => ({
-  type: Type.SET_TOTAL_INCOMES_DATA,
+export const setSavingsData = (data) => ({
+  type: Type.FETCH_SAVINGS_DATA,
   payload: data,
 });
 
-export const setTotalCostsData = (data) => ({
-  type: Type.SET_TOTAL_COSTS_DATA,
-  payload: data,
-});
-
-export const setTotalDate = (data) => ({
-  type: Type.SET_TOTAL_DATE,
+export const setDate = (data) => ({
+  type: Type.SET_DATE,
   payload: data,
 });
 
 export const getDefaultData = () => async (dispatch) => {
   try {
-    const overviewData = await fetchData('/mocks/overview/get.json');
+    const data = await fetchData('/mocks/overview/get.json');
     const saldoData = await fetchData('/mocks/overview/saldo.json');
-    const { savingsSum, incomesSum, savingsPercent } = overviewData.data;
-    const savingSum = savingsSum === null ? (incomesSum * savingsPercent) / 100 : savingsSum;
-    dispatch(setOverviewData({ ...overviewData.data, savingSum }));
-    dispatch(setSaldoData(saldoData.data));
-    dispatch(setSpendingsData(overviewData.data.spendingsTodayList));
+    dispatch(setDate(data.date));
+    dispatch(setOverviewData(data));
+    dispatch(setSaldoData(saldoData));
   } catch (err) {
     console.log(err);
   }
 };
 
-export const getTotalIncomes = () => async (dispatch) => {
+export const getCostsData = () => async (dispatch) => {
   try {
-    const totals = await fetchData('/mocks/incomes/get.json');
-    dispatch(setTotalIncomesData(totals.data.incomesList));
-    dispatch(setTotalDate(totals.data.date));
+    const data = await fetchData('/mocks/incomes/get.json');
+    dispatch(setDate(data.date));
+    dispatch(setCostsData(data));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getIncomesData = () => async (dispatch) => {
+  try {
+    const data = await fetchData('/mocks/incomes/get.json');
+    dispatch(setDate(data.date));
+    dispatch(setIncomesData(data));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getSavingsData = () => async (dispatch) => {
+  try {
+    const data = await fetchData('/mocks/savings/get.json');
+    dispatch(setDate(data.date));
+    dispatch(setSavingsData(data));
   } catch (err) {
     console.log(err);
   }

@@ -1,32 +1,29 @@
 {
-  "data": {
-    "date": 1594771200,
-    "incomesSum": 91700,
-    "costsSum": 42689,
-    "savingsPercent": 20,
-    "savingsSum": null,
-    "spendingsPreviousSum": 16020,
-    "spendingsTodayList": [
-      {
-        "id": 0,
-        "category": "Аптека",
-        "value": 100
-      },
-      {
-        "id": 1,
-        "category": "Транспорт",
-        "value": 100
-      },
-      {
-        "id": 2,
-        "category": "Ресторан",
-        "value": 100
-      },
-      {
-        "id": 3,
-        "category": "Такси",
-        "value": 100
-      }
-    ]
-  }
+  "date": 1594771200,
+  "incomesCurrentMonthSum": 91700,
+  "costsCurrentMonthSum": 42689,
+  "savingsCurrentMonthSum": 18340.01,
+  "spendingsPreviousDaysSum": 16020,
+  "spendingsTodayList": [
+    {
+      "id": 0,
+      "name": "Аптека",
+      "value": 100
+    },
+    {
+      "id": 1,
+      "name": "Транспорт",
+      "value": 100
+    },
+    {
+      "id": 2,
+      "name": "Ресторан",
+      "value": 100
+    },
+    {
+      "id": 3,
+      "name": "Такси",
+      "value": 100
+    }
+  ]
 }
