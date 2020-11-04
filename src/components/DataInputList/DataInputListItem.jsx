@@ -17,6 +17,7 @@ const DataInputListItem = (props) => {
     deleteInputListItem,
     editInputListItem,
     setFocusToItem,
+    index,
   } = props;
   const {
     focused,
@@ -104,7 +105,7 @@ const DataInputListItem = (props) => {
     <tr
       className={isFocused ? focused : ''}
     >
-      <td onClick={(event) => setFocusOnRow(event, 'first')}>{id + 1}</td>
+      <td onClick={(event) => setFocusOnRow(event, 'first')}>{index + 1}</td>
       <td className="py-0" onClick={(event) => setFocusOnRow(event, 'first')}>
         <input
           ref={nameInput}
@@ -157,6 +158,7 @@ DataInputListItem.defaultProps = {
 
 DataInputListItem.propTypes = {
   id: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired,
   name: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   status: PropTypes.bool,

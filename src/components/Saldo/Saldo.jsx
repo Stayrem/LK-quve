@@ -1,73 +1,22 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-new */
-import React, { useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import ApexCharts from 'apexcharts';
-import styles from './Saldo.module.scss';
+import Chart from 'react-apexcharts';
 
-const createOptions = (data, categories) => {
-  const options = {
-    series: [
-      {
-        name: 'Остаток на конец дня: ',
-        data,
-      },
-    ],
-    chart: {
-      zoom: {
-        enabled: false,
-      },
-      toolbar: {
-        show: false,
-      },
-      height: '100%',
-      width: '100%',
-      type: 'area',
-      foreColor: '#D7DADB',
-      fontFamily: 'Montserrat, sans-serif',
-    },
-    grid: {
-      borderColor: '#707070',
-    },
-    colors: ['#FFA500'],
-    tooltip: {
-      enabled: true,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: 'smooth',
-    },
-    xaxis: {
-      type: 'datetime',
-      labels: {
-        format: 'dd',
-      },
-    },
-    labels: categories,
-  };
-  return options;
-};
+import createOptions from './utils';
+import styles from './Saldo.module.scss';
 
 const Saldo = (props) => {
   const { graphData } = props;
-  const graph = useRef(null);
   const data = graphData.map((it) => it.value);
   const categories = graphData.map((expensesItem) => expensesItem.date * 1000);
-  const options = createOptions(data, categories);
-
-  useEffect(() => {
-    const chart = new ApexCharts(graph.current, options);
-    chart.render();
-  }, []);
-
+  const [chartOptions] = useState(createOptions(data, categories));
+  const { options, series } = chartOptions;
   const { saldo, title, graphWrapper } = styles;
   return (
     <div className={saldo}>
       <p className={title}>Динамика дневных остатков</p>
       <div className={graphWrapper}>
-        <div ref={graph} />
+        <Chart options={options} series={series} height="100%" />
       </div>
     </div>
   );

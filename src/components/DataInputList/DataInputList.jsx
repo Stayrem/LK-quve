@@ -119,20 +119,22 @@ const DataInputList = (props) => {
               </tr>
             </tfoot>
             <tbody ref={tbody}>
-            { data.map((item) => (<DataInputListItem
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              value={item.value}
-              status={item.status}
-              isFocused={item.id === focusedRowId}
-              focusedInputType={focusedInputType}
-              isLast={item.id === data[data.length - 1].id}
-              addInputListItem={addInputListItemHandler}
-              deleteInputListItem={deleteInputListItemHandler}
-              editInputListItem={editInputListItemHandler}
-              setFocusToItem={setFocusToItem}
-            />)) }
+              { data.map((item, i) => (
+                <DataInputListItem
+                  key={item.id}
+                  index={i}
+                  name={item.name}
+                  value={item.value}
+                  status={item.status}
+                  isFocused={item.id === focusedRowId}
+                  focusedInputType={focusedInputType}
+                  isLast={item.id === data[data.length - 1].id}
+                  addInputListItem={addInputListItemHandler}
+                  deleteInputListItem={deleteInputListItemHandler}
+                  editInputListItem={editInputListItemHandler}
+                  setFocusToItem={setFocusToItem}
+                />
+              )) }
             </tbody>
           </table>
         </div>

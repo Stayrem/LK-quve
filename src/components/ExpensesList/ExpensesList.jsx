@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/no-autofocus */
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { toJS } from 'mobx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { addItem, removeItem } from '@utils/data-list-controllers.js';
 import styles from './ExpensesList.module.scss';
+import inputTypesDict from './inputTypesDict';
+import keyDownHandler from './utils/listController';
 
+// TODO убрать функции добавления и удаленияэлементов
+// списка из хранилища и перенести их в /utils на уровень компонента.
+// Это позволит сделать компонент более абстрактным и улучшит переиспользованность
 const ExpensesList = (props) => {
-  const { spendings, editSpending, addSpending } = props;
+  const {
+    spendings,
+    editSpending,
+    updateSpending,
+  } = props;
+
   const {
     expenses,
     expensesTitle,
@@ -13,6 +29,8 @@ const ExpensesList = (props) => {
     expensesListButton,
     focus,
     addExpenseButton,
+    removeBtn,
+    expensesListInputTitle,
   } = styles;
   const onChangeHandler = (type, id, evt) => {
     const text = evt.target.value;
@@ -21,7 +39,7 @@ const ExpensesList = (props) => {
       find = toJS(spendings).find((item) => item.id === id);
       return find === undefined;
     };
-    const content = type === 'value' ? { value: text === '' ? 0 : text } : { category: text };
+    const content = type === 'value' ? { value: text === '' ? 0 : parseInt(text, 10) } : { category: text };
     if (isNew()) {
       editSpending(
         {
@@ -37,25 +55,63 @@ const ExpensesList = (props) => {
     }
   };
 
+  const JSSpendings = toJS(spendings);
+
+  const lastItem = useRef(null);
+
   const [focusedId, focusItem] = useState(-1);
+
+  const keyEventsWrapper = (list, evt, type, id, ref) => {
+    updateSpending(keyDownHandler(list, evt, type, id, ref));
+  };
 
   return (
     <div className={expenses}>
       <p className={expensesTitle}>Список трат за сегодня</p>
       <ul className="expensesList">
+        <li className={expensesListItem}>
+          <input type="text" value="Категория" disabled className={[expensesListInput, expensesListInputTitle].join(' ')} />
+          <input type="text" value="Сумма" disabled className={[expensesListInput, expensesListInputTitle].join(' ')} />
+
+        </li>
         {spendings.map((item) => {
           const focusClassname = focusedId === item.id ? focus : '';
           return (
             <li key={item.id} className={expensesListItem}>
-              <button type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
-                <input className={expensesListInput} placeholder="Категория" onChange={(evt) => onChangeHandler('category', item.id, evt)} type="text" defaultValue={item.category} />
-                <input className={expensesListInput} placeholder="Сумма" onChange={(evt) => onChangeHandler('value', item.id, evt)} type="text" defaultValue={item.value} />
-              </button>
+              <div type="button" className={[expensesListButton, focusClassname, 's_button'].join(' ')} onClick={() => focusItem(item.id)}>
+                <input
+                  ref={lastItem}
+                  onFocus={() => focusItem(item.id)}
+                  onKeyDown={(evt) => {
+                    keyEventsWrapper(JSSpendings, evt, inputTypesDict.category, item.id, lastItem);
+                  }}
+                  autoFocus
+                  className={expensesListInput}
+                  placeholder="Категория"
+                  onChange={(evt) => onChangeHandler(inputTypesDict.category, item.id, evt)}
+                  type="text"
+                  defaultValue={item.category}
+                />
+                <input
+                  onFocus={() => focusItem(item.id)}
+                  onKeyDown={(evt) => {
+                    keyEventsWrapper(JSSpendings, evt, inputTypesDict.value, item.id, lastItem);
+                  }}
+                  className={expensesListInput}
+                  placeholder="Сумма"
+                  onChange={(evt) => onChangeHandler(inputTypesDict.value, item.id, evt)}
+                  type="number"
+                  defaultValue={item.value}
+                />
+                <button className={['s_button', removeBtn].join(' ')} type="button" onClick={() => updateSpending(removeItem(JSSpendings, item.id))}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+              </div>
             </li>
           );
         })}
       </ul>
-      <button className={['s_button', addExpenseButton].join(' ')} type="button" onClick={() => addSpending()}>Добавить строчку</button>
+      <button className={['s_button', addExpenseButton].join(' ')} type="button" onClick={() => updateSpending(addItem(JSSpendings))}>Добавить строчку</button>
     </div>
   );
 };
@@ -63,7 +119,7 @@ const ExpensesList = (props) => {
 ExpensesList.propTypes = {
   spendings: PropTypes.arrayOf(PropTypes.object).isRequired,
   editSpending: PropTypes.func.isRequired,
-  addSpending: PropTypes.func.isRequired,
+  updateSpending: PropTypes.func.isRequired,
 };
 
 export default ExpensesList;

@@ -1,12 +1,12 @@
 {
   "data": {
     "date": 1594771200,
-    "incomes_sum": 91700,
-    "costs_sum": 42689,
-    "savings_percent": 20,
-    "savings_sum": null,
-    "spendings_previous_sum": 16020,
-    "spendings_today_list": [
+    "incomesSum": 91700,
+    "costsSum": 42689,
+    "savingsPercent": 20,
+    "savingsSum": null,
+    "spendingsPreviousSum": 16020,
+    "spendingsTodayList": [
       {
         "id": 0,
         "category": "Аптека",

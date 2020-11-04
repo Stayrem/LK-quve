@@ -1,46 +1,58 @@
 import React, { useEffect } from 'react';
-import { observer } from 'mobx-react-lite';
 import * as moment from 'moment';
-import { toJS } from 'mobx';
+import { useDispatch, useSelector } from 'react-redux';
+
+import isEmpty from 'lodash/isEmpty';
+import { getDefaultData } from '../../store/action-creator';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import Card from '../../components/Card/Card';
 import ExpensesList from '../../components/ExpensesList/ExpensesList';
 import styles from './Overview.module.scss';
-import { useStore } from '../../store/StoreContext';
 import Saldo from '../../components/Saldo/Saldo';
 import RestSumWidget from '../../components/RestSumWidget/RestSumWidget';
 import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
 import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 
-const Overview = observer(() => {
-  const store = useStore();
-  const { getOverviewData } = store;
+const getSumByArray = (arr) => {
+  const reducer = (accumulator, currentItem) => {
+    if (currentItem.value !== '' && currentItem.status !== false) {
+      return accumulator + parseInt(currentItem.value, 10);
+    }
+    return accumulator;
+  };
+  return arr.reduce(reducer, 0);
+};
+
+const Overview = () => {
+  const dispatch = useDispatch();
+  const saldoData = useSelector((state) => state.overview.saldo);
+  const overviewData = useSelector((state) => state.overview.data);
+  const spendings = useSelector((state) => state.overview.spendings);
+
   useEffect(() => {
-    getOverviewData();
+    if (saldoData.length === 0 || overviewData.length === 0) {
+      dispatch(getDefaultData());
+    }
   }, []);
-  const {
-    date,
-    incomesSum,
-    costsSum,
-    savingsSum,
-    spendingsPreviousSum,
-    spendingsTodayList,
-    spendingsTodaySum,
-    saldoData,
-    editSpending,
-    addSpending,
-    isOverwiewDataFetched,
-    isSaldoDataFetched,
-  } = store;
+
   const {
     cardElippser, cardScroller, cardWrapper, inner,
   } = styles;
   return (
     (() => {
-      if (isOverwiewDataFetched && isSaldoDataFetched) {
+      if (saldoData.length > 0 && !isEmpty(overviewData)) {
+        const {
+          date,
+          incomesSum,
+          costsSum,
+          savingSum,
+          spendingsPreviousSum,
+        } = overviewData;
+
+        const spendingsTodaySum = getSumByArray(spendings);
         const day = moment(date).format('DD MMMM YYYY');
         const month = moment(date).format('MMMM');
-        const profit = incomesSum - costsSum - savingsSum;
+        const profit = incomesSum - costsSum - savingSum;
         const budgetFixed = Math.floor(profit / moment(date).daysInMonth());
         const budgetToday = saldoData[saldoData.length - 1].value + budgetFixed;
         const restSum = profit - spendingsPreviousSum - spendingsTodaySum;
@@ -63,7 +75,7 @@ const Overview = observer(() => {
           {
             id: 2,
             title: 'Сбережения',
-            text: savingsSum,
+            text: savingSum,
             textColor: '#ffffff',
             subTitle: `на ${month}`,
           },
@@ -77,7 +89,7 @@ const Overview = observer(() => {
         ];
         return (
           <main className="main">
-            <PageHeadline title="Сводка" date={date} />
+            <PageHeadline title="Сводка" date={moment.unix(date).utc()} />
             <PageContainer>
               <div className={cardElippser}>
                 <div className={cardScroller}>
@@ -88,11 +100,9 @@ const Overview = observer(() => {
               </div>
               <div className={inner}>
                 <ExpensesList
-                  spendings={spendingsTodayList}
-                  editSpending={editSpending}
-                  addSpending={addSpending}
+                  spendings={spendings}
                 />
-                <Saldo graphData={toJS(saldoData)} />
+                <Saldo graphData={saldoData} />
               </div>
             </PageContainer>
           </main>
@@ -102,6 +112,6 @@ const Overview = observer(() => {
     })()
 
   );
-});
+};
 
 export default Overview;
