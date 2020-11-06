@@ -1,6 +1,6 @@
+import dictionary from '@utils/dictionary';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
-import dictionary from '@utils/dictionary';
 
 export const fetchDateData = (data) => ({
   type: Type.FETCH_DATE_DATA,
