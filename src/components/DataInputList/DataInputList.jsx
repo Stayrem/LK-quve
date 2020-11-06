@@ -1,13 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+import { nanoid } from 'nanoid';
+import { MAX_ID_LENGTH } from '@utils/constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import styles from './DataInputList.module.scss';
+
+import { getSumByArray } from '@utils/functions';
+import dictionary from '@utils/dictionary';
+
 import DataInputListItem from './DataInputListItem';
+import styles from './DataInputList.module.scss';
+import { updateCostsData, updateIncomesData, updateSpendingsData } from '../../store/action-creator';
 
 const DataInputList = (props) => {
+  const dispatch = useDispatch();
+
   const {
     date,
     listType,
@@ -15,8 +26,8 @@ const DataInputList = (props) => {
     data,
     title,
     useStatus,
-    updateDataList,
   } = props;
+
   const {
     dataInputList,
     dataInputListHeader,
@@ -29,9 +40,27 @@ const DataInputList = (props) => {
     dataInputListSum,
     addRowButton,
   } = styles;
+
+  const updateDataList = (newData) => {
+    switch (listType) {
+      case dictionary.DATA_LIST_TYPE_INCOMES:
+        dispatch(updateIncomesData(newData));
+        break;
+      case dictionary.DATA_LIST_TYPE_COSTS:
+        dispatch(updateCostsData(newData));
+        break;
+      case dictionary.DATA_LIST_TYPE_SPENDINGS:
+        dispatch(updateSpendingsData(newData));
+        break;
+      default:
+        break;
+    }
+  };
+
   const [focusedRowId, setFocusedRowId] = useState(null);
   const [focusedInputType, setFocusedInputType] = useState(null);
   const tbody = useRef(null);
+
   const setFocusToItem = ((itemId, inputType, neighbour) => {
     let id;
     if (neighbour === 'next') {
@@ -46,16 +75,53 @@ const DataInputList = (props) => {
     setFocusedRowId(id);
     setFocusedInputType(inputType);
   });
+
   const addInputListItemHandler = (() => {
-    updateDataList(listType, 'add', null);
+    const newList = data;
+    newList.push({
+      id: nanoid(MAX_ID_LENGTH),
+      name: '',
+      value: 0,
+      status: true,
+    });
+    const newSum = getSumByArray(newList);
+    updateDataList(
+      {
+        newSum,
+        newList,
+      },
+    );
     setFocusToItem(data[data.length - 1].id, 'first');
   });
+
+  const editInputListItemHandler = ((editedItem) => {
+    const newList = data;
+    const indexOfEditedItem = newList.findIndex((item) => item.id === editedItem.id);
+
+    newList[indexOfEditedItem] = editedItem;
+    const newSum = getSumByArray(newList);
+    updateDataList(
+      {
+        newSum,
+        newList,
+      },
+    );
+  });
+
   const deleteInputListItemHandler = ((id) => {
     const currentIndex = data.findIndex((item) => item.id === id);
     const prevIndex = currentIndex - 1;
     const mutableItem = data[currentIndex];
+    const newList = data.filter((item) => item.id !== id);
+
     if (data.length > 1) {
-      updateDataList(listType, 'delete', mutableItem);
+      const newSum = getSumByArray(newList);
+      updateDataList(
+        {
+          newSum,
+          newList,
+        },
+      );
       if (currentIndex !== 0) {
         setFocusToItem(data[prevIndex].id, 'last');
       } else {
@@ -68,13 +134,11 @@ const DataInputList = (props) => {
         value: '',
         status: true,
       };
-      updateDataList(listType, 'edit', editedItem);
+      editInputListItemHandler(editedItem);
       setFocusToItem(editedItem.id, 'first');
     }
   });
-  const editInputListItemHandler = ((editedItem) => {
-    updateDataList(listType, 'edit', editedItem);
-  });
+
   const outerAreaClick = ((event) => {
     const { target } = event;
     event.preventDefault();
@@ -165,7 +229,6 @@ DataInputList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   title: PropTypes.string.isRequired,
   useStatus: PropTypes.bool,
-  updateDataList: PropTypes.func.isRequired,
 };
 
 export default DataInputList;

@@ -1,10 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import * as moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
 
-import { getDefaultData } from '../../store/action-creator';
+import {
+  getDateData,
+  getCostsData,
+  getIncomesData,
+  getSavingsData,
+  getSpendingsData,
+  getHistoryData,
+} from '../../store/action-creator';
 
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import Card from '../../components/Card/Card';
@@ -17,26 +24,41 @@ import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloa
 import styles from './Overview.module.scss';
 import dictionary from '../../utils/dictionary';
 
-const getSumByArray = (arr) => {
-  const reducer = (accumulator, currentItem) => {
-    if (currentItem.value !== '' && currentItem.status !== false) {
-      return accumulator + parseInt(currentItem.value, 10);
-    }
-    return accumulator;
-  };
-  return arr.reduce(reducer, 0);
-};
-
 const Overview = () => {
+  const [isDataFetched, setIsDataFetched] = useState(false);
+
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
-  const saldoData = useSelector((state) => state.overview.saldo);
-  const overviewData = useSelector((state) => state.overview.data);
+  const spendingsTodaySum = useSelector((state) => state.spendings.spendingsTodaySum);
+  const spendingsTodayList = useSelector((state) => state.spendings.spendingsTodayList);
+  const spendingsPreviousDaysSum = useSelector((state) => state.history.spendingsPreviousDaysSum);
+  const spendingsPreviousDaysList = useSelector((state) => state.history.spendingsPreviousDaysList);
+  const incomesCurrentMonthSum = useSelector((state) => state.incomes.incomesCurrentMonthSum);
+  const costsCurrentMonthSum = useSelector((state) => state.costs.costsCurrentMonthSum);
+  const savingsCurrentMonthSum = useSelector((state) => state.savings.savingsCurrentMonthSum);
 
   useEffect(() => {
-    if (isEmpty(date) || isEmpty(saldoData) || isEmpty(overviewData)) {
-      dispatch(getDefaultData());
-    }
+    (async () => {
+      if (!date) {
+        await dispatch(getDateData());
+      }
+      if (!spendingsTodaySum || isEmpty(spendingsTodayList)) {
+        await dispatch(getSpendingsData());
+      }
+      if (!spendingsPreviousDaysSum || isEmpty(spendingsPreviousDaysList)) {
+        await dispatch(getHistoryData(dictionary.HISTORY_TYPE_SPENDINGS));
+      }
+      if (!incomesCurrentMonthSum) {
+        await dispatch(getIncomesData());
+      }
+      if (!costsCurrentMonthSum) {
+        await dispatch(getCostsData());
+      }
+      if (!savingsCurrentMonthSum) {
+        await dispatch(getSavingsData());
+      }
+      setIsDataFetched(true);
+    })();
   }, []);
 
   const {
@@ -44,21 +66,13 @@ const Overview = () => {
   } = styles;
   return (
     (() => {
-      if (saldoData.length > 0 && !isEmpty(overviewData)) {
-        const {
-          incomesCurrentMonthSum,
-          costsCurrentMonthSum,
-          savingsCurrentMonthSum,
-          spendingsPreviousDaysSum,
-          spendingsTodayList,
-        } = overviewData;
-
+      if (isDataFetched) {
         const day = moment(date).format('DD MMMM YYYY');
         const month = moment(date).format('MMMM');
-        const spendingsTodaySum = getSumByArray(spendingsTodayList);
         const profit = incomesCurrentMonthSum - costsCurrentMonthSum - savingsCurrentMonthSum;
         const budgetFixed = Math.floor(profit / moment(date).daysInMonth());
-        const budgetToday = saldoData[saldoData.length - 1].value + budgetFixed;
+        const budgetToday = spendingsPreviousDaysList[spendingsPreviousDaysList.length - 1]
+          .value + budgetFixed;
         const restSum = Math.floor(profit - spendingsPreviousDaysSum - spendingsTodaySum);
         const restPercent = Math.floor((restSum / profit) * 100);
         const cards = [
@@ -115,7 +129,7 @@ const Overview = () => {
                   />
                 </div>
                 <div className="col-lg-6">
-                  <Saldo graphData={saldoData} />
+                  <Saldo graphData={spendingsPreviousDaysList} />
                 </div>
               </div>
             </PageContainer>

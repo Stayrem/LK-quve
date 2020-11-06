@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import * as moment from 'moment';
@@ -10,29 +10,46 @@ import PageText from '../../components/PageText/PageText';
 import DataBarChart from '../../components/DataBarChart/DataBarChart';
 import SavingsAdjuster from '../../components/SavingsAdjuster/SavingsAdjuster';
 import SavingsSum from '../../components/SavingsSum/SavingsSum';
-import { getSavingsData } from '../../store/action-creator';
+import {
+  getDateData,
+  getIncomesData,
+  getSavingsData,
+  getHistoryData,
+} from '../../store/action-creator';
 import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
+import dictionary from '@utils/dictionary';
 
 const Savings = () => {
+  const [isDataFetched, setIsDataFetched] = useState(false);
+
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
-  const savingsData = useSelector((state) => state.savings.data);
+  const savingsCurrentMonthSum = useSelector((state) => state.savings.savingsCurrentMonthSum);
+  const savingsCurrentYearSum = useSelector((state) => state.history.savingsCurrentYearSum);
+  const savingsCurrentYearList = useSelector((state) => state.history.savingsCurrentYearList);
+  const incomesCurrentMonthSum = useSelector((state) => state.incomes.incomesCurrentMonthSum);
 
   useEffect(() => {
-    if (isEmpty(date) || isEmpty(savingsData)) {
-      dispatch(getSavingsData());
-    }
+    (async () => {
+      if (!date) {
+        await dispatch(getDateData());
+      }
+      if (!savingsCurrentMonthSum) {
+        await dispatch(getSavingsData());
+      }
+      if (!savingsCurrentYearSum || isEmpty(savingsCurrentYearList)) {
+        await dispatch(getHistoryData(dictionary.HISTORY_TYPE_SAVINGS));
+      }
+      if (!incomesCurrentMonthSum) {
+        await dispatch(getIncomesData());
+      }
+      setIsDataFetched(true);
+    })();
   }, []);
 
   return (
     (() => {
-      if (!isEmpty(savingsData)) {
-        const {
-          incomesCurrentMonthSum,
-          savingsCurrentYearList,
-          savingsCurrentYearSum,
-          savingsCurrentMonthSum,
-        } = savingsData;
+      if (isDataFetched) {
         const breadcrumbs = [
           {
             name: 'Сбережения',

@@ -1,14 +1,20 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
 import PropTypes from 'prop-types';
 import styles from './SavingsAdjuster.module.scss';
 import dictionary from '../../utils/dictionary';
+import { updateSavingsData } from '../../store/action-creator';
 
 const SavingsAdjuster = (props) => {
+  const dispatch = useDispatch();
+
   const {
     date,
     incomesCurrentMonthSum,
     savingsCurrentMonthSum,
   } = props;
+
   const {
     savingsAdjuster,
     savingsAdjusterHeader,
@@ -49,6 +55,11 @@ const SavingsAdjuster = (props) => {
     newSavingsPercentInput.current.value = newPercent;
     newSavingsValueInput.current.value = newValue;
   };
+
+  useEffect(() => {
+    console.log(newSavingsValue);
+    dispatch(updateSavingsData(newSavingsValue));
+  }, [newSavingsValue]);
 
   return (
     <div className={[savingsAdjuster, 'mb-3'].join(' ')}>

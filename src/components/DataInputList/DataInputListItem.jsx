@@ -112,7 +112,7 @@ const DataInputListItem = (props) => {
           ref={nameInput}
           type="text"
           placeholder="Название..."
-          value={name}
+          defaultValue={name}
           onChange={(event) => setCurrentName(event.target.value)}
           onKeyDown={(event) => onKeyUpHandler(event, false, true)}
           onClick={(event) => setFocusOnRow(event, 'none')}
@@ -127,7 +127,7 @@ const DataInputListItem = (props) => {
           ref={valueInput}
           type="number"
           placeholder="Размер..."
-          value={value}
+          defaultValue={value}
           onChange={(event) => setCurrentValue(event.target.value)}
           onKeyDown={(event) => onKeyUpHandler(event, true, false)}
           onClick={(event) => setFocusOnRow(event, 'none')}
@@ -159,7 +159,7 @@ DataInputListItem.defaultProps = {
 };
 
 DataInputListItem.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   index: PropTypes.number.isRequired,
   name: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

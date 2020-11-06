@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
 
 import PageContainer from '../../hocs/PageContainer/PageContainer';
@@ -11,27 +10,35 @@ import DataInputList from '../../components/DataInputList/DataInputList';
 import DataPieChart from '../../components/DataPieChart/DataPieChart';
 import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
 
-import { getIncomesData } from '../../store/action-creator';
+import {
+  getDateData,
+  getIncomesData,
+} from '../../store/action-creator';
 import dictionary from '../../utils/dictionary';
 
 const Incomes = () => {
+  const [isDataFetched, setIsDataFetched] = useState(false);
+
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
-  const incomesData = useSelector((state) => state.incomes.data);
+  const incomesCurrentMonthSum = useSelector((state) => state.incomes.incomesCurrentMonthSum);
+  const incomesCurrentMonthList = useSelector((state) => state.incomes.incomesCurrentMonthList);
 
   useEffect(() => {
-    if (isEmpty(date) || isEmpty(incomesData)) {
-      dispatch(getIncomesData());
-    }
+    (async () => {
+      if (!date) {
+        await dispatch(getDateData());
+      }
+      if (!incomesCurrentMonthSum || isEmpty(incomesCurrentMonthList)) {
+        await dispatch(getIncomesData());
+      }
+      setIsDataFetched(true);
+    })();
   }, []);
 
   return (
     (() => {
-      if (!isEmpty(incomesData)) {
-        const {
-          incomesCurrentMonthSum,
-          incomesCurrentMonthList,
-        } = incomesData;
+      if (isDataFetched) {
         const breadcrumbs = [
           {
             name: 'Доходы',
@@ -51,7 +58,6 @@ const Incomes = () => {
                     date={date}
                     sum={incomesCurrentMonthSum}
                     data={incomesCurrentMonthList}
-                    updateDataList={() => {}}
                   />
                 </div>
                 <div className="col-lg-4">

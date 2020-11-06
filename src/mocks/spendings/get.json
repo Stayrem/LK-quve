@@ -1,9 +1,5 @@
 {
-  "date": 1594771200,
-  "incomesCurrentMonthSum": 91700,
-  "costsCurrentMonthSum": 42689,
-  "savingsCurrentMonthSum": 18340.01,
-  "spendingsPreviousDaysSum": 16020,
+  "spendingsTodaySum": 400,
   "spendingsTodayList": [
     {
       "id": 0,

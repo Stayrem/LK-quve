@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
 
 import PageContainer from '../../hocs/PageContainer/PageContainer';
@@ -11,27 +10,35 @@ import DataInputList from '../../components/DataInputList/DataInputList';
 import DataPieChart from '../../components/DataPieChart/DataPieChart';
 import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
 
-import { getCostsData } from '../../store/action-creator';
+import {
+  getCostsData,
+  getDateData,
+} from '../../store/action-creator';
 import dictionary from '../../utils/dictionary';
 
 const Costs = () => {
+  const [isDataFetched, setIsDataFetched] = useState(false);
+
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
-  const costsData = useSelector((state) => state.costs.data);
+  const costsCurrentMonthSum = useSelector((state) => state.costs.costsCurrentMonthSum);
+  const costsCurrentMonthList = useSelector((state) => state.costs.costsCurrentMonthList);
 
   useEffect(() => {
-    if (isEmpty(date) || isEmpty(costsData)) {
-      dispatch(getCostsData());
-    }
+    (async () => {
+      if (!date) {
+        await dispatch(getDateData());
+      }
+      if (!costsCurrentMonthSum || isEmpty(costsCurrentMonthList)) {
+        await dispatch(getCostsData());
+      }
+      setIsDataFetched(true);
+    })();
   }, []);
 
   return (
     (() => {
-      if (!isEmpty(costsData)) {
-        const {
-          costsCurrentMonthSum,
-          costsCurrentMonthList,
-        } = costsData;
+      if (isDataFetched) {
         const breadcrumbs = [
           {
             name: 'Постоянные расходы',
