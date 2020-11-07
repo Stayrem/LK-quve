@@ -34,9 +34,13 @@ const Saldo = (props) => {
   const options = createOptions(labels, series);
 
   return (
-    <div className={saldo}>
-      <p className={title}>Динамика дневных остатков</p>
-      <div className={graphWrapper}>
+    <div className={['panel', saldo].join(' ')}>
+      <div className="panel-header">
+        <div className="panel-header-title">
+          Динамика дневных остатков
+        </div>
+      </div>
+      <div className="panel-body">
         <Chart options={options} series={series} type="area" />
       </div>
     </div>

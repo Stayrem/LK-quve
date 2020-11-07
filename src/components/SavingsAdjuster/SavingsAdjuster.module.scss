@@ -1,38 +1,21 @@
 .savingsAdjuster {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  border-radius: 5px;
-  color: $color-pure-white;
-  background-color: $color-header-bg;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
-  line-height: 1;
+
 }
 
 .savingsAdjusterHeader {
-  padding: 25px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+
 }
 
 .savingsAdjusterHeaderTitle {
-  font-size: 14px;
-  font-weight: 600;
-  flex: 0 0 1;
-  margin-bottom: 10px;
+
 }
 
 .savingsAdjusterHeaderDate {
-  font-size: 12px;
-  font-weight: 500;
-  flex: 0 0 auto;
-  text-align: left;
-  text-transform: capitalize;
+
 }
 
 .savingsAdjusterBody {
-  padding: 0 20px 25px;
+
 }
 
 .savingsAdjusterRange {
@@ -44,7 +27,7 @@
     width: 100%;
     height: 6px;
     border-radius: 20px;
-    background: $color-very-dark-desaturated-blue;
+    background: $color-primary-darkest;
     outline: none;
     transition: all 0.3s ease-in-out;
     position: relative;
@@ -56,7 +39,7 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: $color-pure-white;
+    background: $color-font;
     cursor: pointer;
     position: relative;
     z-index: 2;
@@ -66,14 +49,14 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: $color-pure-white;
+    background: $color-font;
     cursor: pointer;
     position: relative;
     z-index: 2;
   }
 
   input[type="range"]::-ms-fill-lower {
-    background-color: $color-pure-orange;
+    background-color: $color-accent;
   }
 
   .savingsAdjusterRangeFiller {
@@ -82,9 +65,8 @@
     top: 7px;
     height: 6px;
     border-radius: 20px;
-    background-color: $color-pure-orange;
+    background-color: $color-accent;
     z-index: 1;
-    box-shadow: 0 0 10px 3px rgb(229 148 0 / 0.25);
   }
 }
 
@@ -100,21 +82,21 @@
 }
 
 .savingsAdjusterInput {
-  border-bottom: 2px solid $color-tranparent-gray;
+  border-bottom: 2px solid $color-primary-lighter;
   position: relative;
 
   input {
     background-color: transparent;
     font-size: 24px;
     border: none;
-    color: $color-pure-white;
+    color: $color-font;
     font-weight: bold;
     width: 100%;
     min-width: unset;
     display: block;
 
     &::placeholder {
-      color: $color-gray;
+      color: $color-font-placeholder;
     }
   }
 }
@@ -132,7 +114,7 @@
     right: 0;
     top: 50%;
     font-size: 24px;
-    color: $color-pure-white;
+    color: $color-font;
     font-weight: bold;
     transform: translateY(-50%);
   }
@@ -143,45 +125,25 @@
   font-size: 12px;
   font-weight: bold;
   padding: 0 15px;
-  color: $color-pure-white;
+  color: $color-font;
   display: flex;
   align-items: center;
   text-align: center;
 }
 
 .savingsAdjusterCalculationsWrapper {
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
 
   .savingsAdjusterCalculation {
     font-size: 16px;
     font-weight: bolder;
-    color: $color-pure-white;
+    color: $color-font;
     opacity: .2;
   }
 }
 
 @media (min-width: 768px) {
-  .savingsAdjusterHeader {
-    padding: 30px 25px;
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .savingsAdjusterHeaderDate {
-    text-align: right;
-    font-size: 14px;
-  }
-
-  .savingsAdjusterHeaderTitle {
-    margin-bottom: 0;
-  }
-
-  .savingsAdjusterBody {
-    padding: 0 25px 30px;
-  }
-
   .savingsAdjusterInput {
 
     input {
@@ -209,10 +171,6 @@
 }
 
 @media (min-width: 1280px) {
-  .savingsAdjusterHeaderTitle {
-    font-size: 14px;
-  }
-
   .savingsAdjusterInput {
 
     input {
@@ -232,7 +190,6 @@
   }
 
   .savingsAdjusterCalculationsWrapper {
-    margin-top: 25px;
 
     .savingsAdjusterCalculation {
       font-size: 20px;
@@ -241,19 +198,5 @@
 }
 
 @media (min-width: 1700px) {
-  .savingsAdjusterHeader {
-    padding: 35px 30px;
-  }
 
-  .savingsAdjusterHeaderTitle {
-    font-size: 16px;
-  }
-
-  .savingsAdjusterHeaderDate {
-    font-size: 14px;
-  }
-
-  .savingsAdjusterBody {
-    padding: 0 30px 35px;
-  }
 }

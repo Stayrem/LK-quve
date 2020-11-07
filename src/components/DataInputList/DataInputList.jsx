@@ -153,16 +153,16 @@ const DataInputList = (props) => {
   }, []);
 
   return (
-    <div className={dataInputList}>
-      <div className={dataInputListHeader}>
-        <div className={dataInputListHeaderTitle}>
+    <div className={['panel', dataInputList].join(' ')}>
+      <div className={['panel-header', dataInputListHeader].join(' ')}>
+        <div className={['panel-header-title', dataInputListHeaderTitle].join(' ')}>
           {title}
         </div>
-        <div className={dataInputListHeaderDate}>
+        <div className={['panel-header-subtitle', dataInputListHeaderDate].join(' ')}>
           {moment(date).format('MMMM YYYY')}
         </div>
       </div>
-      <div className={dataInputListBody}>
+      <div className={['panel-body', dataInputListBody].join(' ')}>
         <div className={dataInputListScroller}>
           <table className={dataInputListTable}>
             <thead>
@@ -208,7 +208,7 @@ const DataInputList = (props) => {
           </table>
         </div>
       </div>
-      <div className={dataInputListFooter}>
+      <div className={['panel-footer', dataInputListFooter].join(' ')}>
         <div className={dataInputListSum}>
           Сумма:&nbsp;
           <span>{sum}</span>

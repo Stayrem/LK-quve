@@ -2,46 +2,31 @@
   position: relative;
   width: 100%;
   display: flex;
-  background-color: $color-header-bg;
-  box-shadow: 0 0 10px 5px rgb(0 0 0 / 0.15);
+  background-color: transparent;
+  border-bottom: 1px solid $color-primary;
 }
 
-.title {
-  display: none;
-  font-size: 16px;
-  margin-left: 15px;
-  color: $color-pure-white;
-  font-family: "Montserrat", sans-serif;
+.headerItem {
+  padding: 20px;
+  border: 1px solid $color-primary;
+  border-top: none;
+  border-bottom: none;
 }
 
-.nav {
-  display: none;
+.headerNav {
   margin-right: auto;
 }
 
-.list {
-  display: flex;
+.headerNavList {
+  display: none;
   align-items: center;
 }
 
 .item {
   display: flex;
   align-items: center;
-  margin-right: 65px;
   position: relative;
   height: 100%;
-
-  &:after {
-    content: '';
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background-color: $color-tranparent-gray;
-    position: absolute;
-    top: 50%;
-    right: -25px;
-    transform: translate(50%, -50%);
-  }
 
   &:last-child {
     margin-right: unset;
@@ -53,7 +38,7 @@
 }
 
 .link {
-  color: $color-pure-white;
+  color: $color-font;
   font-size: 12px;
   text-decoration: none;
   font-weight: 600;
@@ -76,19 +61,15 @@
   display: flex;
   align-items: center;
   position: relative;
-  height: 60px;
 }
 
 .logoWrapper {
   display: flex;
   align-items: center;
-  margin-right: 100px;
 }
 
-.btn {
+.mobileMenuBtn {
   display: block;
-  width: 36px;
-  margin-left: auto;
 
   &:focus {
     outline: none;
@@ -106,7 +87,6 @@
 .burgerLine {
   display: block;
   width: 100%;
-  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.3);
   border-radius: 3px;
   height: 4px;
   background: #fff;
@@ -119,14 +99,14 @@
 }
 
 .headerLogo {
-  height: 35px;
+  height: 15px;
 }
 
 .mobileMenu {
   position: absolute;
   width: 85%;
   height: 100vh;
-  background-color: $color-header-bg;
+  background-color: $color-primary-darkest;
   left: -100%;
   transition: left 0.6s;
   z-index: 9999;
@@ -134,6 +114,48 @@
 
 .mobileMenuOpened {
   left: 0;
+}
+
+@media (min-width: 768px) {
+
+}
+
+@media (min-width: 992px) {
+  .headerNav {
+    display: flex;
+  }
+
+  .headerNavList {
+    display: flex;
+  }
+
+  .headerItem {
+    padding: 25px 30px
+  }
+
+  .exitWrapper {
+    display: flex;
+  }
+
+  .mobileMenu {
+    width: 350px;
+  }
+
+  .mobileMenuBtn {
+    display: none;
+  }
+}
+
+@media (min-width: 1280px) {
+  .headerLogo {
+    height: 15px;
+  }
+}
+
+@media (min-width: 1700px) {
+  .link {
+    font-size: 14px;
+  }
 }
 
 @keyframes top {
@@ -225,121 +247,5 @@
 
   100% {
     transform: scale(1);
-  }
-}
-
-.active .burgerLine:nth-child(1) {
-  animation-duration: 0.7s;
-  animation-timing-function: ease;
-  animation-delay: 0s;
-  animation-iteration-count: 1;
-  animation-direction: normal;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-  animation-name: top;
-}
-
-.notActive .burgerLine:nth-child(1) {
-  animation-duration: 0.7s;
-  animation-timing-function: ease;
-  animation-delay: 0s;
-  animation-iteration-count: 1;
-  animation-direction: normal;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-  animation-name: top-2;
-}
-
-.active .burgerLine:nth-child(2) {
-  animation-duration: 0.7s;
-  animation-timing-function: ease;
-  animation-delay: 0s;
-  animation-iteration-count: 1;
-  animation-direction: normal;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-  animation-name: scaled;
-}
-
-.notActive .burgerLine:nth-child(2) {
-  animation-duration: 0.7s;
-  animation-timing-function: ease;
-  animation-delay: 0s;
-  animation-iteration-count: 1;
-  animation-direction: normal;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-  animation-name: scaled-2;
-}
-
-.active .burgerLine:nth-child(3) {
-  animation-duration: 0.7s;
-  animation-timing-function: ease;
-  animation-delay: 0s;
-  animation-iteration-count: 1;
-  animation-direction: normal;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-  animation-name: bottom;
-}
-
-.notActive .burgerLine:nth-child(3) {
-  animation-duration: 0.7s;
-  animation-timing-function: ease;
-  animation-delay: 0s;
-  animation-iteration-count: 1;
-  animation-direction: normal;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
-  animation-name: bottom-2;
-}
-
-@media (min-width: 768px) {
-  .headerInner {
-    height: 65px;
-  }
-
-  .mobileMenu {
-    width: 350px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .nav {
-    display: flex;
-  }
-
-  .exitWrapper {
-    display: flex;
-  }
-
-  .btn {
-    display: none;
-  }
-
-  .headerLogo {
-    height: 25px;
-  }
-
-  .logoWrapper {
-    margin-right: 80px;
-  }
-
-  .item {
-    margin-right: 50px;
-  }
-
-  .title {
-    display: block;
-  }
-}
-
-@media (min-width: 1700px) {
-  .title {
-    display: block;
-  }
-
-  .link {
-    font-size: 14px;
   }
 }

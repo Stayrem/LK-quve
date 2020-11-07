@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import * as moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
+import dictionary from '../../utils/dictionary';
 
 import {
   getDateData,
@@ -22,7 +23,6 @@ import DataInputList from '../../components/DataInputList/DataInputList';
 import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
 
 import styles from './Overview.module.scss';
-import dictionary from '../../utils/dictionary';
 
 const Overview = () => {
   const [isDataFetched, setIsDataFetched] = useState(false);
@@ -61,6 +61,10 @@ const Overview = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    document.title = `Сводка | ${dictionary.APP_NAME}`;
+  }, []);
+
   const {
     cardElippser, cardScroller, cardWrapper,
   } = styles;
@@ -80,14 +84,14 @@ const Overview = () => {
             id: 0,
             title: 'Траты за сегодня',
             text: spendingsTodaySum,
-            textColor: (budgetToday - spendingsTodaySum) > 0 ? '#7DC900' : '#FC4349',
+            textColor: (budgetToday - spendingsTodaySum) > 0 ? '#48E260' : '#F45050',
             subTitle: `Осталось: ${budgetToday - spendingsTodaySum}`,
           },
           {
             id: 1,
             title: 'Бюджет на день',
             text: budgetToday,
-            textColor: budgetToday > 0 ? '#7DC900' : '#FC4349',
+            textColor: budgetToday > 0 ? '#48E260' : '#F45050',
             subTitle: day,
           },
           {
@@ -109,15 +113,19 @@ const Overview = () => {
           <main className="main">
             <PageHeadline title="Сводка" date={date} />
             <PageContainer>
-              <div className={cardElippser}>
-                <div className={cardScroller}>
-                  <div className={cardWrapper}>
-                    {cards.map((card) => <Card key={card.id} content={card} />)}
+              <div className="row">
+                <div className="col mb-3">
+                  <div className={cardElippser}>
+                    <div className={cardScroller}>
+                      <div className={cardWrapper}>
+                        {cards.map((card) => <Card key={card.id} content={card} />)}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="row">
-                <div className="col-lg-6">
+                <div className="col-lg-6 mb-3 mb-lg-0">
                   <DataInputList
                     date={date}
                     listType={dictionary.DATA_LIST_TYPE_SPENDINGS}

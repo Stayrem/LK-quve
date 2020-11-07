@@ -1,37 +1,22 @@
 .dataInputList {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  border-radius: 5px;
-  color: $color-pure-white;
-  background-color: $color-header-bg;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
-  line-height: 1;
+
 }
 
 .dataInputListHeader {
-  padding: 25px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+
 }
 
 .dataInputListHeaderTitle {
-  font-size: 14px;
-  font-weight: 600;
-  flex: 0 0 1;
-  margin-bottom: 10px;
+
 }
 
 .dataInputListHeaderDate {
-  font-size: 12px;
-  font-weight: 500;
-  flex: 0 0 auto;
-  text-align: left;
-  text-transform: capitalize;
+
 }
 
 .dataInputListBody {
+  padding-left: 0!important;
+  padding-right: 0!important;
   width: 100%;
 }
 
@@ -58,8 +43,8 @@
     width: 100%;
 
     tr {
-      border-top: 1px solid $color-table-border;
-      border-bottom: 1px solid $color-table-border;
+      border-top: 1px solid $color-primary-lighter;
+      border-bottom: 1px solid $color-primary-lighter;
     }
 
     th {
@@ -72,7 +57,7 @@
     width: 100%;
 
     tr {
-      border-bottom: 1px solid $color-table-border;
+      border-bottom: 1px solid $color-primary-lighter;
       cursor: pointer;
     }
 
@@ -85,13 +70,13 @@
         border: none;
         width: 100%;
         height: 100%;
-        color: $color-pure-white;
+        color: $color-font;
         padding-top: 10px;
         padding-bottom: 10px;
         text-decoration: inherit;
 
         &::placeholder {
-          color: $color-gray;
+          color: $color-font-placeholder;
         }
       }
     }
@@ -108,16 +93,16 @@
 }
 
 .dataInputListFooter {
-  padding: 25px 20px;
+
 }
 
 .dataInputListSum {
   font-size: 12px;
   font-weight: 700;
-  color: $color-pure-white;
+  color: $color-font;
 
   span {
-    color: $color-pure-orange;
+    color: $color-secondary;
   }
 }
 
@@ -125,7 +110,7 @@
   display: block;
   width: 100%;
   padding: 10px 20px;
-  color: $color-tranparent-gray;
+  color: $color-font-darker;
   font-size: 11px;
   font-weight: 500;
   background-color: transparent;
@@ -134,24 +119,14 @@
   text-align: left;
 
   sub {
-    color: #a4adb6;
+    color: $color-font-lighter;
   }
 }
 
 @media (min-width: 768px) {
-  .dataInputListHeader {
-    padding: 30px 25px;
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .dataInputListHeaderTitle {
-    font-size: 18px;
-  }
-
-  .dataInputListHeaderDate {
-    text-align: right;
-    font-size: 15px;
+  .dataInputListBody {
+    padding-left: 0!important;
+    padding-right: 0!important;
   }
 
   .dataInputListTable {
@@ -181,10 +156,6 @@
     }
   }
 
-  .dataInputListFooter {
-    padding: 30px 25px;
-  }
-
   .dataInputListSum {
     font-size: 14px;
   }
@@ -196,25 +167,15 @@
 }
 
 @media (min-width: 1280px) {
-  .dataInputListHeaderTitle {
-    font-size: 20px;
+  .dataInputListBody {
+    padding-left: 0!important;
+    padding-right: 0!important;
   }
 }
 
 @media (min-width: 1700px) {
-  .dataInputListHeader {
-    padding: 35px 30px;
-  }
-
-  .dataInputListHeaderTitle {
-    font-size: 24px;
-  }
-
-  .dataInputListHeaderDate {
-    font-size: 16px;
-  }
-
-  .dataInputListFooter {
-    padding: 35px 30px;
+  .dataInputListBody {
+    padding-left: 0!important;
+    padding-right: 0!important;
   }
 }

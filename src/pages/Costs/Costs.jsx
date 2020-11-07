@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import isEmpty from 'lodash/isEmpty';
+import dictionary from '../../utils/dictionary';
 
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
@@ -14,7 +15,6 @@ import {
   getCostsData,
   getDateData,
 } from '../../store/action-creator';
-import dictionary from '../../utils/dictionary';
 
 const Costs = () => {
   const [isDataFetched, setIsDataFetched] = useState(false);
@@ -34,6 +34,10 @@ const Costs = () => {
       }
       setIsDataFetched(true);
     })();
+  }, []);
+
+  useEffect(() => {
+    document.title = `Постоянные расходы | ${dictionary.APP_NAME}`;
   }, []);
 
   return (

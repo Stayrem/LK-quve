@@ -57,21 +57,20 @@ const SavingsAdjuster = (props) => {
   };
 
   useEffect(() => {
-    console.log(newSavingsValue);
     dispatch(updateSavingsData(newSavingsValue));
   }, [newSavingsValue]);
 
   return (
-    <div className={[savingsAdjuster, 'mb-3'].join(' ')}>
-      <div className={savingsAdjusterHeader}>
-        <div className={savingsAdjusterHeaderTitle}>
+    <div className={['panel', savingsAdjuster, 'mb-3'].join(' ')}>
+      <div className={['panel-header', savingsAdjusterHeader].join(' ')}>
+        <div className={['panel-header-title', savingsAdjusterHeaderTitle].join(' ')}>
           Размер сбережений
         </div>
-        <div className={savingsAdjusterHeaderDate}>
+        <div className={['panel-header-subtitle', savingsAdjusterHeaderDate].join(' ')}>
           {date}
         </div>
       </div>
-      <div className={savingsAdjusterBody}>
+      <div className={['panel-body', savingsAdjusterBody].join(' ')}>
         <div className={savingsAdjusterRange}>
           <input
             type="range"
@@ -115,8 +114,10 @@ const SavingsAdjuster = (props) => {
             />
           </div>
         </div>
+      </div>
+      <div className="panel-footer">
         <div className={savingsAdjusterCalculationsWrapper}>
-          <div className={[savingsAdjusterCalculation, 'mb-2'].join(' ')}>
+          <div className={[savingsAdjusterCalculation, 'mb-3'].join(' ')}>
             {`= ${newSavingsValue} в месяц`}
           </div>
           <div className={savingsAdjusterCalculation}>

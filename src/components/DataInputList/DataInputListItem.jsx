@@ -22,6 +22,7 @@ const DataInputListItem = (props) => {
   } = props;
   const {
     focused,
+    dataInputListItemBtnDelete,
   } = styles;
 
   const [currentName, setCurrentName] = useState(name);
@@ -140,7 +141,7 @@ const DataInputListItem = (props) => {
         }
       </td>}
       <td onClick={(event) => setFocusOnRow(event, 'none')}>
-        <button className="btn-delete" type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
+        <button className={dataInputListItemBtnDelete} type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
           <FontAwesomeIcon icon={faTimes} />
         </button>
       </td>

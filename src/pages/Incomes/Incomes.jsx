@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import isEmpty from 'lodash/isEmpty';
+import dictionary from '../../utils/dictionary';
 
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
@@ -14,7 +15,6 @@ import {
   getDateData,
   getIncomesData,
 } from '../../store/action-creator';
-import dictionary from '../../utils/dictionary';
 
 const Incomes = () => {
   const [isDataFetched, setIsDataFetched] = useState(false);
@@ -36,6 +36,10 @@ const Incomes = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    document.title = `Доходы | ${dictionary.APP_NAME}`;
+  }, []);
+
   return (
     (() => {
       if (isDataFetched) {
@@ -51,7 +55,7 @@ const Incomes = () => {
             <PageContainer>
               <PageText text="Введите все Ваши источники дохода за месяц." />
               <div className="row">
-                <div className="col-lg-8">
+                <div className="col-lg-8 mb-3 mb-lg-0">
                   <DataInputList
                     listType={dictionary.DATA_LIST_TYPE_INCOMES}
                     title="Добавленные доходы"

@@ -2,13 +2,16 @@
   display: flex;
   max-width: 100%;
   border-radius: 5px;
-  color: $color-pure-white;
-  background-color: $color-header-bg;
+  background-color: $color-primary;
   flex-direction: column;
   padding: 25px 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
   line-height: 1;
   flex: 0 0 240px;
+  margin-right: 15px;
+
+  &:last-child {
+    margin-right: 0;
+  }
 }
 
 .cardTitle {
@@ -20,7 +23,6 @@
 
 .cardText {
   font-size: 18px;
-  color: attr(data-color);
   font-weight: 700;
   margin-top: 0;
   margin-bottom: 10px;
@@ -29,7 +31,7 @@
 .cardSubtitle {
   font-size: 12px;
   font-weight: 500;
-  color: $color-light-grayish-blue;
+  color: $color-font-lighter;
 }
 
 @media (min-width: 768px) {
@@ -56,6 +58,11 @@
 @media (min-width: 1280px) {
   .card {
     flex: 1;
+    margin-right: 20px;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
   .cardSubtitle {

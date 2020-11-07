@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import * as moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
+import dictionary from '@utils/dictionary';
 
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
@@ -17,7 +18,6 @@ import {
   getHistoryData,
 } from '../../store/action-creator';
 import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
-import dictionary from '@utils/dictionary';
 
 const Savings = () => {
   const [isDataFetched, setIsDataFetched] = useState(false);
@@ -45,6 +45,10 @@ const Savings = () => {
       }
       setIsDataFetched(true);
     })();
+  }, []);
+
+  useEffect(() => {
+    document.title = `Сбережения | ${dictionary.APP_NAME}`;
   }, []);
 
   return (

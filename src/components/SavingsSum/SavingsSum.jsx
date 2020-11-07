@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './SavingsSum.module.scss';
-import dictionary from '../../utils/dictionary';
 
 const SavingsSum = (props) => {
   const {
@@ -15,13 +14,13 @@ const SavingsSum = (props) => {
   } = styles;
 
   return (
-    <div className={savingsSum}>
-      <div className={savingsSumHeader}>
-        <div className={savingsSumHeaderTitle}>
+    <div className={['panel', savingsSum].join(' ')}>
+      <div className={['panel-header', savingsSumHeader].join(' ')}>
+        <div className={['panel-header-title', savingsSumHeaderTitle].join(' ')}>
           Всего сбережений
         </div>
       </div>
-      <div className={savingsSumBody}>
+      <div className={['panel-body', savingsSumBody].join(' ')}>
         <span>{value}</span>
       </div>
     </div>

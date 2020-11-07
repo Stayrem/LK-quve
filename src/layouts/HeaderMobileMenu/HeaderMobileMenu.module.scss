@@ -1,24 +1,21 @@
 .menu {
   display: flex;
   flex-direction: column;
-  padding: 15px;
-}
-
-.title {
-  font-size: 12px;
-  margin-left: 10px;
-  color: $color-pure-white;
 }
 
 .header {
   display: flex;
   align-items: center;
-  padding-bottom: 15px;
-  border-bottom: 1px solid $color-gray;
+  padding: 20px;
+  border-bottom: 1px solid $color-primary;
+
+  img {
+    height: 15px;
+  }
 }
 
 .nav {
-  margin-top: 20px;
+  padding: 20px;
 }
 
 .list {
@@ -28,13 +25,9 @@
 .link {
   display: flex;
   padding: 10px 15px;
-  color: $color-pure-white;
+  color: $color-font;
   text-decoration: none;
   border-radius: 5px;
-
-  &:hover {
-    background: $color-dark-desaturated-blue;
-  }
 }
 
 .iconWrapper {

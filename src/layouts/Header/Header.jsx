@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import styles from './Header.module.scss';
 import logo from '../../assets/images/logo.svg';
+import menu from '../../assets/images/menu.svg';
 import budjets from './images/budjets.svg';
 import costs from './images/costs.svg';
 import overview from './images/overview.svg';
@@ -49,21 +50,19 @@ const menuItems = [
 const Header = () => {
   const {
     header,
-    title,
-    btn,
+    headerItem,
+    headerNav,
+    headerNavList,
+    mobileMenuBtn,
     notActive,
     active,
-    burgerLine,
     headerInner,
     logoWrapper,
-    nav,
-    list,
     item,
     link,
     mobileMenu,
     mobileMenuOpened,
     headerLogo,
-    exit,
     exitWrapper,
   } = styles;
   const [isMenuOpened, toggleMenu] = useState(false);
@@ -73,25 +72,23 @@ const Header = () => {
     <header className={header}>
       <Container>
         <div className={headerInner}>
-          <Link to="/" className={logoWrapper}>
-            <img src={logo} alt="Логотип" className={headerLogo} />
-          </Link>
-          <nav className={nav}>
-            <ul className={list}>
+          <nav className={headerNav}>
+            <Link to="/" className={[logoWrapper, headerItem].join(' ')}>
+              <img src={logo} alt="Логотип" className={headerLogo} />
+            </Link>
+            <ul className={headerNavList}>
               {menuItems.map((listItem) => (
                 <li key={listItem.id} className={item}>
-                  <Link to={listItem.url} className={link}>{listItem.title}</Link>
+                  <Link to={listItem.url} className={[link, headerItem].join(' ')}>{listItem.title}</Link>
                 </li>
               ))}
             </ul>
           </nav>
-          <button type="button" className={[btn, buttonClassname, 's_button'].join(' ')} onClick={() => toggleMenu((prev) => !prev)}>
-            <span className={burgerLine} />
-            <span className={burgerLine} />
-            <span className={burgerLine} />
-          </button>
+          <a href="#" className={[headerItem, mobileMenuBtn].join(' ')} onClick={() => toggleMenu((prev) => !prev)}>
+            <img alt="mobile-menu" src={menu} className={headerLogo} />
+          </a>
           <div className={exitWrapper}>
-            <a href="/" className={link}>Выход</a>
+            <a href="/" className={[link, headerItem].join(' ')}>Выход</a>
           </div>
         </div>
       </Container>
