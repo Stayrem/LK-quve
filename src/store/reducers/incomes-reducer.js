@@ -1,26 +1,18 @@
-import { combineReducers } from 'redux';
-
 import Type from '../action-types';
 
-const incomesListReducer = (state = [], action) => {
+const incomesDataReducer = (state = [], action) => {
   switch (action.type) {
-    case Type.SET_TOTAL_INCOMES_DATA:
+    case Type.FETCH_INCOMES_DATA:
       return action.payload;
+    case Type.SET_INCOMES_DATA:
+      return {
+        ...state,
+        incomesCurrentMonthList: action.payload.newList,
+        incomesCurrentMonthSum: action.payload.newSum,
+      };
     default:
       return state;
   }
 };
 
-const dateReducer = (state = null, action) => {
-  switch (action.type) {
-    case Type.SET_TOTAL_DATE:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-export default combineReducers({
-  incomesList: incomesListReducer,
-  date: dateReducer,
-});
+export default incomesDataReducer;

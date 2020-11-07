@@ -1,43 +1,41 @@
 {
-  "data": {
-    "date": 1594771200,
-    "costsList": [
-      {
-        "id": 0,
-        "name": "Аренда квартиры",
-        "value": 30000.00,
-        "status": true
-      },
-      {
-        "id": 1,
-        "name": "ЖКУ",
-        "value": 1300.00,
-        "status": true
-      },
-      {
-        "id": 2,
-        "name": "Мобильная связь",
-        "value": 500.00,
-        "status": true
-      },
-      {
-        "id": 3,
-        "name": "Лекарства",
-        "value": 5669.00,
-        "status": true
-      },
-      {
-        "id": 4,
-        "name": "Спорт",
-        "value": 1700.00,
-        "status": true
-      },
-      {
-        "id": 5,
-        "name": "Другое",
-        "value": 3520.00,
-        "status": true
-      }
-    ]
-  }
+  "costsCurrentMonthSum": 42689,
+  "costsCurrentMonthList": [
+    {
+      "id": 0,
+      "name": "Аренда квартиры",
+      "value": 30000.00,
+      "status": true
+    },
+    {
+      "id": 1,
+      "name": "ЖКУ",
+      "value": 1300.00,
+      "status": true
+    },
+    {
+      "id": 2,
+      "name": "Мобильная связь",
+      "value": 500.00,
+      "status": true
+    },
+    {
+      "id": 3,
+      "name": "Лекарства",
+      "value": 5669.00,
+      "status": true
+    },
+    {
+      "id": 4,
+      "name": "Спорт",
+      "value": 1700.00,
+      "status": true
+    },
+    {
+      "id": 5,
+      "name": "Другое",
+      "value": 3520.00,
+      "status": true
+    }
+  ]
 }

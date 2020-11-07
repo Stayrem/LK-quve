@@ -1,25 +1,23 @@
 {
-  "data": {
-    "date": 1594771200,
-    "incomesList": [
-      {
-        "id": 0,
-        "name": "Зарплата",
-        "value": 75000.00,
-        "status": true
-      },
-      {
-        "id": 1,
-        "name": "Сдача квартиры",
-        "value": 15000.00,
-        "status": true
-      },
-      {
-        "id": 2,
-        "name": "Стипендия",
-        "value": 1700.00,
-        "status": true
-      }
-    ]
-  }
+  "incomesCurrentMonthSum": 91700,
+  "incomesCurrentMonthList": [
+    {
+      "id": 0,
+      "name": "Зарплата",
+      "value": 75000.00,
+      "status": true
+    },
+    {
+      "id": 1,
+      "name": "Сдача квартиры",
+      "value": 15000.00,
+      "status": true
+    },
+    {
+      "id": 2,
+      "name": "Стипендия",
+      "value": 1700.00,
+      "status": true
+    }
+  ]
 }

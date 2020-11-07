@@ -35,15 +35,15 @@ const menuItems = [
   {
     title: 'Сбережения',
     icon: savings,
-    url: '/',
+    url: '/savings',
     id: 3,
   },
-  {
-    title: 'Дополнительные бюджеты',
-    icon: budjets,
-    url: '/',
-    id: 4,
-  },
+  // {
+  //   title: 'Дополнительные бюджеты',
+  //   icon: budjets,
+  //   url: '/',
+  //   id: 4,
+  // },
 ];
 
 const Header = () => {

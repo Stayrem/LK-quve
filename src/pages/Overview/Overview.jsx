@@ -1,61 +1,79 @@
-import React, { useEffect } from 'react';
-import * as moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import * as moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
-import { getDefaultData } from '../../store/action-creator';
+
+import {
+  getDateData,
+  getCostsData,
+  getIncomesData,
+  getSavingsData,
+  getSpendingsData,
+  getHistoryData,
+} from '../../store/action-creator';
+
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import Card from '../../components/Card/Card';
-import ExpensesList from '../../components/ExpensesList/ExpensesList';
-import styles from './Overview.module.scss';
 import Saldo from '../../components/Saldo/Saldo';
 import RestSumWidget from '../../components/RestSumWidget/RestSumWidget';
-import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
 import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
+import DataInputList from '../../components/DataInputList/DataInputList';
+import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
 
-const getSumByArray = (arr) => {
-  const reducer = (accumulator, currentItem) => {
-    if (currentItem.value !== '' && currentItem.status !== false) {
-      return accumulator + parseInt(currentItem.value, 10);
-    }
-    return accumulator;
-  };
-  return arr.reduce(reducer, 0);
-};
+import styles from './Overview.module.scss';
+import dictionary from '../../utils/dictionary';
 
 const Overview = () => {
+  const [isDataFetched, setIsDataFetched] = useState(false);
+
   const dispatch = useDispatch();
-  const saldoData = useSelector((state) => state.overview.saldo);
-  const overviewData = useSelector((state) => state.overview.data);
-  const spendings = useSelector((state) => state.overview.spendings);
+  const date = useSelector((state) => state.date);
+  const spendingsTodaySum = useSelector((state) => state.spendings.spendingsTodaySum);
+  const spendingsTodayList = useSelector((state) => state.spendings.spendingsTodayList);
+  const spendingsPreviousDaysSum = useSelector((state) => state.history.spendingsPreviousDaysSum);
+  const spendingsPreviousDaysList = useSelector((state) => state.history.spendingsPreviousDaysList);
+  const incomesCurrentMonthSum = useSelector((state) => state.incomes.incomesCurrentMonthSum);
+  const costsCurrentMonthSum = useSelector((state) => state.costs.costsCurrentMonthSum);
+  const savingsCurrentMonthSum = useSelector((state) => state.savings.savingsCurrentMonthSum);
 
   useEffect(() => {
-    if (saldoData.length === 0 || overviewData.length === 0) {
-      dispatch(getDefaultData());
-    }
+    (async () => {
+      if (!date) {
+        await dispatch(getDateData());
+      }
+      if (!spendingsTodaySum || isEmpty(spendingsTodayList)) {
+        await dispatch(getSpendingsData());
+      }
+      if (!spendingsPreviousDaysSum || isEmpty(spendingsPreviousDaysList)) {
+        await dispatch(getHistoryData(dictionary.HISTORY_TYPE_SPENDINGS));
+      }
+      if (!incomesCurrentMonthSum) {
+        await dispatch(getIncomesData());
+      }
+      if (!costsCurrentMonthSum) {
+        await dispatch(getCostsData());
+      }
+      if (!savingsCurrentMonthSum) {
+        await dispatch(getSavingsData());
+      }
+      setIsDataFetched(true);
+    })();
   }, []);
 
   const {
-    cardElippser, cardScroller, cardWrapper, inner,
+    cardElippser, cardScroller, cardWrapper,
   } = styles;
   return (
     (() => {
-      if (saldoData.length > 0 && !isEmpty(overviewData)) {
-        const {
-          date,
-          incomesSum,
-          costsSum,
-          savingSum,
-          spendingsPreviousSum,
-        } = overviewData;
-
-        const spendingsTodaySum = getSumByArray(spendings);
+      if (isDataFetched) {
         const day = moment(date).format('DD MMMM YYYY');
         const month = moment(date).format('MMMM');
-        const profit = incomesSum - costsSum - savingSum;
+        const profit = incomesCurrentMonthSum - costsCurrentMonthSum - savingsCurrentMonthSum;
         const budgetFixed = Math.floor(profit / moment(date).daysInMonth());
-        const budgetToday = saldoData[saldoData.length - 1].value + budgetFixed;
-        const restSum = profit - spendingsPreviousSum - spendingsTodaySum;
+        const budgetToday = spendingsPreviousDaysList[spendingsPreviousDaysList.length - 1]
+          .value + budgetFixed;
+        const restSum = Math.floor(profit - spendingsPreviousDaysSum - spendingsTodaySum);
         const restPercent = Math.floor((restSum / profit) * 100);
         const cards = [
           {
@@ -75,7 +93,7 @@ const Overview = () => {
           {
             id: 2,
             title: 'Сбережения',
-            text: savingSum,
+            text: Math.floor(savingsCurrentMonthSum),
             textColor: '#ffffff',
             subTitle: `на ${month}`,
           },
@@ -89,7 +107,7 @@ const Overview = () => {
         ];
         return (
           <main className="main">
-            <PageHeadline title="Сводка" date={moment.unix(date).utc()} />
+            <PageHeadline title="Сводка" date={date} />
             <PageContainer>
               <div className={cardElippser}>
                 <div className={cardScroller}>
@@ -98,11 +116,21 @@ const Overview = () => {
                   </div>
                 </div>
               </div>
-              <div className={inner}>
-                <ExpensesList
-                  spendings={spendings}
-                />
-                <Saldo graphData={saldoData} />
+              <div className="row">
+                <div className="col-lg-6">
+                  <DataInputList
+                    date={date}
+                    listType={dictionary.DATA_LIST_TYPE_SPENDINGS}
+                    sum={spendingsTodaySum}
+                    data={spendingsTodayList}
+                    title="Список трат за сегодня"
+                    useStatus={false}
+                    updateDataList={() => {}}
+                  />
+                </div>
+                <div className="col-lg-6">
+                  <Saldo graphData={spendingsPreviousDaysList} />
+                </div>
               </div>
             </PageContainer>
           </main>

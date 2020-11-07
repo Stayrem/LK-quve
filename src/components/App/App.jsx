@@ -11,6 +11,7 @@ import Overview from '../../pages/Overview/Overview';
 import Incomes from '../../pages/Incomes/Incomes';
 import Costs from '../../pages/Costs/Costs';
 import styles from './App.module.scss';
+import Savings from '../../pages/Savings/Savings';
 
 const App = () => {
   const { wrapper } = styles;
@@ -28,6 +29,9 @@ const App = () => {
         </Route>
         <Route path="/costs">
           <Costs />
+        </Route>
+        <Route path="/savings">
+          <Savings />
         </Route>
         <Route path="/">
           <Redirect to="/overview" />

@@ -1,33 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
-import { getTotalIncomes } from '../../store/action-creator';
+
+import isEmpty from 'lodash/isEmpty';
+
 import PageContainer from '../../hocs/PageContainer/PageContainer';
-import styles from './Incomes.module.scss';
-import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
 import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 import PageText from '../../components/PageText/PageText';
 import DataInputList from '../../components/DataInputList/DataInputList';
 import DataPieChart from '../../components/DataPieChart/DataPieChart';
+import OverviewPreloader from '../../preloaders/OverviewPreloader/OverviewPreloader';
+
+import {
+  getDateData,
+  getIncomesData,
+} from '../../store/action-creator';
 import dictionary from '../../utils/dictionary';
 
 const Incomes = () => {
+  const [isDataFetched, setIsDataFetched] = useState(false);
+
   const dispatch = useDispatch();
-  const date = useSelector((state) => state.incomes.date);
-  const incomesList = useSelector((state) => state.incomes.incomesList);
-  const overviewData = useSelector((state) => state.overview.data);
+  const date = useSelector((state) => state.date);
+  const incomesCurrentMonthSum = useSelector((state) => state.incomes.incomesCurrentMonthSum);
+  const incomesCurrentMonthList = useSelector((state) => state.incomes.incomesCurrentMonthList);
+
   useEffect(() => {
-    if (incomesList.length === 0) {
-      dispatch(getTotalIncomes());
-    }
+    (async () => {
+      if (!date) {
+        await dispatch(getDateData());
+      }
+      if (!incomesCurrentMonthSum || isEmpty(incomesCurrentMonthList)) {
+        await dispatch(getIncomesData());
+      }
+      setIsDataFetched(true);
+    })();
   }, []);
-  const { incomesSum } = overviewData;
-  const {
-    inner,
-  } = styles;
+
   return (
     (() => {
-      if (incomesList.length > 0) {
+      if (isDataFetched) {
         const breadcrumbs = [
           {
             name: 'Доходы',
@@ -36,22 +47,21 @@ const Incomes = () => {
         ];
         return (
           <main className="main">
-            <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={moment.unix(date).utc()} />
+            <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date} />
             <PageContainer>
               <PageText text="Введите все Ваши источники дохода за месяц." />
-              <div className={inner}>
-                <div className="flex-70">
-                  {/*
+              <div className="row">
+                <div className="col-lg-8">
                   <DataInputList
                     listType={dictionary.DATA_LIST_TYPE_INCOMES}
                     title="Добавленные доходы"
-                    date={moment(date).format('MMMM YYYY')}
-                    sum={incomesSum}
-                    data={incomesList}
-                  />*/}
+                    date={date}
+                    sum={incomesCurrentMonthSum}
+                    data={incomesCurrentMonthList}
+                  />
                 </div>
-                <div className="flex-30">
-                  <DataPieChart graphData={incomesList} />
+                <div className="col-lg-4">
+                  <DataPieChart title="Структура постоянных доходов" graphData={incomesCurrentMonthList} />
                 </div>
               </div>
             </PageContainer>

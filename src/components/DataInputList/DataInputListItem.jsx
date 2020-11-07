@@ -13,6 +13,7 @@ const DataInputListItem = (props) => {
     isFocused,
     focusedInputType,
     isLast,
+    useStatus,
     addInputListItem,
     deleteInputListItem,
     editInputListItem,
@@ -111,7 +112,7 @@ const DataInputListItem = (props) => {
           ref={nameInput}
           type="text"
           placeholder="Название..."
-          value={name}
+          defaultValue={name}
           onChange={(event) => setCurrentName(event.target.value)}
           onKeyDown={(event) => onKeyUpHandler(event, false, true)}
           onClick={(event) => setFocusOnRow(event, 'none')}
@@ -126,18 +127,18 @@ const DataInputListItem = (props) => {
           ref={valueInput}
           type="number"
           placeholder="Размер..."
-          value={value}
+          defaultValue={value}
           onChange={(event) => setCurrentValue(event.target.value)}
           onKeyDown={(event) => onKeyUpHandler(event, true, false)}
           onClick={(event) => setFocusOnRow(event, 'none')}
         />
       </td>
-      <td onClick={(event) => setFocusOnRow(event, 'last')}>
+      {useStatus && <td onClick={(event) => setFocusOnRow(event, 'last')}>
         { currentStatus
           ? <span role="button" onClick={() => setCurrentStatus(!currentStatus)} className="label label-active">Учитывать</span>
           : <span role="button" onClick={() => setCurrentStatus(!currentStatus)} className="label">Не учитывать</span>
         }
-      </td>
+      </td>}
       <td onClick={(event) => setFocusOnRow(event, 'none')}>
         <button className="btn-delete" type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
           <FontAwesomeIcon icon={faTimes} />
@@ -154,10 +155,11 @@ DataInputListItem.defaultProps = {
   isFocused: false,
   focusedInputType: 'none',
   isLast: false,
+  useStatus: true,
 };
 
 DataInputListItem.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   index: PropTypes.number.isRequired,
   name: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -165,6 +167,7 @@ DataInputListItem.propTypes = {
   isFocused: PropTypes.bool,
   focusedInputType: PropTypes.string,
   isLast: PropTypes.bool,
+  useStatus: PropTypes.bool,
   deleteInputListItem: PropTypes.func.isRequired,
   editInputListItem: PropTypes.func.isRequired,
   addInputListItem: PropTypes.func.isRequired,

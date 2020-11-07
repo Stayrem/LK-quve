@@ -1,0 +1,80 @@
+.savingsSum {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 5px;
+  color: $color-pure-white;
+  background-color: $color-header-bg;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
+  line-height: 1;
+}
+
+.savingsSumHeader {
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.savingsSumHeaderTitle {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.savingsSumBody {
+  padding: 0 20px 25px;
+
+  span {
+    font-size: 18px;
+    font-weight: bolder;
+    color: $color-pure-orange-2;
+  }
+}
+
+@media (min-width: 768px) {
+  .savingsSumHeader {
+    padding: 30px 25px;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .savingsSumHeaderTitle {
+    margin-bottom: 0;
+  }
+
+  .savingsSumBody {
+    padding: 0 25px 30px;
+
+    span {
+      font-size: 20px;
+    }
+  }
+}
+
+@media (min-width: 1280px) {
+  .savingsSumHeaderTitle {
+    font-size: 14px;
+  }
+
+  .savingsSumBody {
+    padding: 0 25px 30px;
+
+    span {
+      font-size: 22px;
+    }
+  }
+}
+
+@media (min-width: 1700px) {
+  .savingsSumHeader {
+    padding: 35px 30px;
+  }
+
+  .savingsSumHeaderTitle {
+    font-size: 16px;
+  }
+
+  .savingsSumBody {
+    padding: 0 30px 35px;
+  }
+}
