@@ -23,6 +23,7 @@ const SavingsAdjuster = (props) => {
     savingsAdjusterBody,
     savingsAdjusterRange,
     savingsAdjusterInputsWrapper,
+    savingsAdjusterInputsLabel,
     savingsAdjusterInput,
     savingsAdjusterInputPercentage,
     savingsAdjusterTextDivider,
@@ -34,9 +35,11 @@ const SavingsAdjuster = (props) => {
   const [newSavingsValue, setNewSavingsValue] = useState(savingsCurrentMonthSum);
   const [newSavingsPercent, setNewSavingsPercent] = useState(Math
     .round((savingsCurrentMonthSum / incomesCurrentMonthSum) * 100));
+
   const rangeInput = useRef(null);
   const newSavingsPercentInput = useRef(null);
   const newSavingsValueInput = useRef(null);
+
   const onSavingsChange = (type, value) => {
     let newPercent = null;
     let newValue = null;
@@ -113,6 +116,11 @@ const SavingsAdjuster = (props) => {
               )}
             />
           </div>
+        </div>
+        <div className={[savingsAdjusterInputsLabel, 'mt-2'].join(' ')}>
+          От дохода
+          <span>{` ${incomesCurrentMonthSum} `}</span>
+          в месяц
         </div>
       </div>
       <div className="panel-footer">

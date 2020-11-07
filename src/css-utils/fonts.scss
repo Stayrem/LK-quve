@@ -1,5 +1,12 @@
 @font-face {
   font-family: "Montserrat";
+  src: url("../assets/fonts/Montserrat-Bold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Montserrat";
   src: url("../assets/fonts/Montserrat-MediumItalic.ttf") format("truetype");
   font-weight: 500;
   font-style: italic;
@@ -7,28 +14,21 @@
 
 @font-face {
   font-family: "Montserrat";
+  src: url("../assets/fonts/Montserrat-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Montserrat";
   src: url("../assets/fonts/Montserrat-Italic.ttf") format("truetype");
-  font-weight: normal;
+  font-weight: 400;
   font-style: italic;
 }
 
 @font-face {
   font-family: "Montserrat";
-  src: url("../assets/fonts/Montserrat-Bold.ttf") format("truetype");
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Montserrat";
   src: url("../assets/fonts/Montserrat-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Montserrat";
-  src: url("../assets/fonts/Montserrat-Medium.ttf") format("truetype");
-  font-weight: 500;
+  font-weight: 400;
   font-style: normal;
 }

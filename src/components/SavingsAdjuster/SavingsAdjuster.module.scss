@@ -81,6 +81,16 @@
   }
 }
 
+.savingsAdjusterInputsLabel {
+  color: $color-font-darker;
+  font-size: 12px;
+  font-weight: 600;
+
+  span {
+    color: $color-font;
+  }
+}
+
 .savingsAdjusterInput {
   border-bottom: 2px solid $color-primary-lighter;
   position: relative;
