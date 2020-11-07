@@ -77,21 +77,24 @@ const DataInputList = (props) => {
   });
 
   const addInputListItemHandler = (() => {
-    const newList = data;
-    newList.push({
-      id: nanoid(MAX_ID_LENGTH),
-      name: '',
-      value: 0,
-      status: true,
-    });
-    const newSum = getSumByArray(newList);
-    updateDataList(
-      {
-        newSum,
-        newList,
-      },
-    );
-    setFocusToItem(data[data.length - 1].id, 'first');
+    const lastItem = data[data.length - 1];
+    if (lastItem.name || lastItem.value) {
+      const newList = data;
+      newList.push({
+        id: nanoid(MAX_ID_LENGTH),
+        name: '',
+        value: '',
+        status: true,
+      });
+      const newSum = getSumByArray(newList);
+      updateDataList(
+        {
+          newSum,
+          newList,
+        },
+      );
+      setFocusToItem(data[data.length - 1].id, 'first');
+    }
   });
 
   const editInputListItemHandler = ((editedItem) => {

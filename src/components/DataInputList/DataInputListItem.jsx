@@ -66,22 +66,22 @@ const DataInputListItem = (props) => {
   const onKeyUpHandler = (event, isAddingAccepted, isDeletingAccepted) => {
     switch (event.key) {
       case 'Backspace':
-        if (!name && !value && isDeletingAccepted) {
+        if (!currentName && !currentValue && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
           deleteInputListItem(id);
         }
-        if (!value && !isDeletingAccepted) {
+        if (!currentValue && !isDeletingAccepted) {
           event.preventDefault();
           nameInput.current.focus();
         }
-        if (!name && value && isDeletingAccepted) {
+        if (!currentName && currentValue && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
         }
         break;
       case 'Enter':
       case 'Tab':
         event.preventDefault();
-        if (name && value && isAddingAccepted && isLast) {
+        if (currentName && currentValue && isAddingAccepted && isLast) {
           addInputListItem();
         }
         if (!isAddingAccepted) {
