@@ -12,6 +12,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { getSumByArray } from '@utils/functions';
 import dictionary from '@utils/dictionary';
 
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import DataInputListItem from './DataInputListItem';
 import styles from './DataInputList.module.scss';
 import { updateCostsData, updateIncomesData, updateSpendingsData } from '../../store/action-creator';
@@ -162,7 +163,14 @@ const DataInputList = (props) => {
           {title}
         </div>
         <div className={['panel-header-subtitle', dataInputListHeaderDate].join(' ')}>
-          {moment(date).format('MMMM YYYY')}
+          <SkeletonTheme color="#252A48" highlightColor="#222743">
+            { date
+              ? moment(date).format('MMMM YYYY')
+              : (
+                <Skeleton width={50} height={20} />
+              )
+            }
+          </SkeletonTheme>
         </div>
       </div>
       <div className={['panel-body', dataInputListBody].join(' ')}>
@@ -180,41 +188,67 @@ const DataInputList = (props) => {
             <tfoot>
               <tr>
                 <td colSpan="5">
-                  <button className={addRowButton} type="button" onClick={() => addInputListItemHandler()}>
-                    <FontAwesomeIcon icon={faPlus} />
-                    &nbsp; Добавить строчку &nbsp;
-                    <sub>↳ Enter</sub>
-                  </button>
+                  {data && (
+                    <button className={addRowButton} type="button" onClick={() => addInputListItemHandler()}>
+                      <FontAwesomeIcon icon={faPlus} />
+                      &nbsp; Добавить строчку &nbsp;
+                      <sub>↳ Enter</sub>
+                    </button>
+                  )}
                 </td>
               </tr>
             </tfoot>
             <tbody ref={tbody}>
-              { data.map((item, i) => (
-                <DataInputListItem
-                  key={item.id}
-                  index={i}
-                  id={item.id}
-                  name={item.name}
-                  value={item.value}
-                  status={item.status}
-                  isFocused={item.id === focusedRowId}
-                  focusedInputType={focusedInputType}
-                  isLast={item.id === data[data.length - 1].id}
-                  useStatus={useStatus}
-                  addInputListItem={addInputListItemHandler}
-                  deleteInputListItem={deleteInputListItemHandler}
-                  editInputListItem={editInputListItemHandler}
-                  setFocusToItem={setFocusToItem}
-                />
-              )) }
+              {data
+                ? data.map((item, i) => (
+                  <DataInputListItem
+                    key={item.id}
+                    index={i}
+                    id={item.id}
+                    name={item.name}
+                    value={item.value}
+                    status={item.status}
+                    isFocused={item.id === focusedRowId}
+                    focusedInputType={focusedInputType}
+                    isLast={item.id === data[data.length - 1].id}
+                    useStatus={useStatus}
+                    addInputListItem={addInputListItemHandler}
+                    deleteInputListItem={deleteInputListItemHandler}
+                    editInputListItem={editInputListItemHandler}
+                    setFocusToItem={setFocusToItem}
+                  />
+                ))
+                : (
+                  <tr>
+                    <td>
+                      <SkeletonTheme color="#252A48" highlightColor="#222743">
+                        <Skeleton width={30} height={20} />
+                      </SkeletonTheme>
+                    </td>
+                    <td>
+                      <SkeletonTheme color="#252A48" highlightColor="#222743">
+                        <Skeleton width={100} height={20} />
+                      </SkeletonTheme>
+                    </td>
+                    <td>
+                      <SkeletonTheme color="#252A48" highlightColor="#222743">
+                        <Skeleton width={100} height={20} />
+                      </SkeletonTheme>
+                    </td>
+                  </tr>
+                )}
             </tbody>
           </table>
         </div>
       </div>
       <div className={['panel-footer', dataInputListFooter].join(' ')}>
         <div className={dataInputListSum}>
-          Сумма:&nbsp;
-          <span>{sum}</span>
+          Сумма: &nbsp;
+          <SkeletonTheme color="#252A48" highlightColor="#222743">
+            <span>
+              {sum || <Skeleton width={50} height={15} />}
+            </span>
+          </SkeletonTheme>
         </div>
       </div>
     </div>

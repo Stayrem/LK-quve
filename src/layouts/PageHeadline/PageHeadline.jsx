@@ -22,11 +22,15 @@ const PageHeadline = (props) => {
     pageHeadlineFlexInner,
   } = styles;
 
-  const [selectedDay, setSelectedDay] = useState(formatDate(date, 'LL', 'ru'));
+  const [selectedDay, setSelectedDay] = useState(null);
 
   useEffect(() => {
     // TODO: Функция запроса данных с сервера на основе даты. Необходимо переводить дату в UNIX.
   }, [selectedDay]);
+
+  useEffect(() => {
+    setSelectedDay(formatDate(date, 'LL', 'ru'));
+  }, [date]);
 
   return (
     <div className={pageHeadline}>
@@ -35,22 +39,26 @@ const PageHeadline = (props) => {
       <PageContainer>
         <div className={pageHeadlineFlexInner}>
           <PageTitle title={title} />
-          <DayPickerInput
-            spellcheck="false"
-            formatDate={formatDate}
-            parseDate={parseDate}
-            format="LL"
-            value={selectedDay}
-            keepFocus={false}
-            dayPickerProps={{
-              locale: 'ru',
-              localeUtils: MomentLocaleUtils,
-              firstDayOfWeek: 1,
-              todayButton: 'Сегодня',
-            }}
-            onDayChange={((day) => setSelectedDay(day))}
-            style={{ transform: breadcrumbs.length > 0 ? 'translateY(-40px)' : 'none' }}
-          />
+          {
+            date && (
+              <DayPickerInput
+                spellcheck="false"
+                formatDate={formatDate}
+                parseDate={parseDate}
+                format="LL"
+                value={selectedDay}
+                keepFocus={false}
+                dayPickerProps={{
+                  locale: 'ru',
+                  localeUtils: MomentLocaleUtils,
+                  firstDayOfWeek: 1,
+                  todayButton: 'Сегодня',
+                }}
+                onDayChange={((day) => setSelectedDay(day))}
+                style={{ transform: breadcrumbs.length > 0 ? 'translateY(-40px)' : 'none' }}
+              />
+            )
+          }
         </div>
       </PageContainer>
     </div>

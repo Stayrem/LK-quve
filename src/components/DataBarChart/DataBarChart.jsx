@@ -1,7 +1,8 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-new */
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import isEmpty from 'lodash/isEmpty';
+
 import Chart from 'react-apexcharts';
 import moment from 'moment';
 import styles from './DataBarChart.module.scss';
@@ -33,9 +34,9 @@ const DataBarChart = (props) => {
   } = styles;
   const series = [{
     name: '',
-    data: graphData.map((item) => parseInt(item.value, 10)),
+    data: isEmpty(graphData) ? [] : graphData.map((item) => parseInt(item.value, 10)),
   }];
-  const labels = graphData.map((item) => moment.unix(item.month).utc().format('MMMM'));
+  const labels = isEmpty(graphData) ? [] : graphData.map((item) => moment.unix(item.month).utc().format('MMMM'));
   const options = createOptions(labels, series);
 
   return (

@@ -1,7 +1,8 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-new */
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import isEmpty from 'lodash/isEmpty';
+
 import Chart from 'react-apexcharts';
 import styles from './DataPieChart.module.scss';
 import { defaultOptions } from './chart-options';
@@ -22,10 +23,10 @@ const DataPieChart = (props) => {
     dataPieChartTitle,
     dataPieChartBody,
   } = styles;
-  const series = graphData
+  const series = isEmpty(graphData) ? [] : graphData
     .filter((item) => item.status && item.value)
     .map((item) => parseInt(item.value, 10));
-  const labels = graphData
+  const labels = isEmpty(graphData) ? [] : graphData
     .filter((item) => item.status && item.name)
     .map((item) => item.name);
   const options = createOptions(labels);

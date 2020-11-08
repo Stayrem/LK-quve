@@ -77,6 +77,9 @@ const defaultOptions = {
       },
     },
   },
+  noData: {
+    text: 'Загрузка данных...',
+  },
   responsive: [
     {
       breakpoint: 425,

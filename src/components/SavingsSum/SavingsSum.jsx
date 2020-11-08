@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './SavingsSum.module.scss';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 const SavingsSum = (props) => {
   const {
@@ -21,7 +22,11 @@ const SavingsSum = (props) => {
         </div>
       </div>
       <div className={['panel-body', savingsSumBody].join(' ')}>
-        <span>{value}</span>
+        <SkeletonTheme color="#252A48" highlightColor="#222743">
+          <span>
+            {value || <Skeleton height={20} width={100} />}
+          </span>
+        </SkeletonTheme>
       </div>
     </div>
   );

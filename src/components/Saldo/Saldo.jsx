@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
 import * as moment from 'moment';
+import isEmpty from 'lodash/isEmpty';
 
 import styles from './Saldo.module.scss';
 import defaultOptions from './chart-options';
@@ -23,14 +24,12 @@ const Saldo = (props) => {
   const { graphData } = props;
   const {
     saldo,
-    title,
-    graphWrapper,
   } = styles;
   const series = [{
     name: '',
-    data: graphData.map((item) => item.value),
+    data: isEmpty(graphData) ? [] : graphData.map((item) => item.value),
   }];
-  const labels = graphData.map((item) => moment.unix(item.date).utc().format('DD MMM'));
+  const labels = isEmpty(graphData) ? [] : graphData.map((item) => moment.unix(item.date).utc().format('DD MMM'));
   const options = createOptions(labels, series);
 
   return (
