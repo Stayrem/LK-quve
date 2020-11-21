@@ -32,13 +32,13 @@ const DataPieChart = (props) => {
   const options = createOptions(labels);
 
   return (
-    <div className={dataPieChart}>
-      <div className={dataPieChartHeader}>
-        <div className={dataPieChartTitle}>
+    <div className={['panel', dataPieChart].join(' ')}>
+      <div className={['panel-header', dataPieChartHeader].join(' ')}>
+        <div className={['panel-header-title', dataPieChartTitle].join(' ')}>
           {title}
         </div>
       </div>
-      <div className={dataPieChartBody}>
+      <div className={['panel-body', dataPieChartBody].join(' ')}>
         <Chart
           options={options}
           series={series}
@@ -49,9 +49,13 @@ const DataPieChart = (props) => {
   );
 };
 
+DataPieChart.defaultProps = {
+  graphData: [],
+};
+
 DataPieChart.propTypes = {
   title: PropTypes.string.isRequired,
-  graphData: PropTypes.arrayOf(PropTypes.any).isRequired,
+  graphData: PropTypes.arrayOf(PropTypes.any),
 };
 
 export default DataPieChart;

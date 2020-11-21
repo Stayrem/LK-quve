@@ -12,10 +12,11 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { getSumByArray } from '@utils/functions';
 import dictionary from '@utils/dictionary';
 
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import Skeleton from 'react-loading-skeleton';
 import DataInputListItem from './DataInputListItem';
 import styles from './DataInputList.module.scss';
 import { updateCostsData, updateIncomesData, updateSpendingsData } from '../../store/action-creator';
+import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 
 const DataInputList = (props) => {
   const dispatch = useDispatch();
@@ -163,14 +164,14 @@ const DataInputList = (props) => {
           {title}
         </div>
         <div className={['panel-header-subtitle', dataInputListHeaderDate].join(' ')}>
-          <SkeletonTheme color="#252A48" highlightColor="#222743">
+          <SkeletonContainer>
             { date
               ? moment(date).format('MMMM YYYY')
               : (
                 <Skeleton width={50} height={20} />
               )
             }
-          </SkeletonTheme>
+          </SkeletonContainer>
         </div>
       </div>
       <div className={['panel-body', dataInputListBody].join(' ')}>
@@ -221,19 +222,19 @@ const DataInputList = (props) => {
                 : (
                   <tr>
                     <td>
-                      <SkeletonTheme color="#252A48" highlightColor="#222743">
+                      <SkeletonContainer>
                         <Skeleton width={30} height={20} />
-                      </SkeletonTheme>
+                      </SkeletonContainer>
                     </td>
                     <td>
-                      <SkeletonTheme color="#252A48" highlightColor="#222743">
+                      <SkeletonContainer>
                         <Skeleton width={100} height={20} />
-                      </SkeletonTheme>
+                      </SkeletonContainer>
                     </td>
                     <td>
-                      <SkeletonTheme color="#252A48" highlightColor="#222743">
+                      <SkeletonContainer>
                         <Skeleton width={100} height={20} />
-                      </SkeletonTheme>
+                      </SkeletonContainer>
                     </td>
                   </tr>
                 )}
@@ -244,11 +245,11 @@ const DataInputList = (props) => {
       <div className={['panel-footer', dataInputListFooter].join(' ')}>
         <div className={dataInputListSum}>
           Сумма: &nbsp;
-          <SkeletonTheme color="#252A48" highlightColor="#222743">
+          <SkeletonContainer>
             <span>
               {sum || <Skeleton width={50} height={15} />}
             </span>
-          </SkeletonTheme>
+          </SkeletonContainer>
         </div>
       </div>
     </div>
@@ -256,14 +257,17 @@ const DataInputList = (props) => {
 };
 
 DataInputList.defaultProps = {
+  date: null,
+  sum: null,
+  data: [],
   useStatus: true,
 };
 
 DataInputList.propTypes = {
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   listType: PropTypes.string.isRequired,
-  sum: PropTypes.number.isRequired,
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  sum: PropTypes.number,
+  data: PropTypes.arrayOf(PropTypes.object),
   title: PropTypes.string.isRequired,
   useStatus: PropTypes.bool,
 };

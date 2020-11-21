@@ -44,7 +44,7 @@ const Overview = () => {
   const spendingsTodaySum = useSelector((state) => state.spendings.spendingsTodaySum);
   const spendingsTodayList = useSelector((state) => state.spendings.spendingsTodayList);
   const spendingsPreviousDaysSum = useSelector((state) => state.history.spendingsPreviousDaysSum);
-  const spendingsPreviousDaysList = useSelector((state) => state.history.spendingsPreviousDaysList);
+  const saldoPreviousDaysList = useSelector((state) => state.history.saldoPreviousDaysList);
   const incomesCurrentMonthSum = useSelector((state) => state.incomes.incomesCurrentMonthSum);
   const costsCurrentMonthSum = useSelector((state) => state.costs.costsCurrentMonthSum);
   const savingsCurrentMonthSum = useSelector((state) => state.savings.savingsCurrentMonthSum);
@@ -57,8 +57,11 @@ const Overview = () => {
       if (!spendingsTodaySum || isEmpty(spendingsTodayList)) {
         await dispatch(getSpendingsData());
       }
-      if (!spendingsPreviousDaysSum || isEmpty(spendingsPreviousDaysList)) {
+      if (!spendingsPreviousDaysSum) {
         await dispatch(getHistoryData(dictionary.HISTORY_TYPE_SPENDINGS));
+      }
+      if (isEmpty(saldoPreviousDaysList)) {
+        await dispatch(getHistoryData(dictionary.HISTORY_TYPE_SALDO));
       }
       if (!incomesCurrentMonthSum) {
         await dispatch(getIncomesData());
@@ -85,7 +88,7 @@ const Overview = () => {
 
   useEffect(() => {
     if (profit) {
-      setBudgetToday(getBudgetToday(spendingsPreviousDaysList[spendingsPreviousDaysList.length - 1]
+      setBudgetToday(getBudgetToday(saldoPreviousDaysList[saldoPreviousDaysList.length - 1]
         .value, getBudgetFixed(profit, date)));
       setRestSum(getRestSum(profit, spendingsPreviousDaysSum, spendingsTodaySum));
     }
@@ -151,7 +154,7 @@ const Overview = () => {
             />
           </div>
           <div className="col-lg-6">
-            <Saldo graphData={spendingsPreviousDaysList} />
+            <Saldo graphData={saldoPreviousDaysList} />
           </div>
         </div>
       </PageContainer>

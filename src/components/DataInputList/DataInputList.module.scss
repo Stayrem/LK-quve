@@ -37,7 +37,7 @@
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 11px;
+  font-size: 12px;
 
   thead {
     width: 100%;
@@ -111,9 +111,9 @@
   display: block;
   width: 100%;
   padding: 10px 20px;
-  color: $color-font-darker;
-  font-size: 11px;
-  font-weight: 500;
+  color: $color-font-lighter;
+  font-size: 12px;
+  font-weight: 600;
   background-color: transparent;
   border: none;
   cursor: pointer;

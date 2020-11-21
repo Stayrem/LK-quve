@@ -9,6 +9,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import dictionary from '../../utils/dictionary';
 import { updateSavingsData } from '../../store/action-creator';
 import styles from './SavingsAdjuster.module.scss';
+import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 
 const SavingsAdjuster = (props) => {
   const dispatch = useDispatch();
@@ -87,19 +88,18 @@ const SavingsAdjuster = (props) => {
           Размер сбережений
         </div>
         <div className={['panel-header-subtitle', savingsAdjusterHeaderDate].join(' ')}>
-          <SkeletonTheme color="#252A48" highlightColor="#222743">
-            { date
+          <SkeletonContainer>
+            {date
               ? moment(date).format('MMMM YYYY')
               : (
                 <Skeleton width={50} height={20} />
-              )
-            }
-          </SkeletonTheme>
+              )}
+          </SkeletonContainer>
         </div>
       </div>
       <div className={['panel-body', savingsAdjusterBody].join(' ')}>
-        <SkeletonTheme color="#252A48" highlightColor="#222743">
-          { (!isNil(newSavingsValue) && !isNil(newSavingsPercent))
+        <SkeletonContainer>
+          {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
             ? (
               <div className={savingsAdjusterRange}>
                 <input
@@ -116,11 +116,10 @@ const SavingsAdjuster = (props) => {
               </div>
             ) : (
               <Skeleton />
-            )
-          }
-        </SkeletonTheme>
-        <SkeletonTheme color="#252A48" highlightColor="#222743">
-          { (!isNil(newSavingsValue) && !isNil(newSavingsPercent))
+            )}
+        </SkeletonContainer>
+        <SkeletonContainer>
+          {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
             ? (
               <div>
                 <div className={savingsAdjusterInputsWrapper}>
@@ -163,31 +162,28 @@ const SavingsAdjuster = (props) => {
               <div className="mt-4">
                 <Skeleton height={45} />
               </div>
-            )
-          }
-        </SkeletonTheme>
+            )}
+        </SkeletonContainer>
       </div>
       <div className="panel-footer">
         <div className={savingsAdjusterCalculationsWrapper}>
           <div className={[savingsAdjusterCalculation, 'mb-3'].join(' ')}>
-            <SkeletonTheme color="#252A48" highlightColor="#222743">
-              { (!isNil(newSavingsValue) && !isNil(newSavingsPercent))
+            <SkeletonContainer>
+              {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
                 ? `= ${newSavingsValue} в месяц`
                 : (
                   <Skeleton />
-                )
-              }
-            </SkeletonTheme>
+                )}
+            </SkeletonContainer>
           </div>
           <div className={savingsAdjusterCalculation}>
-            <SkeletonTheme color="#252A48" highlightColor="#222743">
-              { (!isNil(newSavingsValue) && !isNil(newSavingsPercent))
+            <SkeletonContainer>
+              {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
                 ? `= ${newSavingsValue * 12} в год`
                 : (
                   <Skeleton />
-                )
-              }
-            </SkeletonTheme>
+                )}
+            </SkeletonContainer>
           </div>
         </div>
       </div>
@@ -195,10 +191,16 @@ const SavingsAdjuster = (props) => {
   );
 };
 
+SavingsAdjuster.defaultProps = {
+  date: null,
+  incomesCurrentMonthSum: null,
+  savingsCurrentMonthSum: null,
+};
+
 SavingsAdjuster.propTypes = {
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-  incomesCurrentMonthSum: PropTypes.number.isRequired,
-  savingsCurrentMonthSum: PropTypes.number.isRequired,
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  incomesCurrentMonthSum: PropTypes.number,
+  savingsCurrentMonthSum: PropTypes.number,
 };
 
 export default SavingsAdjuster;

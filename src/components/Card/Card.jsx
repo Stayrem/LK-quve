@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Skeleton from 'react-loading-skeleton';
+import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 import styles from './Card.module.scss';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 const Card = (props) => {
   const {
@@ -20,22 +21,28 @@ const Card = (props) => {
 
   return (
     <div className={card}>
-      <div className={cardTitle}>{title}</div>
-      <SkeletonTheme color="#252A48" highlightColor="#222743">
+      <SkeletonContainer>
         <div style={{ color: textColor }} className={cardText}>
           {text || <Skeleton />}
         </div>
+      </SkeletonContainer>
+      <div className={cardTitle}>{title}</div>
+      <SkeletonContainer>
         <div className={cardSubtitle}>
           {subTitle || <Skeleton />}
         </div>
-      </SkeletonTheme>
+      </SkeletonContainer>
     </div>
   );
 };
 
+Card.defaultProps = {
+  text: null,
+};
+
 Card.propTypes = {
   title: PropTypes.string.isRequired,
-  text: PropTypes.number.isRequired,
+  text: PropTypes.number,
   textColor: PropTypes.string.isRequired,
   subTitle: PropTypes.node.isRequired,
 };

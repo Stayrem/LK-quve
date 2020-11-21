@@ -31,7 +31,6 @@ const defaultOptions = {
 
   },
   xaxis: {
-    type: 'category',
     axisBorder: {
       show: false,
     },

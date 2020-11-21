@@ -8,14 +8,9 @@ import moment from 'moment';
 import styles from './DataBarChart.module.scss';
 import defaultOptions from './chart-options';
 
-const createOptions = (labels, series) => {
+const createOptions = (labels) => {
   const options = {
     labels,
-    series: [
-      {
-        data: series,
-      },
-    ],
     ...defaultOptions,
   };
   return options;
@@ -40,13 +35,13 @@ const DataBarChart = (props) => {
   const options = createOptions(labels, series);
 
   return (
-    <div className={dataBarChart}>
-      <div className={dataBarChartHeader}>
-        <div className={dataBarChartTitle}>
+    <div className={['panel', dataBarChart].join(' ')}>
+      <div className={['panel-header', dataBarChartHeader].join(' ')}>
+        <div className={['panel-header-title', dataBarChartTitle].join(' ')}>
           {title}
         </div>
       </div>
-      <div className={dataBarChartBody}>
+      <div className={['panel-body', dataBarChartBody].join(' ')}>
         <Chart
           options={options}
           series={series}
@@ -57,9 +52,13 @@ const DataBarChart = (props) => {
   );
 };
 
+DataBarChart.defaultProps = {
+  graphData: [],
+};
+
 DataBarChart.propTypes = {
   title: PropTypes.string.isRequired,
-  graphData: PropTypes.arrayOf(PropTypes.any).isRequired,
+  graphData: PropTypes.arrayOf(PropTypes.any),
 };
 
 export default DataBarChart;

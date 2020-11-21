@@ -1,14 +1,16 @@
 :global {
   body {
-    font-family: "Montserrat", sans-serif;
     display: flex;
     width: 100%;
     flex-direction: column;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased; /* Chrome, Safari */
     -moz-osx-font-smoothing: grayscale; /* Firefox */
+    font-family: "Gilroy", sans-serif;
+    font-weight: normal;
     background-color: $color-primary-darker;
     color: $color-font;
+    font-size: 12px;
   }
 
   a {
@@ -40,6 +42,7 @@
     border-radius: 5px;
     background-color: $color-primary;
     line-height: 1;
+    @include panel-shadow;
 
     .panel-header {
       padding: 25px 20px 0;
@@ -49,7 +52,7 @@
 
       .panel-header-title {
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
         flex: 0 0 auto;
         margin-bottom: 10px;
       }
@@ -60,6 +63,7 @@
         flex: 0 0 auto;
         text-align: left;
         text-transform: capitalize;
+        color: $color-font-lighter;
       }
     }
 

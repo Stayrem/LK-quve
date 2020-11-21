@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './SavingsSum.module.scss';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 
 const SavingsSum = (props) => {
   const {
@@ -22,18 +23,22 @@ const SavingsSum = (props) => {
         </div>
       </div>
       <div className={['panel-body', savingsSumBody].join(' ')}>
-        <SkeletonTheme color="#252A48" highlightColor="#222743">
+        <SkeletonContainer>
           <span>
             {value || <Skeleton height={20} width={100} />}
           </span>
-        </SkeletonTheme>
+        </SkeletonContainer>
       </div>
     </div>
   );
 };
 
+SavingsSum.defaultProps = {
+  value: null,
+};
+
 SavingsSum.propTypes = {
-  value: PropTypes.number.isRequired,
+  value: PropTypes.number,
 };
 
 export default SavingsSum;

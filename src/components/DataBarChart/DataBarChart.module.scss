@@ -1,60 +1,28 @@
 .dataBarChart {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  border-radius: 5px;
-  color: $color-font;
-  background-color: $color-primary;
-  line-height: 1;
+
 }
 
 .dataBarChartHeader {
-  padding: 25px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+
 }
 
 .dataBarChartTitle {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: normal;
+
 }
 
 .dataBarChartBody {
-  width: 100%;
-  padding: 0 20px 25px;
+
 }
 
 @media (min-width: 768px) {
-  .dataBarChartHeader {
-    padding: 30px 25px;
-    flex-direction: row;
-    align-items: center;
-  }
 
-  .dataBarChartBody {
-    padding: 0 25px 20px;
-  }
 }
 
 @media (min-width: 1280px) {
-  .dataBarChartTitle {
-    font-size: 14px;
-  }
+
 }
 
 @media (min-width: 1700px) {
-  .dataBarChartHeader {
-    padding: 35px 30px;
-  }
 
-  .dataBarChartBody {
-    padding: 0 30px 25px;
-  }
-
-  .dataBarChartTitle {
-    font-size: 16px;
-  }
 }
 

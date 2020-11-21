@@ -66,13 +66,14 @@ const PageHeadline = (props) => {
 };
 
 PageHeadline.defaultProps = {
+  date: null,
   breadcrumbs: [],
 };
 
 PageHeadline.propTypes = {
   breadcrumbs: PropTypes.arrayOf(PropTypes.object),
   title: PropTypes.string.isRequired,
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 export default PageHeadline;
