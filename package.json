@@ -27,6 +27,7 @@
     "axios": "0.21.0",
     "bootstrap-4-grid": "^3.4.0",
     "cross-env": "7.0.2",
+    "formik": "^2.2.6",
     "lodash": "4.17.20",
     "moment": "2.27.0",
     "nanoid": "3.1.12",
