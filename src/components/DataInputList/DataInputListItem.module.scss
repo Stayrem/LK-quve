@@ -1,3 +1,19 @@
 .focused {
-  background-color: $color-very-dark-desaturated-blue;
+  background-color: $color-primary-darkest;
+}
+
+.dataInputListItemBtnDelete {
+  border: none;
+  background-color: $color-primary-darkest;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  color: $color-primary-lighter;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 }

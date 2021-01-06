@@ -1,4 +1,4 @@
-import dictionary from '@utils/dictionary';
+import dictionary from '../utils/dictionary';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
 
@@ -29,6 +29,11 @@ export const fetchSpendingsData = (data) => ({
 
 export const fetchSpendingsHistoryData = (data) => ({
   type: Type.FETCH_SPENDINGS_HISTORY_DATA,
+  payload: data,
+});
+
+export const fetchSaldoHistoryData = (data) => ({
+  type: Type.FETCH_SALDO_HISTORY_DATA,
   payload: data,
 });
 
@@ -115,6 +120,10 @@ export const getHistoryData = (type) => async (dispatch) => {
     case dictionary.HISTORY_TYPE_SPENDINGS:
       url = '/mocks/history/spendings.json';
       dispatchFunction = (data) => fetchSpendingsHistoryData(data);
+      break;
+    case dictionary.HISTORY_TYPE_SALDO:
+      url = '/mocks/history/saldo.json';
+      dispatchFunction = (data) => fetchSaldoHistoryData(data);
       break;
     case dictionary.HISTORY_TYPE_SAVINGS:
       url = '/mocks/history/savings.json';

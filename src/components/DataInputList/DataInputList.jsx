@@ -12,9 +12,11 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { getSumByArray } from '@utils/functions';
 import dictionary from '@utils/dictionary';
 
+import Skeleton from 'react-loading-skeleton';
 import DataInputListItem from './DataInputListItem';
 import styles from './DataInputList.module.scss';
 import { updateCostsData, updateIncomesData, updateSpendingsData } from '../../store/action-creator';
+import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 
 const DataInputList = (props) => {
   const dispatch = useDispatch();
@@ -77,21 +79,24 @@ const DataInputList = (props) => {
   });
 
   const addInputListItemHandler = (() => {
-    const newList = data;
-    newList.push({
-      id: nanoid(MAX_ID_LENGTH),
-      name: '',
-      value: 0,
-      status: true,
-    });
-    const newSum = getSumByArray(newList);
-    updateDataList(
-      {
-        newSum,
-        newList,
-      },
-    );
-    setFocusToItem(data[data.length - 1].id, 'first');
+    const lastItem = data[data.length - 1];
+    if (lastItem.name || lastItem.value) {
+      const newList = data;
+      newList.push({
+        id: nanoid(MAX_ID_LENGTH),
+        name: '',
+        value: '',
+        status: true,
+      });
+      const newSum = getSumByArray(newList);
+      updateDataList(
+        {
+          newSum,
+          newList,
+        },
+      );
+      setFocusToItem(data[data.length - 1].id, 'first');
+    }
   });
 
   const editInputListItemHandler = ((editedItem) => {
@@ -153,16 +158,23 @@ const DataInputList = (props) => {
   }, []);
 
   return (
-    <div className={dataInputList}>
-      <div className={dataInputListHeader}>
-        <div className={dataInputListHeaderTitle}>
+    <div className={['panel', dataInputList].join(' ')}>
+      <div className={['panel-header', dataInputListHeader].join(' ')}>
+        <div className={['panel-header-title', dataInputListHeaderTitle].join(' ')}>
           {title}
         </div>
-        <div className={dataInputListHeaderDate}>
-          {moment(date).format('MMMM YYYY')}
+        <div className={['panel-header-subtitle', dataInputListHeaderDate].join(' ')}>
+          <SkeletonContainer>
+            { date
+              ? moment(date).format('MMMM YYYY')
+              : (
+                <Skeleton width={50} height={20} />
+              )
+            }
+          </SkeletonContainer>
         </div>
       </div>
-      <div className={dataInputListBody}>
+      <div className={['panel-body', dataInputListBody].join(' ')}>
         <div className={dataInputListScroller}>
           <table className={dataInputListTable}>
             <thead>
@@ -177,41 +189,67 @@ const DataInputList = (props) => {
             <tfoot>
               <tr>
                 <td colSpan="5">
-                  <button className={addRowButton} type="button" onClick={() => addInputListItemHandler()}>
-                    <FontAwesomeIcon icon={faPlus} />
-                    &nbsp; Добавить строчку &nbsp;
-                    <sub>↳ Enter</sub>
-                  </button>
+                  {data && (
+                    <button className={addRowButton} type="button" onClick={() => addInputListItemHandler()}>
+                      <FontAwesomeIcon icon={faPlus} />
+                      &nbsp; Добавить строчку &nbsp;
+                      <sub>↳ Enter</sub>
+                    </button>
+                  )}
                 </td>
               </tr>
             </tfoot>
             <tbody ref={tbody}>
-              { data.map((item, i) => (
-                <DataInputListItem
-                  key={item.id}
-                  index={i}
-                  id={item.id}
-                  name={item.name}
-                  value={item.value}
-                  status={item.status}
-                  isFocused={item.id === focusedRowId}
-                  focusedInputType={focusedInputType}
-                  isLast={item.id === data[data.length - 1].id}
-                  useStatus={useStatus}
-                  addInputListItem={addInputListItemHandler}
-                  deleteInputListItem={deleteInputListItemHandler}
-                  editInputListItem={editInputListItemHandler}
-                  setFocusToItem={setFocusToItem}
-                />
-              )) }
+              {data
+                ? data.map((item, i) => (
+                  <DataInputListItem
+                    key={item.id}
+                    index={i}
+                    id={item.id}
+                    name={item.name}
+                    value={item.value}
+                    status={item.status}
+                    isFocused={item.id === focusedRowId}
+                    focusedInputType={focusedInputType}
+                    isLast={item.id === data[data.length - 1].id}
+                    useStatus={useStatus}
+                    addInputListItem={addInputListItemHandler}
+                    deleteInputListItem={deleteInputListItemHandler}
+                    editInputListItem={editInputListItemHandler}
+                    setFocusToItem={setFocusToItem}
+                  />
+                ))
+                : (
+                  <tr>
+                    <td>
+                      <SkeletonContainer>
+                        <Skeleton width={30} height={20} />
+                      </SkeletonContainer>
+                    </td>
+                    <td>
+                      <SkeletonContainer>
+                        <Skeleton width={100} height={20} />
+                      </SkeletonContainer>
+                    </td>
+                    <td>
+                      <SkeletonContainer>
+                        <Skeleton width={100} height={20} />
+                      </SkeletonContainer>
+                    </td>
+                  </tr>
+                )}
             </tbody>
           </table>
         </div>
       </div>
-      <div className={dataInputListFooter}>
+      <div className={['panel-footer', dataInputListFooter].join(' ')}>
         <div className={dataInputListSum}>
-          Сумма:&nbsp;
-          <span>{sum}</span>
+          Сумма: &nbsp;
+          <SkeletonContainer>
+            <span>
+              {sum || <Skeleton width={50} height={15} />}
+            </span>
+          </SkeletonContainer>
         </div>
       </div>
     </div>
@@ -219,14 +257,17 @@ const DataInputList = (props) => {
 };
 
 DataInputList.defaultProps = {
+  date: null,
+  sum: null,
+  data: [],
   useStatus: true,
 };
 
 DataInputList.propTypes = {
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   listType: PropTypes.string.isRequired,
-  sum: PropTypes.number.isRequired,
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  sum: PropTypes.number,
+  data: PropTypes.arrayOf(PropTypes.object),
   title: PropTypes.string.isRequired,
   useStatus: PropTypes.bool,
 };

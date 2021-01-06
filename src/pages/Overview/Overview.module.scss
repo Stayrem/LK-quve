@@ -10,7 +10,7 @@
     height: 100%;
     width: 30px;
     background: #33485d;
-    background: linear-gradient(90deg, rgba(51, 72, 93, 0) 0%, rgb(51 72 93 / 85%) 100%);
+    background: linear-gradient(90deg, transparent 0%, $color-primary-darker 100%);
     z-index: 10;
   }
 }
@@ -20,7 +20,6 @@
   width: 100%;
   overflow: hidden;
   overflow-x: scroll;
-  margin-bottom: 20px;
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
   overflow: -moz-scrollbars-none;
@@ -33,19 +32,6 @@
 .cardWrapper {
   display: flex;
   flex-wrap: nowrap;
-  gap: 20px;
-}
-
-.inner {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-}
-
-.spendings {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
-  padding-top: 35px;
-  padding-bottom: 30px;
 }
 
 @media (min-width: 1280px) {
@@ -58,9 +44,5 @@
     &:after {
       display: none;
     }
-  }
-
-  .cardWrapper {
-    gap: 15px;
   }
 }

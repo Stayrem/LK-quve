@@ -9,7 +9,7 @@ import logo from '../../assets/images/logo.svg';
 const HeaderMobileMenu = (props) => {
   const { menuItems } = props;
   const {
-    menu, title, header, list, link, iconWrapper, nav,
+    menu, header, list, link, iconWrapper, nav,
   } = styles;
   return (
     <div className={menu}>

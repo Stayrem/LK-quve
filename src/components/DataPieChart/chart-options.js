@@ -29,6 +29,9 @@ export const defaultOptions = {
   stroke: {
     width: 0,
   },
+  noData: {
+    text: 'Загрузка данных...',
+  },
   responsive: [
     {
       breakpoint: 425,

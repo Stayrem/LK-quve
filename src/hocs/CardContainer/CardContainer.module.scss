@@ -3,11 +3,10 @@
   max-width: 350px;
   width: 100%;
   border-radius: 6px;
-  color: $color-pure-white;
-  background-color: $color-header-bg;
+  color: $color-font;
+  background-color: $color-primary;
   flex-direction: column;
   padding: 35px 30px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
   margin-right: 15px;
 
   &:last-child {

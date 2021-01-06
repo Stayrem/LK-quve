@@ -22,6 +22,7 @@ const DataInputListItem = (props) => {
   } = props;
   const {
     focused,
+    dataInputListItemBtnDelete,
   } = styles;
 
   const [currentName, setCurrentName] = useState(name);
@@ -65,22 +66,22 @@ const DataInputListItem = (props) => {
   const onKeyUpHandler = (event, isAddingAccepted, isDeletingAccepted) => {
     switch (event.key) {
       case 'Backspace':
-        if (!name && !value && isDeletingAccepted) {
+        if (!currentName && !currentValue && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
           deleteInputListItem(id);
         }
-        if (!value && !isDeletingAccepted) {
+        if (!currentValue && !isDeletingAccepted) {
           event.preventDefault();
           nameInput.current.focus();
         }
-        if (!name && value && isDeletingAccepted) {
+        if (!currentName && currentValue && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
         }
         break;
       case 'Enter':
       case 'Tab':
         event.preventDefault();
-        if (name && value && isAddingAccepted && isLast) {
+        if (currentName && currentValue && isAddingAccepted && isLast) {
           addInputListItem();
         }
         if (!isAddingAccepted) {
@@ -140,7 +141,7 @@ const DataInputListItem = (props) => {
         }
       </td>}
       <td onClick={(event) => setFocusOnRow(event, 'none')}>
-        <button className="btn-delete" type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
+        <button className={dataInputListItemBtnDelete} type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
           <FontAwesomeIcon icon={faTimes} />
         </button>
       </td>

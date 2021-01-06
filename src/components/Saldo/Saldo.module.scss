@@ -1,67 +1,15 @@
-$title-height: 58px;
-$title-height--mob: 41px;
-
 .saldo {
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-  width: 100%;
-  min-height: 350px;
-  background-color: $color-header-bg;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
-  border-radius: 6px;
-  padding: 25px 20px;
-  align-self: flex-start;
-}
 
-.graphWrapper {
-  height: calc(100% - #{$title-height--mob});
-  overflow: hidden;
-}
-
-.title {
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.5;
-  margin-bottom: 20px;
-  color: $color-pure-white;
 }
 
 @media (min-width: 768px) {
-  .saldo {
-    height: 440px;
-    padding: 30px 25px;
-  }
 
-  .title {
-    font-size: 16px;
-    margin-bottom: 33px;
-  }
-
-  .graphWrapper {
-    height: calc(100% - #{$title-height});
-  }
 }
 
 @media (min-width: 1280px) {
-  .saldo {
-    max-width: 555px;
-    height: 440px;
-  }
 
-  .title {
-    margin-bottom: 25px;
-  }
 }
 
 @media (min-width: 1700px) {
-  .saldo {
-    max-width: 664px;
-    height: 450px;
-    padding: 35px 30px;
-  }
 
-  .title {
-    font-size: 18px;
-  }
 }

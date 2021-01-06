@@ -8,6 +8,11 @@ const historyDataReducer = (state = [], action) => {
         spendingsPreviousDaysList: action.payload.spendingsPreviousDaysList,
         spendingsPreviousDaysSum: action.payload.spendingsPreviousDaysSum,
       };
+    case Type.FETCH_SALDO_HISTORY_DATA:
+      return {
+        ...state,
+        saldoPreviousDaysList: action.payload.saldoPreviousDaysList,
+      };
     case Type.FETCH_SAVINGS_HISTORY_DATA:
       return {
         ...state,

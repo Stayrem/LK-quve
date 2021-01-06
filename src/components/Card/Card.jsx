@@ -1,12 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Skeleton from 'react-loading-skeleton';
+import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 import styles from './Card.module.scss';
 
 const Card = (props) => {
-  const { content } = props;
   const {
-    title, text, textColor, subTitle,
-  } = content;
+    title,
+    text,
+    textColor,
+    subTitle,
+  } = props;
+
   const {
     card,
     cardTitle,
@@ -16,20 +21,30 @@ const Card = (props) => {
 
   return (
     <div className={card}>
-      <p className={cardTitle}>{title}</p>
-      <span style={{ color: textColor }} className={cardText}>{text}</span>
-      <div className={cardSubtitle}>{subTitle}</div>
+      <SkeletonContainer>
+        <div style={{ color: textColor }} className={cardText}>
+          {text || <Skeleton />}
+        </div>
+      </SkeletonContainer>
+      <div className={cardTitle}>{title}</div>
+      <SkeletonContainer>
+        <div className={cardSubtitle}>
+          {subTitle || <Skeleton />}
+        </div>
+      </SkeletonContainer>
     </div>
   );
 };
 
+Card.defaultProps = {
+  text: null,
+};
+
 Card.propTypes = {
-  content: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    text: PropTypes.number.isRequired,
-    textColor: PropTypes.string.isRequired,
-    subTitle: PropTypes.node.isRequired,
-  }).isRequired,
+  title: PropTypes.string.isRequired,
+  text: PropTypes.number,
+  textColor: PropTypes.string.isRequired,
+  subTitle: PropTypes.node.isRequired,
 };
 
 export default Card;

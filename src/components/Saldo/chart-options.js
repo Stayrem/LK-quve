@@ -7,13 +7,15 @@ const defaultOptions = {
     toolbar: {
       show: false,
     },
-    foreColor: '#D7DADB',
+    foreColor: '#C6C9DA',
     fontFamily: 'Montserrat, sans-serif',
     width: '100%',
     parentHeightOffset: 0,
+    offsetY: 0,
+    offsetX: 0,
   },
   grid: {
-    borderColor: '#707070',
+    borderColor: '#454C76',
   },
   legend: {
     show: false,
@@ -29,7 +31,6 @@ const defaultOptions = {
 
   },
   xaxis: {
-    type: 'category',
     axisBorder: {
       show: false,
     },
@@ -51,7 +52,7 @@ const defaultOptions = {
       },
     },
   },
-  colors: ['#FFA500'],
+  colors: ['#FAC620'],
   fill: {
     type: 'gradient',
     gradient: {
@@ -74,6 +75,9 @@ const defaultOptions = {
         type: 'none',
       },
     },
+  },
+  noData: {
+    text: 'Загрузка данных...',
   },
   responsive: [
     {

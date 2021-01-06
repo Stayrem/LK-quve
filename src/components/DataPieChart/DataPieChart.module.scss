@@ -1,62 +1,28 @@
 .dataPieChart {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  border-radius: 5px;
-  color: $color-pure-white;
-  background-color: $color-header-bg;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.16);
-  line-height: 1;
+
 }
 
 .dataPieChartHeader {
-  padding: 25px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+
 }
 
 .dataPieChartTitle {
-  font-size: 14px;
-  font-weight: 600;
-  flex: 0 0 1;
-  margin-bottom: 10px;
+
 }
 
 .dataPieChartBody {
-  width: 100%;
-  padding: 0 20px 25px;
+
 }
 
 @media (min-width: 768px) {
-  .dataPieChartHeader {
-    padding: 30px 25px;
-    flex-direction: row;
-    align-items: center;
-  }
 
-  .dataPieChartBody {
-    padding: 0 25px 20px;
-  }
 }
 
 @media (min-width: 1280px) {
-  .dataPieChartTitle {
-    font-size: 14px;
-  }
+
 }
 
 @media (min-width: 1700px) {
-  .dataPieChartHeader {
-    padding: 35px 30px;
-  }
 
-  .dataPieChartBody {
-    padding: 0 30px 25px;
-  }
-
-  .dataPieChartTitle {
-    font-size: 16px;
-  }
 }
 
