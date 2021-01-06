@@ -13,6 +13,12 @@
     font-size: 12px;
   }
 
+  #root {
+    position: relative;
+    padding-bottom: 100px;
+    min-height: 100vh;
+  }
+
   a {
     text-decoration: none;
     color: inherit;
@@ -90,6 +96,82 @@
     &.label-active {
       background-color: $color-accent;
       color: $color-font;
+    }
+  }
+
+  .form {
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .input-wrapper {
+      border-bottom: 2px solid $color-primary-lighter;
+      position: relative;
+      margin-bottom: 5px;
+
+      input {
+        background-color: transparent;
+        font-size: 24px;
+        border: none;
+        color: $color-font;
+        font-weight: bold;
+        width: 100%;
+        min-width: unset;
+        display: block;
+
+        &::placeholder {
+          color: $color-font-placeholder;
+        }
+      }
+    }
+  }
+
+  .btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    opacity: 1;
+    transition: opacity .15s ease-in-out,box-shadow .15s ease-in-out;
+
+    &:not(:disabled):not(.disabled) {
+      cursor: pointer;
+    }
+
+    &:hover {
+      opacity: .9;
+    }
+
+    &.btn-accent {
+      color: #fff;
+      background-color: $color-accent;
+      border-color: $color-accent;
+    }
+
+    &.btn-primary {
+      color: #fff;
+      background-color: $color-secondary;
+      border-color: $color-secondary;
+    }
+
+    &.btn-block {
+      display: block;
+      width: 100%;
+    }
+
+    &.btn-outline {
+      background-color: transparent;
     }
   }
 

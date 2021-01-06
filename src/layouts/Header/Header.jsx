@@ -13,6 +13,7 @@ import profits from './images/profits.svg';
 import savings from './images/savings.svg';
 import HeaderMobileMenu from '../HeaderMobileMenu/HeaderMobileMenu';
 import Container from '../../hocs/PageContainer/PageContainer';
+import { useAuth } from '../../hooks/use-auth';
 
 const menuItems = [
   {
@@ -68,6 +69,8 @@ const Header = () => {
   const [isMenuOpened, toggleMenu] = useState(false);
   const buttonClassname = isMenuOpened ? active : notActive;
   const mobMenuClassname = isMenuOpened ? mobileMenuOpened : '';
+  const auth = useAuth();
+
   return (
     <header className={header}>
       <Container>
@@ -77,7 +80,7 @@ const Header = () => {
               <img src={logo} alt="Логотип" className={headerLogo} />
             </Link>
             <ul className={headerNavList}>
-              {menuItems.map((listItem) => (
+              {auth.user && menuItems.map((listItem) => (
                 <li key={listItem.id} className={item}>
                   <Link to={listItem.url} className={[link, headerItem].join(' ')}>{listItem.title}</Link>
                 </li>
@@ -88,7 +91,13 @@ const Header = () => {
             <img alt="mobile-menu" src={menu} className={headerLogo} />
           </a>
           <div className={exitWrapper}>
-            <a href="/" className={[link, headerItem].join(' ')}>Выход</a>
+            {
+              auth.user ? (
+                <a href="#" className={[link, headerItem].join(' ')} onClick={() => auth.signOut()}>Выход</a>
+              ) : (
+                <Link to="/sign-up" className={[link, headerItem].join(' ')}>Регистрация</Link>
+              )
+            }
           </div>
         </div>
       </Container>

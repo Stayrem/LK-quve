@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import * as moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
 import dictionary from '@utils/dictionary';
 

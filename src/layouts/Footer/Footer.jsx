@@ -13,7 +13,7 @@ const Footer = () => {
       <Container>
         <div className={footerWrapper}>
           <div className={footerItem}>
-            Where is my money? © 2020. Все права защищены.
+            Bankroll © 2021. Все права защищены.
           </div>
           <div className={footerItem}>
             <a href="#">Политика конфиденциальности</a>
