@@ -25,7 +25,7 @@ const SignIn = () => {
   const history = useHistory();
 
   useEffect(() => {
-    document.title = `Регистрация | ${dictionary.APP_NAME}`;
+    document.title = `Вход | ${dictionary.APP_NAME}`;
   }, []);
 
   useEffect(() => {
@@ -52,10 +52,10 @@ const SignIn = () => {
         <div className="row my-5 d-flex flex-column align-items-center">
           <div className="col-md-5">
             <div className="d-flex align-items-end justify-content-between mb-3">
-              <h2 className="m-0">Вход</h2>
-              <span>
+              <h2 className="m-0">Вход в аккаунт</h2>
+              <span className="text-white-50">
                 Нет аккаунта?&nbsp;
-                <Link to="/sign-up">Регистрация</Link>
+                <Link to="/sign-up" className="text-white">Регистрация</Link>
               </span>
             </div>
             <div className="panel">
@@ -91,7 +91,7 @@ const SignIn = () => {
                     </div>
                     {formik.touched.password && formik.errors.password ? <small className="text-warning">{formik.errors.password}</small> : null}
                   </div>
-                  <button type="submit" className="btn btn-accent btn-block btn-outline" disabled={formik.isSubmitting}>Отправить</button>
+                  <button type="submit" className="btn btn-accent btn-block btn-outline" disabled={formik.isSubmitting}>Войти</button>
                 </form>
               </div>
             </div>

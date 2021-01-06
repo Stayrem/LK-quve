@@ -5,6 +5,7 @@ import dictionary from '@utils/dictionary';
 
 import { useFormik } from 'formik';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
+import { toast } from 'react-toastify';
 
 const validate = (values) => {
   const errors = {};
@@ -45,15 +46,15 @@ const SignUp = () => {
       try {
         const response = await fetchData('/api/sign-up', 'POST', values);
         if (response.code === 200) {
-          console.log('Пользователь успешно зарегистрирован!');
+          toast.success('Пользователь успешно зарегистрирован!');
           history.push('/sign-in');
           resetForm();
         }
       } catch (error) {
         if (error.response.status === 422) {
-          console.log('Такой пользователь уже существует!');
+          toast.error('Такой пользователь уже существует!');
         } else {
-          console.log(`Ошибка сервера: ${error.response.status}`);
+          toast.error(`Ошибка сервера: ${error.response.status}`);
         }
       }
     },
@@ -66,9 +67,9 @@ const SignUp = () => {
           <div className="col-md-5">
             <div className="d-flex align-items-end justify-content-between mb-3">
               <h2 className="m-0">Регистрация</h2>
-              <span>
+              <span className="text-white-50">
                 Уже есть аккаунт?&nbsp;
-                <Link to="/sign-in">Войти</Link>
+                <Link to="/sign-in" className="text-white">Войти</Link>
               </span>
             </div>
             <div className="panel">

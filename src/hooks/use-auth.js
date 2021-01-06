@@ -10,7 +10,7 @@ const mainAuth = {
   isAuthenticated: false,
   async signIn(values, callback) {
     try {
-      const response = await fetchData('/api/sign-in', 'POST', values);
+      const response = await fetchData('/mocks/sign-in/post.json', 'POST', values);
       if (response.code === 200) {
         mainAuth.isAuthenticated = true;
         callback(response.token);
