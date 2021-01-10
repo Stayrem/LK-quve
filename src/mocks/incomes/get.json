@@ -1,6 +1,5 @@
 {
-  "incomesCurrentMonthSum": 91700,
-  "incomesCurrentMonthList": [
+  "data": [
     {
       "id": 0,
       "name": "Зарплата",

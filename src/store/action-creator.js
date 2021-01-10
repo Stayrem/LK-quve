@@ -1,5 +1,6 @@
 import moment from 'moment';
 import 'moment/locale/ru';
+import { nanoid } from 'nanoid';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
 
@@ -48,30 +49,26 @@ export const fetchUserInfo = () => async (dispatch) => {
 };
 
 export const fetchIncomes = () => async (dispatch) => {
-  const incomes = await fetchData('/mocks/incomes.json');
+  const incomes = await fetchData('/mocks/incomes/get.json');
   dispatch(setIncomes(incomes.data));
 };
 
 export const fetchCosts = () => async (dispatch) => {
-  const costs = await fetchData('/mocks/costs.json');
+  const costs = await fetchData('/mocks/costs/get.json');
   dispatch(setCosts(costs.data));
 };
 
 export const fetchSpendings = () => async (dispatch) => {
-  const spendings = await fetchData('/mocks/spendings.json');
+  const spendings = await fetchData('/mocks/spendings/get.json');
   dispatch(setMounthSpendings(spendings.data));
 };
 
 export const fetchSavings = () => async (dispatch) => {
-  const savings = await fetchData('/mocks/savings.json');
+  const savings = await fetchData('/mocks/savings/get.json');
   dispatch(setSavings(savings.data));
 };
 
-export const getOverviewData = () => async (dispatch, getState) => {
-  await dispatch(fetchSpendings());
-  await dispatch(fetchIncomes());
-  await dispatch(fetchCosts());
-  await dispatch(fetchSavings());
+const calculateOverviewData = () => async (dispatch, getState) => {
   const {
     savings,
     incomes,
@@ -101,4 +98,36 @@ export const getOverviewData = () => async (dispatch, getState) => {
     selectedDaySpendings,
     moneyRemains,
   }));
+};
+
+export const addSpending = () => (dispatch, getState) => {
+  const { mounthSpendings } = getState();
+  dispatch(setMounthSpendings([...mounthSpendings, { id: nanoid(), name: '', value: 0 }]));
+  dispatch(calculateOverviewData());
+};
+
+export const deleteSpending = (id) => (dispatch, getState) => {
+  const { mounthSpendings } = getState();
+  const newList = mounthSpendings.filter((it) => it.id !== id);
+  dispatch(setMounthSpendings(newList));
+  dispatch(calculateOverviewData());
+};
+
+export const editSpending = (spending) => (dispatch, getState) => {
+  const { mounthSpendings } = getState();
+  dispatch(setMounthSpendings(mounthSpendings.map((it) => {
+    if (it.id === spending.id) {
+      return { ...it, name: spending.name, value: spending.value };
+    }
+    return it;
+  })));
+  dispatch(calculateOverviewData());
+};
+
+export const getOverviewData = () => async (dispatch) => {
+  await dispatch(fetchSpendings());
+  await dispatch(fetchIncomes());
+  await dispatch(fetchCosts());
+  await dispatch(fetchSavings());
+  dispatch(calculateOverviewData());
 };

@@ -1,142 +1,80 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import moment from 'moment';
+import 'moment/locale/ru';
 import { useDispatch, useSelector } from 'react-redux';
-
-import * as moment from 'moment';
-import isEmpty from 'lodash/isEmpty';
-import dictionary from '../../utils/dictionary';
-
-import {
-  getDateData,
-  getCostsData,
-  getIncomesData,
-  getSavingsData,
-  getSpendingsData,
-  getHistoryData,
-} from '../../store/action-creator';
-
+import Card from '../../components/Cart/Card';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
-import Card from '../../components/Card/Card';
-import Saldo from '../../components/Saldo/Saldo';
-import RestSumWidget from '../../components/RestSumWidget/RestSumWidget';
-import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
+import PageTitle from '../../components/PageTitle/PageTitle';
 import DataInputList from '../../components/DataInputList/DataInputList';
-
-import styles from './Overview.module.scss';
-
-const getRoundedValue = (value) => (value < 0
-  ? Math.floor(Math.abs(value) * 100) / -100
-  : Math.floor(Math.abs(value) * 100) / 100);
-const getBudgetFixed = (profit, date) => getRoundedValue(profit / moment(date).daysInMonth());
-const getBudgetToday = (spendingsPreviousDaysSum, fixedBudget) => spendingsPreviousDaysSum + fixedBudget;
-const getRestSum = (profit, spendingsPreviousDaysSum, spendingsTodaySum) => getRoundedValue(
-  profit - spendingsPreviousDaysSum - spendingsTodaySum,
-);
-const getRestPercent = (profit, restSum) => getRoundedValue((restSum / profit) * 100);
+import RestSumWidget from '../../components/RestSumWidget/RestSumWidget';
+import { getOverviewData, addSpending, deleteSpending, editSpending } from '../../store/action-creator';
+import styles from './Overview.scss';
 
 const Overview = () => {
-  const [isDataFetched, setIsDataFetched] = useState(false);
-  const [profit, setProfit] = useState(0);
-  const [budgetToday, setBudgetToday] = useState(0);
-  const [restSum, setRestSum] = useState(0);
-
-  const dispatch = useDispatch();
-  const date = useSelector((state) => state.date);
-  const spendingsTodaySum = useSelector((state) => state.spendings.spendingsTodaySum);
-  const spendingsTodayList = useSelector((state) => state.spendings.spendingsTodayList);
-  const spendingsPreviousDaysSum = useSelector((state) => state.history.spendingsPreviousDaysSum);
-  const saldoPreviousDaysList = useSelector((state) => state.history.saldoPreviousDaysList);
-  const incomesCurrentMonthSum = useSelector((state) => state.incomes.incomesCurrentMonthSum);
-  const costsCurrentMonthSum = useSelector((state) => state.costs.costsCurrentMonthSum);
-  const savingsCurrentMonthSum = useSelector((state) => state.savings.savingsCurrentMonthSum);
-
-  useEffect(() => {
-    (async () => {
-      if (!date) {
-        await dispatch(getDateData());
-      }
-      if (!spendingsTodaySum || isEmpty(spendingsTodayList)) {
-        await dispatch(getSpendingsData());
-      }
-      if (!spendingsPreviousDaysSum) {
-        await dispatch(getHistoryData(dictionary.HISTORY_TYPE_SPENDINGS));
-      }
-      if (isEmpty(saldoPreviousDaysList)) {
-        await dispatch(getHistoryData(dictionary.HISTORY_TYPE_SALDO));
-      }
-      if (!incomesCurrentMonthSum) {
-        await dispatch(getIncomesData());
-      }
-      if (!costsCurrentMonthSum) {
-        await dispatch(getCostsData());
-      }
-      if (!savingsCurrentMonthSum) {
-        await dispatch(getSavingsData());
-      }
-      setIsDataFetched(true);
-    })();
-  }, []);
-
-  useEffect(() => {
-    document.title = `Сводка | ${dictionary.APP_NAME}`;
-  }, []);
-
-  useEffect(() => {
-    if (isDataFetched) {
-      setProfit(incomesCurrentMonthSum - costsCurrentMonthSum - savingsCurrentMonthSum);
-    }
-  }, [isDataFetched]);
-
-  useEffect(() => {
-    if (profit) {
-      setBudgetToday(getBudgetToday(saldoPreviousDaysList[saldoPreviousDaysList.length - 1]
-        .value, getBudgetFixed(profit, date)));
-      setRestSum(getRestSum(profit, spendingsPreviousDaysSum, spendingsTodaySum));
-    }
-  }, [profit]);
-
   const {
     cardElippser, cardScroller, cardWrapper,
   } = styles;
+  const dispatch = useDispatch();
+  const date = useSelector((state) => state.date);
+  const mounthSpendingsSum = useSelector((state) => state.mounthSpendingsSum);
+  const daySpendings = useSelector((state) => state.selectedDaySpendings);
+  const moneyRemains = useSelector((state) => state.moneyRemains);
+  const currentSavingSum = useSelector((state) => state.currentSavingSum);
+  const incomesSum = useSelector((state) => state.incomesSum);
+  const isIncomesFethed = useSelector((state) => state.isIncomesFethed);
+  const isCostsFetched = useSelector((state) => state.isCostsFetched);
+  const isSpendingsFetched = useSelector((state) => state.isSpendingsFetched);
+  const isSavingsFetched = useSelector((state) => state.isSavingsFetched);
+  const isDataFethed = [isIncomesFethed, isCostsFetched, isSpendingsFetched, isSavingsFetched]
+    .every((isDataTypeFethed) => isDataTypeFethed === true);
+  const isCartsDataReady = [mounthSpendingsSum, moneyRemains, currentSavingSum]
+    .every((data) => data !== null);
+
+  const getCartState = () => ([
+    {
+      title: 'Траты за сегодня',
+      text: mounthSpendingsSum,
+      subTitle: `Осталось: ${moneyRemains}`,
+      textColor: mounthSpendingsSum > 0 ? '#7DC900' : '#FC4349',
+    },
+    {
+      title: 'Бюджет на день',
+      text: moneyRemains / moment().daysInMonth(),
+      subTitle: `На ${moment().format('D MMMM YYYY')}`,
+      textColor: moneyRemains / moment().daysInMonth() > 0 ? '#7DC900' : '#FC4349',
+    },
+    {
+      title: 'Сбережения',
+      text: currentSavingSum,
+      subTitle: `В ${moment().format('MMMM')}`,
+      textColor: '#ffffff',
+    },
+    {
+      title: 'Остаток до конца месяца',
+      text: moneyRemains,
+      textColor: moneyRemains > 0 ? '#7DC900' : '#FC4349',
+      subTitle: (
+        <RestSumWidget restPercent={(mounthSpendingsSum * 100) / moneyRemains} />
+      ),
+    },
+  ]);
+
+  useEffect(() => {
+    dispatch(getOverviewData());
+  }, []);
   return (
-    <main className="main">
-      <PageHeadline title="Сводка" date={date} />
+    isDataFethed && isCartsDataReady && (
+    <>
       <PageContainer>
+        <PageTitle title="Сводка" />
+      </PageContainer>
+      <div className="container">
         <div className="row">
           <div className="col mb-3">
             <div className={cardElippser}>
               <div className={cardScroller}>
                 <div className={cardWrapper}>
-                  <Card
-                    title="Траты за сегодня"
-                    text={spendingsTodaySum}
-                    textColor={(budgetToday - spendingsTodaySum) > 0 ? '#48E260' : '#F45050'}
-                    subTitle={`Осталось: ${getRoundedValue(budgetToday - spendingsTodaySum)}`}
-                  />
-                  <Card
-                    title="Бюджет на день"
-                    text={budgetToday}
-                    textColor={budgetToday > 0 ? '#48E260' : '#F45050'}
-                    subTitle={moment(date).format('DD MMMM YYYY')}
-                  />
-                  <Card
-                    title="Сбережения"
-                    text={savingsCurrentMonthSum}
-                    textColor="#ffffff"
-                    subTitle={`на ${moment(date).format('MMMM')}`}
-                  />
-                  <Card
-                    title="Остаток до конца месяца"
-                    text={restSum}
-                    textColor="#ffffff"
-                    subTitle={(
-                      <RestSumWidget
-                        restPercent={getRestPercent(profit, restSum) > 0
-                          ? getRestPercent(profit, restSum)
-                          : 0
-                        }
-                      />
-                    )}
-                  />
+                  {getCartState().map((cart) => <Card key={cart.title} {...cart} />)}
                 </div>
               </div>
             </div>
@@ -145,20 +83,23 @@ const Overview = () => {
         <div className="row">
           <div className="col-lg-6 mb-3 mb-lg-0">
             <DataInputList
-              date={date}
-              listType={dictionary.DATA_LIST_TYPE_SPENDINGS}
-              sum={spendingsTodaySum}
-              data={spendingsTodayList}
+              date={date * 1000}
+              sum={mounthSpendingsSum}
+              data={daySpendings}
               title="Список трат за сегодня"
               useStatus={false}
+              onAdd={() => dispatch(addSpending())}
+              onDelete={(id) => dispatch(deleteSpending(id))}
+              onEdit={(spending) => dispatch(editSpending(spending))}
             />
           </div>
-          <div className="col-lg-6">
-            <Saldo graphData={saldoPreviousDaysList} />
-          </div>
         </div>
+      </div>
+      <PageContainer>
+        <main />
       </PageContainer>
-    </main>
+    </>
+    )
   );
 };
 

@@ -1,6 +1,5 @@
 {
-  "costsCurrentMonthSum": 42689,
-  "costsCurrentMonthList": [
+  "data": [
     {
       "id": 0,
       "name": "Аренда квартиры",

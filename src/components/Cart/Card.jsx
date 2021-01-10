@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Skeleton from 'react-loading-skeleton';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
-import styles from './Card.module.scss';
+import styles from './Card.scss';
 
 const Card = (props) => {
   const {
@@ -23,7 +23,7 @@ const Card = (props) => {
     <div className={card}>
       <SkeletonContainer>
         <div style={{ color: textColor }} className={cardText}>
-          {text || <Skeleton />}
+          {Math.floor(text) || <Skeleton />}
         </div>
       </SkeletonContainer>
       <div className={cardTitle}>{title}</div>

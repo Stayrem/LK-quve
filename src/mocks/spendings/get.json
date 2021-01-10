@@ -1,6 +1,5 @@
 {
-  "spendingsTodaySum": 400,
-  "spendingsTodayList": [
+  "data": [
     {
       "id": 0,
       "name": "Аптека",

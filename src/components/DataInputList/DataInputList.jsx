@@ -9,13 +9,9 @@ import { MAX_ID_LENGTH } from '@utils/constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-import { getSumByArray } from '@utils/functions';
-import dictionary from '@utils/dictionary';
-
 import Skeleton from 'react-loading-skeleton';
 import DataInputListItem from './DataInputListItem';
 import styles from './DataInputList.module.scss';
-import { updateCostsData, updateIncomesData, updateSpendingsData } from '../../store/action-creator';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 
 const DataInputList = (props) => {
@@ -23,11 +19,13 @@ const DataInputList = (props) => {
 
   const {
     date,
-    listType,
     sum,
     data,
     title,
     useStatus,
+    onAdd,
+    onDelete,
+    onEdit,
   } = props;
 
   const {
@@ -42,23 +40,6 @@ const DataInputList = (props) => {
     dataInputListSum,
     addRowButton,
   } = styles;
-
-  const updateDataList = (newData) => {
-    switch (listType) {
-      case dictionary.DATA_LIST_TYPE_INCOMES:
-        dispatch(updateIncomesData(newData));
-        break;
-      case dictionary.DATA_LIST_TYPE_COSTS:
-        dispatch(updateCostsData(newData));
-        break;
-      case dictionary.DATA_LIST_TYPE_SPENDINGS:
-        dispatch(updateSpendingsData(newData));
-        break;
-      default:
-        break;
-    }
-  };
-
   const [focusedRowId, setFocusedRowId] = useState(null);
   const [focusedInputType, setFocusedInputType] = useState(null);
   const tbody = useRef(null);
@@ -76,72 +57,6 @@ const DataInputList = (props) => {
     }
     setFocusedRowId(id);
     setFocusedInputType(inputType);
-  });
-
-  const addInputListItemHandler = (() => {
-    const lastItem = data[data.length - 1];
-    if (lastItem.name || lastItem.value) {
-      const newList = data;
-      newList.push({
-        id: nanoid(MAX_ID_LENGTH),
-        name: '',
-        value: '',
-        status: true,
-      });
-      const newSum = getSumByArray(newList);
-      updateDataList(
-        {
-          newSum,
-          newList,
-        },
-      );
-      setFocusToItem(data[data.length - 1].id, 'first');
-    }
-  });
-
-  const editInputListItemHandler = ((editedItem) => {
-    const newList = data;
-    const indexOfEditedItem = newList.findIndex((item) => item.id === editedItem.id);
-
-    newList[indexOfEditedItem] = editedItem;
-    const newSum = getSumByArray(newList);
-    updateDataList(
-      {
-        newSum,
-        newList,
-      },
-    );
-  });
-
-  const deleteInputListItemHandler = ((id) => {
-    const currentIndex = data.findIndex((item) => item.id === id);
-    const prevIndex = currentIndex - 1;
-    const mutableItem = data[currentIndex];
-    const newList = data.filter((item) => item.id !== id);
-
-    if (data.length > 1) {
-      const newSum = getSumByArray(newList);
-      updateDataList(
-        {
-          newSum,
-          newList,
-        },
-      );
-      if (currentIndex !== 0) {
-        setFocusToItem(data[prevIndex].id, 'last');
-      } else {
-        setFocusToItem(data[currentIndex].id, 'last');
-      }
-    } else {
-      const editedItem = {
-        id: mutableItem.id,
-        name: '',
-        value: '',
-        status: true,
-      };
-      editInputListItemHandler(editedItem);
-      setFocusToItem(editedItem.id, 'first');
-    }
   });
 
   const outerAreaClick = ((event) => {
@@ -169,8 +84,7 @@ const DataInputList = (props) => {
               ? moment(date).format('MMMM YYYY')
               : (
                 <Skeleton width={50} height={20} />
-              )
-            }
+              )}
           </SkeletonContainer>
         </div>
       </div>
@@ -190,7 +104,7 @@ const DataInputList = (props) => {
               <tr>
                 <td colSpan="5">
                   {data && (
-                    <button className={addRowButton} type="button" onClick={() => addInputListItemHandler()}>
+                    <button className={addRowButton} type="button" onClick={onAdd}>
                       <FontAwesomeIcon icon={faPlus} />
                       &nbsp; Добавить строчку &nbsp;
                       <sub>↳ Enter</sub>
@@ -200,44 +114,24 @@ const DataInputList = (props) => {
               </tr>
             </tfoot>
             <tbody ref={tbody}>
-              {data
-                ? data.map((item, i) => (
-                  <DataInputListItem
-                    key={item.id}
-                    index={i}
-                    id={item.id}
-                    name={item.name}
-                    value={item.value}
-                    status={item.status}
-                    isFocused={item.id === focusedRowId}
-                    focusedInputType={focusedInputType}
-                    isLast={item.id === data[data.length - 1].id}
-                    useStatus={useStatus}
-                    addInputListItem={addInputListItemHandler}
-                    deleteInputListItem={deleteInputListItemHandler}
-                    editInputListItem={editInputListItemHandler}
-                    setFocusToItem={setFocusToItem}
-                  />
-                ))
-                : (
-                  <tr>
-                    <td>
-                      <SkeletonContainer>
-                        <Skeleton width={30} height={20} />
-                      </SkeletonContainer>
-                    </td>
-                    <td>
-                      <SkeletonContainer>
-                        <Skeleton width={100} height={20} />
-                      </SkeletonContainer>
-                    </td>
-                    <td>
-                      <SkeletonContainer>
-                        <Skeleton width={100} height={20} />
-                      </SkeletonContainer>
-                    </td>
-                  </tr>
-                )}
+              {data.map((item, i) => (
+                <DataInputListItem
+                  key={item.id}
+                  index={i}
+                  id={item.id}
+                  name={item.name}
+                  value={item.value}
+                  status={item.status}
+                  isFocused={item.id === focusedRowId}
+                  focusedInputType={focusedInputType}
+                  isLast={item.id === data[data.length - 1].id}
+                  useStatus={useStatus}
+                  addInputListItem={onAdd}
+                  deleteInputListItem={onDelete}
+                  editInputListItem={onEdit}
+                  setFocusToItem={setFocusToItem}
+                />
+              ))}
             </tbody>
           </table>
         </div>
@@ -264,8 +158,7 @@ DataInputList.defaultProps = {
 };
 
 DataInputList.propTypes = {
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  listType: PropTypes.string.isRequired,
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
   sum: PropTypes.number,
   data: PropTypes.arrayOf(PropTypes.object),
   title: PropTypes.string.isRequired,
