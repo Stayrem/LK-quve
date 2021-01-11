@@ -1,17 +1,22 @@
-import moment from 'moment';
-import 'moment/locale/ru';
 import { nanoid } from 'nanoid';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
+
+const calculateSum = (list) => list.reduce((acc, current) => {
+  if (current.status) {
+    return acc + current.value;
+  }
+  return acc + 0;
+}, 0);
 
 export const setUserInfo = (data) => ({
   type: Type.SET_USER_INFO,
   payload: data,
 });
 
-export const setIncomes = (data) => ({
+export const setIncomes = (obj) => ({
   type: Type.SET_INCOMES_DATA,
-  payload: data,
+  payload: obj,
 });
 
 export const setCosts = (data) => ({
@@ -50,12 +55,14 @@ export const fetchUserInfo = () => async (dispatch) => {
 
 export const fetchIncomes = () => async (dispatch) => {
   const incomes = await fetchData('/mocks/incomes/get.json');
-  dispatch(setIncomes(incomes.data));
+  const incomesSum = calculateSum(incomes.data);
+  dispatch(setIncomes({ incomes: incomes.data, incomesSum }));
 };
 
 export const fetchCosts = () => async (dispatch) => {
   const costs = await fetchData('/mocks/costs/get.json');
-  dispatch(setCosts(costs.data));
+  const costsSum = calculateSum(costs.data);
+  dispatch(setCosts({ costs: costs.data, costsSum }));
 };
 
 export const fetchSpendings = () => async (dispatch) => {
@@ -73,11 +80,11 @@ const calculateOverviewData = () => async (dispatch, getState) => {
     savings,
     incomes,
     mounthSpendings,
+    incomesSum,
     date,
   } = getState();
   const currentSavingSum = (savings[savings.length - 1]
     .percent * incomes.reduce((acc, current) => acc + current.value, 0)) / 100;
-  const incomesSum = incomes.reduce((acc, current) => acc + current.value, 0);
   const mounthSpendingsSum = mounthSpendings.reduce((acc, current) => acc + current.value, 0);
   /*
     const selectedDaySpendings = mounthSpendings.filter((item) => {
@@ -122,6 +129,72 @@ export const editSpending = (spending) => (dispatch, getState) => {
     return it;
   })));
   dispatch(calculateOverviewData());
+};
+
+export const addIncome = () => (dispatch, getState) => {
+  const { incomes } = getState();
+  const newIncomesList = [...incomes, {
+    id: nanoid(), name: '', value: 0, status: true,
+  }];
+  const incomesSum = calculateSum(newIncomesList);
+  dispatch(setIncomes({ incomes: newIncomesList, incomesSum }));
+};
+
+export const deleteIncome = (id) => (dispatch, getState) => {
+  const { incomes } = getState();
+  const newIncomesList = incomes.filter((it) => it.id !== id);
+  const incomesSum = calculateSum(newIncomesList);
+  dispatch(setIncomes({ incomes: newIncomesList, incomesSum }));
+};
+
+export const editIncome = (incomeItem) => (dispatch, getState) => {
+  const { incomes } = getState();
+  const newIncomesList = incomes.map((it) => {
+    if (it.id === incomeItem.id) {
+      return {
+        ...it,
+        name: incomeItem.name,
+        value: incomeItem.value,
+        status: incomeItem.status,
+      };
+    }
+    return it;
+  });
+  const incomesSum = calculateSum(newIncomesList);
+  dispatch(setIncomes({ incomes: newIncomesList, incomesSum }));
+};
+
+export const addCost = () => (dispatch, getState) => {
+  const { costs } = getState();
+  const newCostsList = [...costs, {
+    id: nanoid(), name: '', value: 0, status: true,
+  }];
+  const costsSum = calculateSum(newCostsList);
+  dispatch(setCosts({ costs: newCostsList, costsSum }));
+};
+
+export const deleteCost = (id) => (dispatch, getState) => {
+  const { costs } = getState();
+  const newCostsList = costs.filter((it) => it.id !== id);
+  const costsSum = calculateSum(newCostsList);
+  dispatch(setCosts({ costs: newCostsList, costsSum }));
+};
+
+export const editCost = (costItem) => (dispatch, getState) => {
+  const { costs } = getState();
+  const newCostsList = costs.map((it) => {
+    if (it.id === costItem.id) {
+      return {
+        ...it,
+        name: costItem.name,
+        value: costItem.value,
+        status: costItem.status,
+      };
+    }
+    return it;
+  });
+  const costsSum = calculateSum(newCostsList);
+  dispatch(setIncomes({ costs: newCostsList, costsSum }));
 };
 
 export const getOverviewData = () => async (dispatch) => {

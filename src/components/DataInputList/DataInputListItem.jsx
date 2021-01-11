@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -124,7 +126,10 @@ const DataInputListItem = (props) => {
           type="number"
           placeholder="Размер..."
           defaultValue={value}
-          onChange={(event) => editSpending({ ...spending, value: parseInt(event.target.value, 10) })}
+          onChange={(event) => editSpending({
+            ...spending,
+            value: parseInt(event.target.value, 10),
+          })}
           onKeyDown={(event) => onKeyUpHandler(event, true, false)}
           onClick={(event) => setFocusOnRow(event, 'none')}
         />
@@ -132,8 +137,8 @@ const DataInputListItem = (props) => {
       {useStatus && (
       <td onClick={(event) => setFocusOnRow(event, 'last')}>
         { status
-          ? <span role="button" onClick={() => setstatus(!status)} className="label label-active">Учитывать</span>
-          : <span role="button" onClick={() => setstatus(!status)} className="label">Не учитывать</span>}
+          ? <button type="button" onClick={() => editSpending({ ...spending, status: !status })} className="label label-active s_button">Не Учитывать</button>
+          : <button type="button" onClick={() => editSpending({ ...spending, status: !status })} className="label s_button">Учитывать</button>}
       </td>
       )}
       <td onClick={(event) => setFocusOnRow(event, 'none')}>

@@ -1,11 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-import { nanoid } from 'nanoid';
-import { MAX_ID_LENGTH } from '@utils/constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -15,8 +12,6 @@ import styles from './DataInputList.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 
 const DataInputList = (props) => {
-  const dispatch = useDispatch();
-
   const {
     date,
     sum,
@@ -163,6 +158,9 @@ DataInputList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
   title: PropTypes.string.isRequired,
   useStatus: PropTypes.bool,
+  onAdd: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 };
 
 export default DataInputList;

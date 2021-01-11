@@ -45,13 +45,13 @@ const reducer = (state = initialState, action) => {
     case Type.SET_INCOMES_DATA:
       return {
         ...state,
-        incomes: payload,
+        ...payload,
         isIncomesFethed: true,
       };
     case Type.SET_COSTS_DATA:
       return {
         ...state,
-        costs: payload,
+        ...payload,
         isCostsFetched: true,
       };
     case Type.SET_SAVINGS:

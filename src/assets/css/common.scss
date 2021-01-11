@@ -92,6 +92,7 @@
     transition: background-color 0.2s ease-in-out;
     cursor: pointer;
     white-space: nowrap;
+    border: none;
 
     &.label-active {
       background-color: $color-accent;
