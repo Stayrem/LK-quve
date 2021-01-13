@@ -13,6 +13,7 @@ import {
   addIncome,
   deleteIncome,
   editIncome,
+  resetStore,
 } from '../../store/action-creator';
 
 const Incomes = () => {
@@ -24,6 +25,7 @@ const Incomes = () => {
   useEffect(() => {
     dispatch(fetchIncomes());
     document.title = `Доходы | ${dictionary.APP_NAME}`;
+    return () => dispatch(resetStore());
   }, []);
 
   const breadcrumbs = [

@@ -14,6 +14,7 @@ const initialState = {
   daySpendings: [],
   isSpendingsFetched: false,
   savings: [],
+  savingsSelectedMounth: 0,
   isSavingsFetched: false,
   currentSavingSum: null,
   incomesSum: null,
@@ -57,7 +58,7 @@ const reducer = (state = initialState, action) => {
     case Type.SET_SAVINGS:
       return {
         ...state,
-        savings: payload,
+        ...payload,
         isSavingsFetched: true,
       };
     case Type.SET_DAILY_BUDJET:
@@ -80,4 +81,10 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-export default reducer;
+const wrappedReducer = (state, action) => {
+  if (action.type === Type.RESET_STORE) {
+    return reducer(undefined, action);
+  }
+  return reducer(state, action);
+};
+export default wrappedReducer;

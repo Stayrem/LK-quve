@@ -3,12 +3,12 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Card from '../../components/Cart/Card';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
-import PageTitle from '../../components/PageTitle/PageTitle';
+import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 import DataInputList from '../../components/DataInputList/DataInputList';
 import RestSumWidget from '../../components/RestSumWidget/RestSumWidget';
 import Saldo from '../../components/Saldo/Saldo';
 import {
-  getOverviewData, addSpending, deleteSpending, editSpending,
+  getOverviewData, addSpending, deleteSpending, editSpending, resetStore,
 } from '../../store/action-creator';
 import createCards from '../../utils/create-cards';
 import styles from './Overview.scss';
@@ -37,12 +37,13 @@ const Overview = () => {
 
   useEffect(() => {
     dispatch(getOverviewData());
+    return () => dispatch(resetStore());
   }, []);
   return (
     isDataFethed && isCartsDataReady && (
     <>
       <PageContainer>
-        <PageTitle title="Сводка" />
+        <PageHeadline title="Сводка" date={date * 1000} />
       </PageContainer>
       <div className="container">
         <div className="row">

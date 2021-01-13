@@ -1,4 +1,6 @@
 import { nanoid } from 'nanoid';
+import moment from 'moment';
+import 'moment/locale/ru';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
 
@@ -12,6 +14,10 @@ const calculateSum = (list) => list.reduce((acc, current) => {
 export const setUserInfo = (data) => ({
   type: Type.SET_USER_INFO,
   payload: data,
+});
+
+export const resetStore = () => ({
+  type: Type.RESET_STORE,
 });
 
 export const setIncomes = (obj) => ({
@@ -70,9 +76,34 @@ export const fetchSpendings = () => async (dispatch) => {
   dispatch(setMounthSpendings(spendings.data));
 };
 
-export const fetchSavings = () => async (dispatch) => {
+export const fetchSavings = () => async (dispatch, getState) => {
+  const { date } = getState();
   const savings = await fetchData('/mocks/savings/get.json');
-  dispatch(setSavings(savings.data));
+  const savingsSelectedMounth = savings.data.find((item) => {
+    const selectedMounth = moment(date * 1000).format('YYYY-MM');
+    const storedMounth = moment(item.date * 1000).format('YYYY-MM');
+    return selectedMounth === storedMounth;
+  });
+  dispatch(setSavings({ savings: savings.data, savingsSelectedMounth }));
+};
+
+export const updateSavingsData = (data) => (dispatch, getState) => {
+  const { savings, date } = getState();
+  const targetDate = data.date;
+  const updatedSavings = savings.map((item) => {
+    const selectedMounth = moment(targetDate * 1000).format('YYYY-MM');
+    const storedMounth = moment(item.date * 1000).format('YYYY-MM');
+    if (selectedMounth === storedMounth) {
+      return data;
+    }
+    return item;
+  });
+  const savingsSelectedMounth = updatedSavings.find((item) => {
+    const selectedMounth = moment(date * 1000).format('YYYY-MM');
+    const storedMounth = moment(item.date * 1000).format('YYYY-MM');
+    return selectedMounth === storedMounth;
+  });
+  dispatch(setSavings({ savings: updatedSavings, savingsSelectedMounth }));
 };
 
 const calculateOverviewData = () => async (dispatch, getState) => {
@@ -81,13 +112,13 @@ const calculateOverviewData = () => async (dispatch, getState) => {
     incomes,
     mounthSpendings,
     incomesSum,
-    date,
+  //  date,
   } = getState();
   const currentSavingSum = (savings[savings.length - 1]
     .percent * incomes.reduce((acc, current) => acc + current.value, 0)) / 100;
   const mounthSpendingsSum = mounthSpendings.reduce((acc, current) => acc + current.value, 0);
   /*
-    const selectedDaySpendings = mounthSpendings.filter((item) => {
+    const selectedDaySpendings = mounthSpendings.find((item) => {
     const selectedDay = moment(date * 1000).format('YYYY-MM-DD');
     const storedDay = moment(item.date * 1000).format('YYYY-MM-DD');
     return selectedDay === storedDay;
@@ -109,7 +140,7 @@ const calculateOverviewData = () => async (dispatch, getState) => {
 
 export const addSpending = () => (dispatch, getState) => {
   const { mounthSpendings } = getState();
-  dispatch(setMounthSpendings([...mounthSpendings, { id: nanoid(), name: '', value: 0 }]));
+  dispatch(setMounthSpendings([...mounthSpendings, { id: nanoid(), name: '', value: null }]));
   dispatch(calculateOverviewData());
 };
 

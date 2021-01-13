@@ -14,6 +14,7 @@ import {
   addCost,
   deleteCost,
   editCost,
+  resetStore,
 } from '../../store/action-creator';
 
 const Costs = () => {
@@ -25,6 +26,7 @@ const Costs = () => {
   useEffect(() => {
     dispatch(fetchCosts());
     document.title = `Постоянные расходы | ${dictionary.APP_NAME}`;
+    return () => dispatch(resetStore());
   }, []);
 
   const breadcrumbs = [
