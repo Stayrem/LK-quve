@@ -1,7 +1,10 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import useDebounce from '../../hooks/use-debounce';
 import styles from './DataInputListItem.module.scss';
 
 const DataInputListItem = (props) => {
@@ -25,28 +28,22 @@ const DataInputListItem = (props) => {
     dataInputListItemBtnDelete,
   } = styles;
 
-  const [currentName, setCurrentName] = useState(name);
-  const [currentValue, setCurrentValue] = useState(value);
-  const [currentStatus, setCurrentStatus] = useState(status);
+  const isMountRef = useRef(true);
 
+  const [spending, editSpending] = useState({
+    id, name, value, status,
+  });
   const nameInput = useRef();
   const valueInput = useRef();
 
+  const editedSpending = useDebounce(spending, 1000);
   useEffect(() => {
-    setCurrentName(name);
-    setCurrentValue(value);
-    setCurrentStatus(status);
-  }, [name, value, status]);
-
-  useEffect(() => {
-    const editedItem = {
-      id,
-      name: currentName,
-      value: currentValue,
-      status: currentStatus,
-    };
-    editInputListItem(editedItem);
-  }, [currentName, currentValue, currentStatus]);
+    if (!isMountRef.current) {
+      editInputListItem(editedSpending);
+    } else {
+      isMountRef.current = false;
+    }
+  }, [editedSpending]);
 
   useEffect(() => {
     if (isFocused) {
@@ -66,22 +63,22 @@ const DataInputListItem = (props) => {
   const onKeyUpHandler = (event, isAddingAccepted, isDeletingAccepted) => {
     switch (event.key) {
       case 'Backspace':
-        if (!currentName && !currentValue && isDeletingAccepted) {
+        if (!spending.name && !spending.value && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
           deleteInputListItem(id);
         }
-        if (!currentValue && !isDeletingAccepted) {
+        if (!spending.value && !isDeletingAccepted) {
           event.preventDefault();
           nameInput.current.focus();
         }
-        if (!currentName && currentValue && isDeletingAccepted) {
+        if (!spending.name && spending.value && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
         }
         break;
       case 'Enter':
       case 'Tab':
         event.preventDefault();
-        if (currentName && currentValue && isAddingAccepted && isLast) {
+        if (spending.name && spending.value && isAddingAccepted && isLast) {
           addInputListItem();
         }
         if (!isAddingAccepted) {
@@ -114,7 +111,7 @@ const DataInputListItem = (props) => {
           type="text"
           placeholder="Название..."
           defaultValue={name}
-          onChange={(event) => setCurrentName(event.target.value)}
+          onChange={(event) => editSpending({ ...spending, name: event.target.value })}
           onKeyDown={(event) => onKeyUpHandler(event, false, true)}
           onClick={(event) => setFocusOnRow(event, 'none')}
         />
@@ -122,24 +119,28 @@ const DataInputListItem = (props) => {
       <td
         className="py-0"
         onClick={(event) => setFocusOnRow(event, 'last')}
-        style={{ textDecoration: currentStatus ? 'unset' : 'line-through' }}
+        style={{ textDecoration: status ? 'unset' : 'line-through' }}
       >
         <input
           ref={valueInput}
           type="number"
           placeholder="Размер..."
           defaultValue={value}
-          onChange={(event) => setCurrentValue(event.target.value)}
+          onChange={(event) => editSpending({
+            ...spending,
+            value: parseInt(event.target.value, 10),
+          })}
           onKeyDown={(event) => onKeyUpHandler(event, true, false)}
           onClick={(event) => setFocusOnRow(event, 'none')}
         />
       </td>
-      {useStatus && <td onClick={(event) => setFocusOnRow(event, 'last')}>
-        { currentStatus
-          ? <span role="button" onClick={() => setCurrentStatus(!currentStatus)} className="label label-active">Учитывать</span>
-          : <span role="button" onClick={() => setCurrentStatus(!currentStatus)} className="label">Не учитывать</span>
-        }
-      </td>}
+      {useStatus && (
+      <td onClick={(event) => setFocusOnRow(event, 'last')}>
+        { status
+          ? <button type="button" onClick={() => editSpending({ ...spending, status: !status })} className="label label-active s_button">Не Учитывать</button>
+          : <button type="button" onClick={() => editSpending({ ...spending, status: !status })} className="label s_button">Учитывать</button>}
+      </td>
+      )}
       <td onClick={(event) => setFocusOnRow(event, 'none')}>
         <button className={dataInputListItemBtnDelete} type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
           <FontAwesomeIcon icon={faTimes} />

@@ -1,0 +1,21 @@
+{
+	"spendingsPreviousDaysSum": 16020,
+	"spendingsPreviousDaysList": [
+		{"date": 1593561601, "value": 1267},
+		{"date": 1593648001, "value": 1568},
+		{"date": 1593734401, "value": 834},
+		{"date": 1593648001, "value": 2651},
+		{"date": 1593648001, "value": 0},
+		{"date": 1593648001, "value": 952},
+		{"date": 1593648001, "value": 2140},
+		{"date": 1593648001, "value": 897},
+		{"date": 1593648001, "value": 1368},
+		{"date": 1593648001, "value": 1020},
+		{"date": 1593648001, "value": 1616},
+		{"date": 1593648001, "value": 630},
+		{"date": 1593648001, "value": 323},
+		{"date": 1594684801, "value": 754}
+	]
+}
+
+

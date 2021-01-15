@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import isEmpty from 'lodash/isEmpty';
 import dictionary from '@utils/dictionary';
 
 import PageContainer from '../../hocs/PageContainer/PageContainer';
@@ -11,40 +9,26 @@ import DataBarChart from '../../components/DataBarChart/DataBarChart';
 import SavingsAdjuster from '../../components/SavingsAdjuster/SavingsAdjuster';
 import SavingsSum from '../../components/SavingsSum/SavingsSum';
 import {
-  getDateData,
-  getIncomesData,
-  getSavingsData,
-  getHistoryData,
+  fetchSavings,
+  fetchIncomes,
+  resetStore,
 } from '../../store/action-creator';
 
 const Savings = () => {
-
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
-  const savingsCurrentMonthSum = useSelector((state) => state.savings.savingsCurrentMonthSum);
-  const savingsCurrentYearSum = useSelector((state) => state.history.savingsCurrentYearSum);
-  const savingsCurrentYearList = useSelector((state) => state.history.savingsCurrentYearList);
-  const incomesCurrentMonthSum = useSelector((state) => state.incomes.incomesCurrentMonthSum);
+
+  const savingsCurrentYearList = useSelector((state) => state.savings);
+  const incomesCurrentMonthSum = useSelector((state) => state.incomesSum);
+  const savingsCurrentMonth = useSelector((state) => state.savingsSelectedMounth);
+  const savingsCurrentYearSum = savingsCurrentYearList
+    .reduce((acc, curr) => acc + curr.value, 0);
 
   useEffect(() => {
-    (async () => {
-      if (!date) {
-        await dispatch(getDateData());
-      }
-      if (!savingsCurrentMonthSum) {
-        await dispatch(getSavingsData());
-      }
-      if (!savingsCurrentYearSum || isEmpty(savingsCurrentYearList)) {
-        await dispatch(getHistoryData(dictionary.HISTORY_TYPE_SAVINGS));
-      }
-      if (!incomesCurrentMonthSum) {
-        await dispatch(getIncomesData());
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
+    dispatch(fetchSavings());
+    dispatch(fetchIncomes());
     document.title = `Сбережения | ${dictionary.APP_NAME}`;
+    return () => dispatch(resetStore());
   }, []);
 
   const breadcrumbs = [
@@ -56,7 +40,7 @@ const Savings = () => {
 
   return (
     <main className="main">
-      <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date} />
+      <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date * 1000} />
       <PageContainer>
         <div className="row">
           <div className="col">
@@ -65,7 +49,11 @@ const Savings = () => {
         </div>
         <div className="row">
           <div className="col-lg-5 mb-3 mb-lg-0">
-            <SavingsAdjuster date={date} incomesCurrentMonthSum={incomesCurrentMonthSum} savingsCurrentMonthSum={savingsCurrentMonthSum} />
+            <SavingsAdjuster
+              date={date}
+              incomesCurrentMonthSum={incomesCurrentMonthSum}
+              savingsCurrentMonthSum={savingsCurrentMonth.value}
+            />
             <SavingsSum value={savingsCurrentYearSum} />
           </div>
           <div className="col-lg-7">

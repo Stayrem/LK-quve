@@ -5,7 +5,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import rootReducer from './store/root-reducer';
+import rootReducer from './store/reducer';
 import './assets/css/vendor.scss';
 import './css-utils/fonts.scss';
 import './assets/css/common.scss';

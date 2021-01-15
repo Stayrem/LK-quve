@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import moment from 'moment';
 import isNil from 'lodash/isNil';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import Skeleton from 'react-loading-skeleton';
 
 import dictionary from '../../utils/dictionary';
 import { updateSavingsData } from '../../store/action-creator';
@@ -69,7 +69,7 @@ const SavingsAdjuster = (props) => {
 
   useEffect(() => {
     if (isNewSavingsValueChanged) {
-      dispatch(updateSavingsData(newSavingsValue));
+      dispatch(updateSavingsData({ date, value: newSavingsValue, percent: newSavingsPercent }));
       setIsNewSavingsValueChanged(false);
     }
   }, [isNewSavingsValueChanged]);
@@ -90,7 +90,7 @@ const SavingsAdjuster = (props) => {
         <div className={['panel-header-subtitle', savingsAdjusterHeaderDate].join(' ')}>
           <SkeletonContainer>
             {date
-              ? moment(date).format('MMMM YYYY')
+              ? moment(date * 1000).format('MMMM YYYY')
               : (
                 <Skeleton width={50} height={20} />
               )}
@@ -132,7 +132,8 @@ const SavingsAdjuster = (props) => {
                       ref={newSavingsPercentInput}
                       defaultValue={newSavingsPercent}
                       onChange={() => onSavingsChange(
-                        dictionary.SAVINGS_INPUT_TYPE_PERCENTS, newSavingsPercentInput.current.value,
+                        dictionary
+                          .SAVINGS_INPUT_TYPE_PERCENTS, newSavingsPercentInput.current.value,
                       )}
                     />
                   </div>
@@ -198,7 +199,7 @@ SavingsAdjuster.defaultProps = {
 };
 
 SavingsAdjuster.propTypes = {
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
   incomesCurrentMonthSum: PropTypes.number,
   savingsCurrentMonthSum: PropTypes.number,
 };
