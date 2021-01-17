@@ -4,6 +4,7 @@ import Type from './action-types';
 
 const initialState = {
   info: {},
+  fetchError: false,
   date: moment().unix(),
   isInfoFetched: false,
   incomes: [],
@@ -31,6 +32,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         info: payload,
         isInfoFetched: true,
+      };
+    case Type.SET_IS_FETCH_FAILED:
+      return {
+        ...state,
+        fetchError: payload,
       };
     case Type.SET_MOUNTH_SPENDINGS_DATA:
       return {

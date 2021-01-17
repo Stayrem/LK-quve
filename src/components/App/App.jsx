@@ -6,17 +6,13 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import routes from './routes';
 import Header from '../../layouts/Header/Header';
 import Footer from '../../layouts/Footer/Footer';
-import Overview from '../../pages/Overview/Overview';
-import Incomes from '../../pages/Incomes/Incomes';
-import Costs from '../../pages/Costs/Costs';
 import styles from './App.module.scss';
-import Savings from '../../pages/Savings/Savings';
-import SignUp from '../../pages/SignUp/SignUp';
 import { ProvideAuth } from '../../hooks/use-auth';
-import SignIn from '../../pages/SignIn/SignIn';
 import PrivateRoute from '../PrivateRoute/PrivateRoute';
+import routesDict from '../../utils/routesDict';
 
 const App = () => {
   const { wrapper } = styles;
@@ -27,26 +23,22 @@ const App = () => {
           <Header />
         </div>
         <Switch>
-          <Route exact path="/sign-in">
-            <SignIn />
-          </Route>
-          <Route path="/sign-up">
-            <SignUp />
-          </Route>
-          <PrivateRoute path="/overview">
-            <Overview />
-          </PrivateRoute>
-          <PrivateRoute path="/incomes">
-            <Incomes />
-          </PrivateRoute>
-          <PrivateRoute path="/costs">
-            <Costs />
-          </PrivateRoute>
-          <PrivateRoute path="/savings">
-            <Savings />
-          </PrivateRoute>
-          <PrivateRoute path="/">
-            <Redirect to="/overview" />
+          {routes.map((route) => {
+            if (route.isProtected) {
+              return (
+                <PrivateRoute path={route.path} key={route.path}>
+                  <route.component />
+                </PrivateRoute>
+              );
+            }
+            return (
+              <Route path={route.path} key={route.path}>
+                <route.component />
+              </Route>
+            );
+          })}
+          <PrivateRoute path={routesDict.ROOT}>
+            <Redirect to={routesDict.OVERVIEW} />
           </PrivateRoute>
         </Switch>
         <Footer />

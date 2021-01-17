@@ -50,19 +50,28 @@ export const setDate = (epoch) => ({
   payload: epoch,
 });
 
+export const setIsFetchFailed = (bool) => ({
+  type: Type.SET_IS_FETCH_FAILED,
+  payload: bool,
+});
+
 export const fetchUserInfo = () => async (dispatch) => {
   try {
     const userInfo = await fetchData('/mocks/info.json');
     dispatch(setUserInfo(userInfo.data));
   } catch (err) {
-    console.log(err);
+    dispatch(setIsFetchFailed(err.isAxiosError));
   }
 };
 
 export const fetchIncomes = () => async (dispatch) => {
-  const incomes = await fetchData('/mocks/incomes/get.json');
-  const incomesSum = calculateSum(incomes.data);
-  dispatch(setIncomes({ incomes: incomes.data, incomesSum }));
+  try {
+    const incomes = await fetchData('/mocks/incomes/get.json');
+    const incomesSum = calculateSum(incomes.data);
+    dispatch(setIncomes({ incomes: incomes.data, incomesSum }));
+  } catch (err) {
+    dispatch(setIsFetchFailed(err.isAxiosError));
+  }
 };
 
 export const fetchCosts = () => async (dispatch) => {
@@ -72,19 +81,27 @@ export const fetchCosts = () => async (dispatch) => {
 };
 
 export const fetchSpendings = () => async (dispatch) => {
-  const spendings = await fetchData('/mocks/spendings/get.json');
-  dispatch(setMounthSpendings(spendings.data));
+  try {
+    const spendings = await fetchData('/mocks/spendings/get.json');
+    dispatch(setMounthSpendings(spendings.data));
+  } catch (err) {
+    dispatch(setIsFetchFailed(err.isAxiosError));
+  }
 };
 
 export const fetchSavings = () => async (dispatch, getState) => {
   const { date } = getState();
-  const savings = await fetchData('/mocks/savings/get.json');
-  const savingsSelectedMounth = savings.data.find((item) => {
-    const selectedMounth = moment(date * 1000).format('YYYY-MM');
-    const storedMounth = moment(item.date * 1000).format('YYYY-MM');
-    return selectedMounth === storedMounth;
-  });
-  dispatch(setSavings({ savings: savings.data, savingsSelectedMounth }));
+  try {
+    const savings = await fetchData('/mocks/savings/get.json');
+    const savingsSelectedMounth = savings.data.find((item) => {
+      const selectedMounth = moment(date * 1000).format('YYYY-MM');
+      const storedMounth = moment(item.date * 1000).format('YYYY-MM');
+      return selectedMounth === storedMounth;
+    });
+    dispatch(setSavings({ savings: savings.data, savingsSelectedMounth }));
+  } catch (err) {
+    dispatch(setIsFetchFailed(err.isAxiosError));
+  }
 };
 
 export const updateSavingsData = (data) => (dispatch, getState) => {

@@ -7,6 +7,7 @@ import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 import DataInputList from '../../components/DataInputList/DataInputList';
 import RestSumWidget from '../../components/RestSumWidget/RestSumWidget';
 import Saldo from '../../components/Saldo/Saldo';
+import ErrorPage from '../ErrorPage/ErrorPage';
 import {
   getOverviewData, addSpending, deleteSpending, editSpending, resetStore,
 } from '../../store/action-creator';
@@ -19,6 +20,7 @@ const Overview = () => {
   } = styles;
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
+  const isFetchFailed = useSelector((state) => state.fetchError);
   const mounthSpendingsSum = useSelector((state) => state.mounthSpendingsSum);
   const daySpendings = useSelector((state) => state.selectedDaySpendings);
   const moneyRemains = useSelector((state) => state.moneyRemains);
@@ -40,46 +42,54 @@ const Overview = () => {
     return () => dispatch(resetStore());
   }, []);
   return (
-    isDataFethed && isCartsDataReady && (
-    <>
-      <PageContainer>
-        <PageHeadline title="Сводка" date={date * 1000} />
-      </PageContainer>
-      <div className="container">
-        <div className="row">
-          <div className="col mb-3">
-            <div className={cardElippser}>
-              <div className={cardScroller}>
-                <div className={cardWrapper}>
-                  {getCardsState.map((cart) => <Card key={cart.title} {...cart} />)}
+    (() => {
+      if (isFetchFailed) {
+        return <ErrorPage code={500} message="Ошибка" />;
+      }
+      if (isDataFethed && isCartsDataReady) {
+        return (
+          <>
+            <PageContainer>
+              <PageHeadline title="Сводка" date={date * 1000} />
+            </PageContainer>
+            <div className="container">
+              <div className="row">
+                <div className="col mb-3">
+                  <div className={cardElippser}>
+                    <div className={cardScroller}>
+                      <div className={cardWrapper}>
+                        {getCardsState.map((cart) => <Card key={cart.title} {...cart} />)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-6 mb-3 mb-lg-0">
+                  <DataInputList
+                    date={date * 1000}
+                    sum={mounthSpendingsSum}
+                    data={daySpendings}
+                    title="Список трат за сегодня"
+                    useStatus={false}
+                    onAdd={() => dispatch(addSpending())}
+                    onDelete={(id) => dispatch(deleteSpending(id))}
+                    onEdit={(spending) => dispatch(editSpending(spending))}
+                  />
+                </div>
+                <div className="col-lg-6 mb-3 mb-lg-0">
+                  <Saldo />
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-6 mb-3 mb-lg-0">
-            <DataInputList
-              date={date * 1000}
-              sum={mounthSpendingsSum}
-              data={daySpendings}
-              title="Список трат за сегодня"
-              useStatus={false}
-              onAdd={() => dispatch(addSpending())}
-              onDelete={(id) => dispatch(deleteSpending(id))}
-              onEdit={(spending) => dispatch(editSpending(spending))}
-            />
-          </div>
-          <div className="col-lg-6 mb-3 mb-lg-0">
-            <Saldo />
-          </div>
-        </div>
-      </div>
-      <PageContainer>
-        <main />
-      </PageContainer>
-    </>
-    )
+            <PageContainer>
+              <main />
+            </PageContainer>
+          </>
+        );
+      }
+      return null;
+    })()
   );
 };
 
