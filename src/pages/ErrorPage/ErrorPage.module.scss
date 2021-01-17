@@ -1,0 +1,42 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.statusCode {
+  font-size: 24px;
+  font-weight: 600;
+  color: $color-secondary;
+  margin-bottom: 10px;
+}
+
+.messageText {
+  margin-bottom: 15px;
+}
+
+.link {
+  background-color: $color-secondary;
+  padding: 10px 30px;
+  border-radius: 5px;
+}
+
+@media (min-width: 768px) {
+  .statusCode {
+    font-size: 36px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .statusCode {
+    font-size: 38px;
+  }
+}
+
+@media (min-width: 1700px) {
+  .statusCode {
+    font-size: 52px;
+  }
+}

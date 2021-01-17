@@ -7,6 +7,7 @@ import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 import PageText from '../../components/PageText/PageText';
 import DataInputList from '../../components/DataInputList/DataInputList';
 import DataPieChart from '../../components/DataPieChart/DataPieChart';
+import ErrorPage from '../ErrorPage/ErrorPage';
 
 import {
   fetchIncomes,
@@ -18,6 +19,7 @@ import {
 
 const Incomes = () => {
   const dispatch = useDispatch();
+  const isFetchFailed = useSelector((state) => state.fetchError);
   const date = useSelector((state) => state.date);
   const incomesCurrentMonthSum = useSelector((state) => state.incomesSum);
   const incomesCurrentMonthList = useSelector((state) => state.incomes);
@@ -36,28 +38,35 @@ const Incomes = () => {
   ];
 
   return (
-    <main className="main">
-      <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date * 1000} />
-      <PageContainer>
-        <PageText text="Введите все Ваши источники дохода за месяц." />
-        <div className="row">
-          <div className="col-lg-8 mb-3 mb-lg-0">
-            <DataInputList
-              title="Добавленные доходы"
-              date={date * 1000}
-              sum={incomesCurrentMonthSum}
-              data={incomesCurrentMonthList}
-              onAdd={() => dispatch(addIncome())}
-              onDelete={(id) => dispatch(deleteIncome(id))}
-              onEdit={(incomeItem) => dispatch(editIncome(incomeItem))}
-            />
-          </div>
-          <div className="col-lg-4">
-            <DataPieChart title="Структура постоянных доходов" graphData={incomesCurrentMonthList} />
-          </div>
-        </div>
-      </PageContainer>
-    </main>
+    (() => {
+      if (isFetchFailed) {
+        return <ErrorPage code={500} message="Ошибка" />;
+      }
+      return (
+        <main className="main">
+          <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date * 1000} />
+          <PageContainer>
+            <PageText text="Введите все Ваши источники дохода за месяц." />
+            <div className="row">
+              <div className="col-lg-8 mb-3 mb-lg-0">
+                <DataInputList
+                  title="Добавленные доходы"
+                  date={date * 1000}
+                  sum={incomesCurrentMonthSum}
+                  data={incomesCurrentMonthList}
+                  onAdd={() => dispatch(addIncome())}
+                  onDelete={(id) => dispatch(deleteIncome(id))}
+                  onEdit={(incomeItem) => dispatch(editIncome(incomeItem))}
+                />
+              </div>
+              <div className="col-lg-4">
+                <DataPieChart title="Структура постоянных доходов" graphData={incomesCurrentMonthList} />
+              </div>
+            </div>
+          </PageContainer>
+        </main>
+      );
+    })()
   );
 };
 

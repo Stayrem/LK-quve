@@ -8,6 +8,7 @@ import PageText from '../../components/PageText/PageText';
 import DataBarChart from '../../components/DataBarChart/DataBarChart';
 import SavingsAdjuster from '../../components/SavingsAdjuster/SavingsAdjuster';
 import SavingsSum from '../../components/SavingsSum/SavingsSum';
+import ErrorPage from '../ErrorPage/ErrorPage';
 import {
   fetchSavings,
   fetchIncomes,
@@ -17,7 +18,7 @@ import {
 const Savings = () => {
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
-
+  const isFetchFailed = useSelector((state) => state.fetchError);
   const savingsCurrentYearList = useSelector((state) => state.savings);
   const incomesCurrentMonthSum = useSelector((state) => state.incomesSum);
   const savingsCurrentMonth = useSelector((state) => state.savingsSelectedMounth);
@@ -39,29 +40,36 @@ const Savings = () => {
   ];
 
   return (
-    <main className="main">
-      <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date * 1000} />
-      <PageContainer>
-        <div className="row">
-          <div className="col">
-            <PageText text="Вы можете указать величину желаемых сбережений за месяц. На основе данной величины будет рассчитана итоговая сумма, которую можно потратить за день." />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-5 mb-3 mb-lg-0">
-            <SavingsAdjuster
-              date={date}
-              incomesCurrentMonthSum={incomesCurrentMonthSum}
-              savingsCurrentMonthSum={savingsCurrentMonth.value}
-            />
-            <SavingsSum value={savingsCurrentYearSum} />
-          </div>
-          <div className="col-lg-7">
-            <DataBarChart title="Динамика сбережений по месяцам" graphData={savingsCurrentYearList} />
-          </div>
-        </div>
-      </PageContainer>
-    </main>
+    (() => {
+      if (isFetchFailed) {
+        return <ErrorPage code={500} message="Ошибка" />;
+      }
+      return (
+        <main className="main">
+          <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date * 1000} />
+          <PageContainer>
+            <div className="row">
+              <div className="col">
+                <PageText text="Вы можете указать величину желаемых сбережений за месяц. На основе данной величины будет рассчитана итоговая сумма, которую можно потратить за день." />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-5 mb-3 mb-lg-0">
+                <SavingsAdjuster
+                  date={date}
+                  incomesCurrentMonthSum={incomesCurrentMonthSum}
+                  savingsCurrentMonthSum={savingsCurrentMonth.value}
+                />
+                <SavingsSum value={savingsCurrentYearSum} />
+              </div>
+              <div className="col-lg-7">
+                <DataBarChart title="Динамика сбережений по месяцам" graphData={savingsCurrentYearList} />
+              </div>
+            </div>
+          </PageContainer>
+        </main>
+      );
+    })()
   );
 };
 
