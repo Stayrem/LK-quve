@@ -28,7 +28,7 @@ const Savings = () => {
   useEffect(() => {
     dispatch(fetchSavings());
     dispatch(fetchIncomes());
-    document.title = `Сбережения | ${dictionary.APP_NAME}`;
+    document.title = `Сбережения — ${dictionary.APP_NAME}`;
     return () => dispatch(resetStore());
   }, []);
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import Skeleton from 'react-loading-skeleton';
 import styles from './PageTitle.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 

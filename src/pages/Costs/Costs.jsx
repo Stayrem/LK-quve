@@ -27,7 +27,7 @@ const Costs = () => {
 
   useEffect(() => {
     dispatch(fetchCosts());
-    document.title = `Постоянные расходы | ${dictionary.APP_NAME}`;
+    document.title = `Постоянные расходы — ${dictionary.APP_NAME}`;
     return () => dispatch(resetStore());
   }, []);
 

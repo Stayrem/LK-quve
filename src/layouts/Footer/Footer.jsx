@@ -1,4 +1,5 @@
 import * as React from 'react';
+import dictionary from '@utils/dictionary';
 import styles from './Footer.module.scss';
 import Container from '../../hocs/PageContainer/PageContainer';
 
@@ -13,7 +14,7 @@ const Footer = () => {
       <Container>
         <div className={footerWrapper}>
           <div className={footerItem}>
-            Bankroll © 2021. Все права защищены.
+            {`${dictionary.APP_NAME} © 2021. Все права защищены.`}
           </div>
           <div className={footerItem}>
             <a href="#">Политика конфиденциальности</a>

@@ -25,7 +25,7 @@ const SignIn = () => {
   const history = useHistory();
 
   useEffect(() => {
-    document.title = `Вход | ${dictionary.APP_NAME}`;
+    document.title = `Вход — ${dictionary.APP_NAME}`;
   }, []);
 
   useEffect(() => {
