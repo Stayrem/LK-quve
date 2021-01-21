@@ -29,10 +29,9 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
+# Compiled packages
+build/
 dist/
-
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
 
 # Dependency directories
 node_modules/
@@ -61,3 +60,6 @@ typings/
 
 # dotenv environment variables file
 .env
+
+# Other
+**/.DS_Store

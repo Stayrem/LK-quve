@@ -32,7 +32,7 @@ const SignUp = () => {
   const history = useHistory();
 
   useEffect(() => {
-    document.title = `Регистрация | ${dictionary.APP_NAME}`;
+    document.title = `Регистрация — ${dictionary.APP_NAME}`;
   }, []);
 
   const formik = useFormik({

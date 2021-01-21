@@ -13,6 +13,7 @@ import {
 } from '../../store/action-creator';
 import createCards from '../../utils/create-cards';
 import styles from './Overview.scss';
+import dictionary from '@utils/dictionary';
 
 const Overview = () => {
   const {
@@ -39,6 +40,7 @@ const Overview = () => {
 
   useEffect(() => {
     dispatch(getOverviewData());
+    document.title = `Сводка — ${dictionary.APP_NAME}`;
     return () => dispatch(resetStore());
   }, []);
   return (

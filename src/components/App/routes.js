@@ -38,7 +38,6 @@ export default [
     component: SignIn,
     isProtected: false,
   },
-
   {
     path: routerDict.NOT_FOUND,
     component: ErrorPage,
