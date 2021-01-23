@@ -14,6 +14,7 @@ import {
 import createCards from '../../utils/create-cards';
 import styles from './Overview.scss';
 import dictionary from '@utils/dictionary';
+import Tooltip from '../../components/Tooltip/Tooltip';
 
 const Overview = () => {
   const {
@@ -22,7 +23,7 @@ const Overview = () => {
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
   const isFetchFailed = useSelector((state) => state.fetchError);
-  const mounthSpendingsSum = useSelector((state) => state.mounthSpendingsSum);
+  const monthSpendingsSum = useSelector((state) => state.monthSpendingsSum);
   const daySpendings = useSelector((state) => state.selectedDaySpendings);
   const moneyRemains = useSelector((state) => state.moneyRemains);
   const currentSavingSum = useSelector((state) => state.currentSavingSum);
@@ -32,10 +33,10 @@ const Overview = () => {
   const isSavingsFetched = useSelector((state) => state.isSavingsFetched);
   const isDataFethed = [isIncomesFethed, isCostsFetched, isSpendingsFetched, isSavingsFetched]
     .every((isDataTypeFethed) => isDataTypeFethed === true);
-  const isCartsDataReady = [mounthSpendingsSum, moneyRemains, currentSavingSum]
+  const isCartsDataReady = [monthSpendingsSum, moneyRemains, currentSavingSum]
     .every((data) => data !== null);
 
-  const getCardsState = createCards(mounthSpendingsSum,
+  const getCardsState = createCards(monthSpendingsSum,
     moneyRemains, currentSavingSum, RestSumWidget);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ const Overview = () => {
             </PageContainer>
             <div className="container">
               <div className="row">
-                <div className="col mb-3">
+                <div className="col mb-3 mb-md-4">
                   <div className={cardElippser}>
                     <div className={cardScroller}>
                       <div className={cardWrapper}>
@@ -69,10 +70,15 @@ const Overview = () => {
               <div className="row">
                 <div className="col-lg-6 mb-3 mb-lg-0">
                   <DataInputList
-                    date={date * 1000}
-                    sum={mounthSpendingsSum}
+                    sum={monthSpendingsSum}
                     data={daySpendings}
                     title="Список трат за сегодня"
+                    subtitle={(
+                      <Tooltip
+                        text="Сюда необходимо вводить траты за день. Можно вводить сразу всю сумму, потраченную за день."
+                        id="spendings"
+                      />
+                    )}
                     useStatus={false}
                     onAdd={() => dispatch(addSpending())}
                     onDelete={(id) => dispatch(deleteSpending(id))}

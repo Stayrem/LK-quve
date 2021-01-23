@@ -46,6 +46,7 @@
   .card {
     padding: 30px 25px;
     flex: 0 0 390px;
+    margin-right: 30px;
   }
 
   .cardTitle {
@@ -66,7 +67,7 @@
 @media (min-width: 1280px) {
   .card {
     flex: 1;
-    margin-right: 20px;
+    margin-right: 30px;
 
     &:last-child {
       margin-right: 0;

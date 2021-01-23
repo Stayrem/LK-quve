@@ -10,6 +10,7 @@ import dictionary from '../../utils/dictionary';
 import { updateSavingsData } from '../../store/action-creator';
 import styles from './SavingsAdjuster.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
+import { getFormatedNumber } from '@utils/functions';
 
 const SavingsAdjuster = (props) => {
   const dispatch = useDispatch();
@@ -154,9 +155,14 @@ const SavingsAdjuster = (props) => {
                   </div>
                 </div>
                 <div className={[savingsAdjusterInputsLabel, 'mt-2'].join(' ')}>
-                  От дохода
-                  <span>{` ${incomesCurrentMonthSum} `}</span>
-                  в месяц
+                  От дохода&nbsp;
+                  <span>
+                    {!isNil(incomesCurrentMonthSum)
+                      ? `${getFormatedNumber(incomesCurrentMonthSum)}`
+                      : <Skeleton />
+                    }
+                  </span>
+                  &nbsp;в месяц
                 </div>
               </div>
             ) : (
@@ -171,7 +177,7 @@ const SavingsAdjuster = (props) => {
           <div className={[savingsAdjusterCalculation, 'mb-3'].join(' ')}>
             <SkeletonContainer>
               {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
-                ? `= ${newSavingsValue} в месяц`
+                ? `= ${getFormatedNumber(newSavingsValue)} в месяц`
                 : (
                   <Skeleton />
                 )}
@@ -180,7 +186,7 @@ const SavingsAdjuster = (props) => {
           <div className={savingsAdjusterCalculation}>
             <SkeletonContainer>
               {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
-                ? `= ${newSavingsValue * 12} в год`
+                ? `= ${getFormatedNumber(newSavingsValue * 12)} в год`
                 : (
                   <Skeleton />
                 )}
