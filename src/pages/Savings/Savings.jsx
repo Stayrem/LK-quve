@@ -21,7 +21,7 @@ const Savings = () => {
   const isFetchFailed = useSelector((state) => state.fetchError);
   const savingsCurrentYearList = useSelector((state) => state.savings);
   const incomesCurrentMonthSum = useSelector((state) => state.incomesSum);
-  const savingsCurrentMonth = useSelector((state) => state.savingsSelectedMounth);
+  const savingsCurrentMonth = useSelector((state) => state.savingsSelectedMonth);
   const savingsCurrentYearSum = savingsCurrentYearList
     .reduce((acc, curr) => acc + curr.value, 0);
 

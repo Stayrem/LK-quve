@@ -3,12 +3,12 @@ import moment from 'moment';
 import 'moment/locale/ru';
 import Tooltip from '../components/Tooltip/Tooltip';
 
-export default (mounthSpendingsSum, moneyRemains, currentSavingSum, Component) => ([
+export default (monthSpendingsSum, moneyRemains, currentSavingSum, Component) => ([
   {
     title: 'Траты за сегодня',
-    text: mounthSpendingsSum,
+    text: monthSpendingsSum,
     subTitle: `Осталось: ${moneyRemains}`,
-    textColor: mounthSpendingsSum > 0 ? '#7DC900' : '#FC4349',
+    textColor: monthSpendingsSum > 0 ? '#7DC900' : '#FC4349',
     tooltip: <Tooltip
       id="card-spendings"
       text="Сумма, потраченная за текущий день и остаток денег, которые можно сегодня комфортно потратить."
@@ -39,7 +39,7 @@ export default (mounthSpendingsSum, moneyRemains, currentSavingSum, Component) =
     text: moneyRemains,
     textColor: moneyRemains > 0 ? '#7DC900' : '#FC4349',
     subTitle: (
-      <Component restPercent={(mounthSpendingsSum * 100) / moneyRemains} />
+      <Component restPercent={(monthSpendingsSum * 100) / moneyRemains} />
     ),
   },
 ]);

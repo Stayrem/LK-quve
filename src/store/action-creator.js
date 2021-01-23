@@ -30,7 +30,7 @@ export const setCosts = (data) => ({
   payload: data,
 });
 
-export const setMounthSpendings = (data) => ({
+export const setMonthSpendings = (data) => ({
   type: Type.SET_MOUNTH_SPENDINGS_DATA,
   payload: data,
 });
@@ -83,7 +83,7 @@ export const fetchCosts = () => async (dispatch) => {
 export const fetchSpendings = () => async (dispatch) => {
   try {
     const spendings = await fetchData('/mocks/spendings/get.json');
-    dispatch(setMounthSpendings(spendings.data));
+    dispatch(setMonthSpendings(spendings.data));
   } catch (err) {
     dispatch(setIsFetchFailed(err.isAxiosError));
   }
@@ -93,12 +93,12 @@ export const fetchSavings = () => async (dispatch, getState) => {
   const { date } = getState();
   try {
     const savings = await fetchData('/mocks/savings/get.json');
-    const savingsSelectedMounth = savings.data.find((item) => {
-      const selectedMounth = moment(date * 1000).format('YYYY-MM');
-      const storedMounth = moment(item.date * 1000).format('YYYY-MM');
-      return selectedMounth === storedMounth;
+    const savingsSelectedMonth = savings.data.find((item) => {
+      const selectedMonth = moment(date * 1000).format('YYYY-MM');
+      const storedMonth = moment(item.date * 1000).format('YYYY-MM');
+      return selectedMonth === storedMonth;
     });
-    dispatch(setSavings({ savings: savings.data, savingsSelectedMounth }));
+    dispatch(setSavings({ savings: savings.data, savingsSelectedMonth }));
   } catch (err) {
     dispatch(setIsFetchFailed(err.isAxiosError));
   }
@@ -108,47 +108,47 @@ export const updateSavingsData = (data) => (dispatch, getState) => {
   const { savings, date } = getState();
   const targetDate = data.date;
   const updatedSavings = savings.map((item) => {
-    const selectedMounth = moment(targetDate * 1000).format('YYYY-MM');
-    const storedMounth = moment(item.date * 1000).format('YYYY-MM');
-    if (selectedMounth === storedMounth) {
+    const selectedMonth = moment(targetDate * 1000).format('YYYY-MM');
+    const storedMonth = moment(item.date * 1000).format('YYYY-MM');
+    if (selectedMonth === storedMonth) {
       return data;
     }
     return item;
   });
-  const savingsSelectedMounth = updatedSavings.find((item) => {
-    const selectedMounth = moment(date * 1000).format('YYYY-MM');
-    const storedMounth = moment(item.date * 1000).format('YYYY-MM');
-    return selectedMounth === storedMounth;
+  const savingsSelectedMonth = updatedSavings.find((item) => {
+    const selectedMonth = moment(date * 1000).format('YYYY-MM');
+    const storedMonth = moment(item.date * 1000).format('YYYY-MM');
+    return selectedMonth === storedMonth;
   });
-  dispatch(setSavings({ savings: updatedSavings, savingsSelectedMounth }));
+  dispatch(setSavings({ savings: updatedSavings, savingsSelectedMonth }));
 };
 
 const calculateOverviewData = () => async (dispatch, getState) => {
   const {
     savings,
     incomes,
-    mounthSpendings,
+    monthSpendings,
     incomesSum,
   //  date,
   } = getState();
   const currentSavingSum = (savings[savings.length - 1]
     .percent * incomes.reduce((acc, current) => acc + current.value, 0)) / 100;
-  const mounthSpendingsSum = mounthSpendings.reduce((acc, current) => acc + current.value, 0);
+  const monthSpendingsSum = monthSpendings.reduce((acc, current) => acc + current.value, 0);
   /*
-    const selectedDaySpendings = mounthSpendings.find((item) => {
+    const selectedDaySpendings = monthSpendings.find((item) => {
     const selectedDay = moment(date * 1000).format('YYYY-MM-DD');
     const storedDay = moment(item.date * 1000).format('YYYY-MM-DD');
     return selectedDay === storedDay;
   });
   */
-  const selectedDaySpendings = mounthSpendings;
+  const selectedDaySpendings = monthSpendings;
   const daySpendingsSum = selectedDaySpendings.reduce((acc, current) => acc + current.value, 0);
-  const moneyRemains = incomesSum - mounthSpendingsSum - currentSavingSum;
+  const moneyRemains = incomesSum - monthSpendingsSum - currentSavingSum;
 
   dispatch(setOverviewData({
     currentSavingSum,
     incomesSum,
-    mounthSpendingsSum,
+    monthSpendingsSum,
     daySpendingsSum,
     selectedDaySpendings,
     moneyRemains,
@@ -156,21 +156,21 @@ const calculateOverviewData = () => async (dispatch, getState) => {
 };
 
 export const addSpending = () => (dispatch, getState) => {
-  const { mounthSpendings } = getState();
-  dispatch(setMounthSpendings([...mounthSpendings, { id: nanoid(), name: '', value: null }]));
+  const { monthSpendings } = getState();
+  dispatch(setMonthSpendings([...monthSpendings, { id: nanoid(), name: '', value: null }]));
   dispatch(calculateOverviewData());
 };
 
 export const deleteSpending = (id) => (dispatch, getState) => {
-  const { mounthSpendings } = getState();
-  const newList = mounthSpendings.filter((it) => it.id !== id);
-  dispatch(setMounthSpendings(newList));
+  const { monthSpendings } = getState();
+  const newList = monthSpendings.filter((it) => it.id !== id);
+  dispatch(setMonthSpendings(newList));
   dispatch(calculateOverviewData());
 };
 
 export const editSpending = (spending) => (dispatch, getState) => {
-  const { mounthSpendings } = getState();
-  dispatch(setMounthSpendings(mounthSpendings.map((it) => {
+  const { monthSpendings } = getState();
+  dispatch(setMonthSpendings(monthSpendings.map((it) => {
     if (it.id === spending.id) {
       return { ...it, name: spending.name, value: spending.value };
     }
