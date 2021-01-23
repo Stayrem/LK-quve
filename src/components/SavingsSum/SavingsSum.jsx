@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styles from './SavingsSum.module.scss';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
+import Tooltip from '../Tooltip/Tooltip';
 
 const SavingsSum = (props) => {
   const {
@@ -20,6 +21,12 @@ const SavingsSum = (props) => {
       <div className={['panel-header', savingsSumHeader].join(' ')}>
         <div className={['panel-header-title', savingsSumHeaderTitle].join(' ')}>
           Всего сбережений
+        </div>
+        <div className="panel-header-subtitle">
+          <Tooltip
+            text="Сумма сбережений за текущий год."
+            id="savings-sum"
+          />
         </div>
       </div>
       <div className={['panel-body', savingsSumBody].join(' ')}>

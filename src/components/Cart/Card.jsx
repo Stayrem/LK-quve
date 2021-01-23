@@ -10,6 +10,7 @@ const Card = (props) => {
     text,
     textColor,
     subTitle,
+    tooltip,
   } = props;
 
   const {
@@ -21,11 +22,14 @@ const Card = (props) => {
 
   return (
     <div className={card}>
-      <SkeletonContainer>
-        <div style={{ color: textColor }} className={cardText}>
-          {Math.floor(text) || <Skeleton />}
-        </div>
-      </SkeletonContainer>
+      <div className="d-flex justify-content-between">
+        <SkeletonContainer>
+          <div style={{ color: textColor }} className={cardText}>
+            {Math.floor(text) || <Skeleton />}
+          </div>
+        </SkeletonContainer>
+        {tooltip}
+      </div>
       <div className={cardTitle}>{title}</div>
       <SkeletonContainer>
         <div className={cardSubtitle}>
@@ -38,6 +42,7 @@ const Card = (props) => {
 
 Card.defaultProps = {
   text: null,
+  tooltip: null,
 };
 
 Card.propTypes = {
@@ -45,6 +50,7 @@ Card.propTypes = {
   text: PropTypes.number,
   textColor: PropTypes.string.isRequired,
   subTitle: PropTypes.node.isRequired,
+  tooltip: PropTypes.node,
 };
 
 export default Card;

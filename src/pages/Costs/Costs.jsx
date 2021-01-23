@@ -17,6 +17,7 @@ import {
   editCost,
   resetStore,
 } from '../../store/action-creator';
+import Tooltip from '../../components/Tooltip/Tooltip';
 
 const Costs = () => {
   const dispatch = useDispatch();
@@ -52,9 +53,15 @@ const Costs = () => {
               <div className="col-lg-8">
                 <DataInputList
                   title="Добавленные постоянные расходы"
-                  date={date * 1000}
+                  subtitle={(
+                    <Tooltip
+                      text="Сюда необходимо ввести все Ваши постоянные месячные расходы."
+                      id="costs"
+                    />
+                  )}
                   sum={costsCurrentMonthSum}
                   data={costsCurrentMonthList}
+                  useStatus={false}
                   onAdd={() => dispatch(addCost())}
                   onDelete={(id) => dispatch(deleteCost(id))}
                   onEdit={(costItem) => dispatch(editCost(costItem))}

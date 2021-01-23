@@ -55,14 +55,13 @@
     .panel-header {
       padding: 25px 20px 0;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: space-between;
 
       .panel-header-title {
         font-size: 14px;
         font-weight: 700;
         flex: 0 0 auto;
-        margin-bottom: 10px;
       }
 
       .panel-header-subtitle {
@@ -70,7 +69,6 @@
         font-weight: 500;
         flex: 0 0 auto;
         text-align: left;
-        text-transform: capitalize;
         color: $color-font-lighter;
       }
     }
@@ -168,6 +166,12 @@
       border-color: $color-secondary;
     }
 
+    &.btn-secondary {
+      color: $color-primary-lighter;
+      background-color: $color-primary-darkest;
+      border-color: $color-primary-darkest;
+    }
+
     &.btn-block {
       display: block;
       width: 100%;
@@ -175,6 +179,10 @@
 
     &.btn-outline {
       background-color: transparent;
+    }
+
+    &.btn-circle {
+      border-radius: 50%;
     }
   }
 

@@ -13,10 +13,10 @@ import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 
 const DataInputList = (props) => {
   const {
-    date,
     sum,
     data,
     title,
+    subtitle,
     useStatus,
     onAdd,
     onDelete,
@@ -74,13 +74,7 @@ const DataInputList = (props) => {
           {title}
         </div>
         <div className={['panel-header-subtitle', dataInputListHeaderDate].join(' ')}>
-          <SkeletonContainer>
-            { date
-              ? moment(date).format('MMMM YYYY')
-              : (
-                <Skeleton width={50} height={20} />
-              )}
-          </SkeletonContainer>
+          {subtitle}
         </div>
       </div>
       <div className={['panel-body', dataInputListBody].join(' ')}>
@@ -148,6 +142,7 @@ const DataInputList = (props) => {
 DataInputList.defaultProps = {
   date: null,
   sum: null,
+  subtitle: null,
   data: [],
   useStatus: true,
 };
@@ -157,6 +152,7 @@ DataInputList.propTypes = {
   sum: PropTypes.number,
   data: PropTypes.arrayOf(PropTypes.object),
   title: PropTypes.string.isRequired,
+  subtitle: PropTypes.node,
   useStatus: PropTypes.bool,
   onAdd: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
