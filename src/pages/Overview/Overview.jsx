@@ -52,7 +52,7 @@ const Overview = () => {
         return (
           <>
             <PageContainer>
-              <PageHeadline title="Сводка" date={date * 1000} />
+              <PageHeadline title="Сводка" date={date} />
             </PageContainer>
             <div className="container">
               <div className="row">
@@ -69,7 +69,7 @@ const Overview = () => {
               <div className="row">
                 <div className="col-lg-6 mb-3 mb-lg-0">
                   <DataInputList
-                    date={date * 1000}
+                    date={date}
                     sum={mounthSpendingsSum}
                     data={daySpendings}
                     title="Список трат за сегодня"

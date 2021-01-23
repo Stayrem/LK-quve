@@ -5,7 +5,7 @@ import Type from './action-types';
 const initialState = {
   info: {},
   fetchError: false,
-  date: moment().unix(),
+  date: moment().unix() * 1000,
   isInfoFetched: false,
   incomes: [],
   isIncomesFethed: false,

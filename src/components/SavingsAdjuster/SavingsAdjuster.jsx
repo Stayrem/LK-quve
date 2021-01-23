@@ -90,7 +90,7 @@ const SavingsAdjuster = (props) => {
         <div className={['panel-header-subtitle', savingsAdjusterHeaderDate].join(' ')}>
           <SkeletonContainer>
             {date
-              ? moment(date * 1000).format('MMMM YYYY')
+              ? moment(date).format('MMMM YYYY')
               : (
                 <Skeleton width={50} height={20} />
               )}
