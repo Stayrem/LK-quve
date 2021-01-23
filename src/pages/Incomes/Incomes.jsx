@@ -16,6 +16,7 @@ import {
   editIncome,
   resetStore,
 } from '../../store/action-creator';
+import Tooltip from '../../components/Tooltip/Tooltip';
 
 const Incomes = () => {
   const dispatch = useDispatch();
@@ -52,8 +53,15 @@ const Incomes = () => {
                 <DataInputList
                   title="Добавленные доходы"
                   date={date}
+                  subtitle={(
+                    <Tooltip
+                      text="Сюда необходимо ввести все Ваши месячные доходы."
+                      id="incomes"
+                    />
+                  )}
                   sum={incomesCurrentMonthSum}
                   data={incomesCurrentMonthList}
+                  useStatus={false}
                   onAdd={() => dispatch(addIncome())}
                   onDelete={(id) => dispatch(deleteIncome(id))}
                   onEdit={(incomeItem) => dispatch(editIncome(incomeItem))}

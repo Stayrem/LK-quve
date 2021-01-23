@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import isNil from 'lodash/isNil';
 import Skeleton from 'react-loading-skeleton';
+import { getFormatedNumber } from '@utils/functions';
+import useDebounce from '../../hooks/use-debounce';
 
 import dictionary from '../../utils/dictionary';
 import { updateSavingsData } from '../../store/action-creator';
@@ -67,12 +69,14 @@ const SavingsAdjuster = (props) => {
     }
   };
 
+  const newSavings = useDebounce(newSavingsValue, 300);
+
   useEffect(() => {
     if (isNewSavingsValueChanged) {
       dispatch(updateSavingsData({ date, value: newSavingsValue, percent: newSavingsPercent }));
       setIsNewSavingsValueChanged(false);
     }
-  }, [isNewSavingsValueChanged]);
+  }, [newSavings]);
 
   useEffect(() => {
     if (!isNil(savingsCurrentMonthSum) && !isNil(incomesCurrentMonthSum)) {
@@ -154,9 +158,13 @@ const SavingsAdjuster = (props) => {
                   </div>
                 </div>
                 <div className={[savingsAdjusterInputsLabel, 'mt-2'].join(' ')}>
-                  От дохода
-                  <span>{` ${incomesCurrentMonthSum} `}</span>
-                  в месяц
+                  От дохода&nbsp;
+                  <span>
+                    {!isNil(incomesCurrentMonthSum)
+                      ? `${getFormatedNumber(incomesCurrentMonthSum)}`
+                      : <Skeleton />}
+                  </span>
+                  &nbsp;в месяц
                 </div>
               </div>
             ) : (
@@ -171,7 +179,7 @@ const SavingsAdjuster = (props) => {
           <div className={[savingsAdjusterCalculation, 'mb-3'].join(' ')}>
             <SkeletonContainer>
               {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
-                ? `= ${newSavingsValue} в месяц`
+                ? `= ${getFormatedNumber(newSavingsValue)} в месяц`
                 : (
                   <Skeleton />
                 )}
@@ -180,7 +188,7 @@ const SavingsAdjuster = (props) => {
           <div className={savingsAdjusterCalculation}>
             <SkeletonContainer>
               {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
-                ? `= ${newSavingsValue * 12} в год`
+                ? `= ${getFormatedNumber(newSavingsValue * 12)} в год`
                 : (
                   <Skeleton />
                 )}

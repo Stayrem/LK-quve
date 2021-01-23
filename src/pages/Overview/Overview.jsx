@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import dictionary from '@utils/dictionary';
 import Card from '../../components/Cart/Card';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
@@ -13,7 +14,7 @@ import {
 } from '../../store/action-creator';
 import createCards from '../../utils/create-cards';
 import styles from './Overview.scss';
-import dictionary from '@utils/dictionary';
+import Tooltip from '../../components/Tooltip/Tooltip';
 
 const Overview = () => {
   const {
@@ -56,7 +57,7 @@ const Overview = () => {
             </PageContainer>
             <div className="container">
               <div className="row">
-                <div className="col mb-3">
+                <div className="col mb-3 mb-md-4">
                   <div className={cardElippser}>
                     <div className={cardScroller}>
                       <div className={cardWrapper}>
@@ -73,6 +74,12 @@ const Overview = () => {
                     sum={mounthSpendingsSum}
                     data={daySpendings}
                     title="Список трат за сегодня"
+                    subtitle={(
+                      <Tooltip
+                        text="Сюда необходимо вводить траты за день. Можно вводить сразу всю сумму, потраченную за день."
+                        id="spendings"
+                      />
+                    )}
                     useStatus={false}
                     onAdd={() => dispatch(addSpending())}
                     onDelete={(id) => dispatch(deleteSpending(id))}

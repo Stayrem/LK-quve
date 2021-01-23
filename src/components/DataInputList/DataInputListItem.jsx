@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import useDebounce from '../../hooks/use-debounce';
 import styles from './DataInputListItem.module.scss';
+import { getFormatedNumber } from '@utils/functions';
 
 const DataInputListItem = (props) => {
   const {

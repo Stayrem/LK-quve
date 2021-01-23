@@ -1,0 +1,25 @@
+.tooltipButton {
+  border: none;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out;
+  font-size: 14px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.tooltipText {
+  max-width: 300px;
+  font-size: 12px;
+  text-align: left;
+  line-height: 1.5;
+  text-transform: none;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React  from 'react';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
 import * as moment from 'moment';
@@ -6,6 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import styles from './Saldo.module.scss';
 import defaultOptions from './chart-options';
+import Tooltip from '../Tooltip/Tooltip';
 
 const createOptions = (labels) => {
   const options = {
@@ -33,6 +34,12 @@ const Saldo = (props) => {
       <div className="panel-header">
         <div className="panel-header-title">
           Динамика дневных остатков
+        </div>
+        <div className="panel-header-subtitle">
+          <Tooltip
+            id="saldo"
+            text="График показывает динамику дневного дефицита или профицита бюджета. Если линия выше нуля, то с бюджетом всё хорошо, если ниже, то стоит начать сокращать ежедневные траты."
+          />
         </div>
       </div>
       <div className="panel-body">

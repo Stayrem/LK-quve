@@ -11,7 +11,7 @@ const initialState = {
   isIncomesFethed: false,
   costs: [],
   isCostsFetched: false,
-  mounthSpendings: [],
+  monthSpendings: [],
   daySpendings: [],
   isSpendingsFetched: false,
   savings: [],
@@ -19,7 +19,7 @@ const initialState = {
   isSavingsFetched: false,
   currentSavingSum: null,
   incomesSum: null,
-  mounthSpendingsSum: null,
+  monthSpendingsSum: null,
   daySpendingsSum: null,
   moneyRemains: null,
 };
@@ -41,7 +41,7 @@ const reducer = (state = initialState, action) => {
     case Type.SET_MOUNTH_SPENDINGS_DATA:
       return {
         ...state,
-        mounthSpendings: payload,
+        monthSpendings: payload,
         isSpendingsFetched: true,
       };
     case Type.SET_DAY_SPENDINGS_DATA:
