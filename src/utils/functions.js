@@ -7,3 +7,7 @@ export const getSumByArray = (arr) => {
   };
   return arr.reduce(reducer, 0);
 };
+
+export const getFormatedNumber = (number) => number
+  .toString()
+  .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ' ');

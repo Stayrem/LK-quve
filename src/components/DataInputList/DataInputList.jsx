@@ -10,6 +10,7 @@ import Skeleton from 'react-loading-skeleton';
 import DataInputListItem from './DataInputListItem';
 import styles from './DataInputList.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
+import { getFormatedNumber } from '@utils/functions';
 
 const DataInputList = (props) => {
   const {
@@ -130,7 +131,7 @@ const DataInputList = (props) => {
           Сумма: &nbsp;
           <SkeletonContainer>
             <span>
-              {sum || <Skeleton width={50} height={15} />}
+              {sum ? getFormatedNumber(sum) : <Skeleton width={50} height={15} />}
             </span>
           </SkeletonContainer>
         </div>
