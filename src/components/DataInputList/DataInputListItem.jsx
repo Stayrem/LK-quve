@@ -3,10 +3,44 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import useDebounce from '../../hooks/use-debounce';
+import { faTimes, faCheck, faSync } from '@fortawesome/free-solid-svg-icons';
+import isEqual from 'lodash/isEqual';
 import styles from './DataInputListItem.module.scss';
-import { getFormatedNumber } from '@utils/functions';
+
+const ListItemEditStatus = (props) => {
+  const {
+    isPending,
+    storedData,
+    stateData,
+    onEditComplete,
+  } = props;
+
+  const {
+    dataInputListItemIcon,
+    dataInputListItemIconBtn,
+    dataInputListItemIconTd,
+  } = styles;
+
+  if (!isEqual(storedData, stateData) && !isPending) {
+    return (
+      <td className={dataInputListItemIconTd}>
+        <button className={[dataInputListItemIcon, dataInputListItemIconBtn].join(' ')} onClick={() => onEditComplete(stateData)} type="button">
+          <FontAwesomeIcon icon={faCheck} color="#FAC620" />
+        </button>
+      </td>
+    );
+  }
+  if (isPending) {
+    return (
+      <td className={dataInputListItemIconTd}>
+        <div className={dataInputListItemIcon}>
+          <FontAwesomeIcon icon={faSync} color="#FAC620" />
+        </div>
+      </td>
+    );
+  }
+  return <td className={dataInputListItemIconTd}>&nbsp;</td>;
+};
 
 const DataInputListItem = (props) => {
   const {
@@ -23,28 +57,25 @@ const DataInputListItem = (props) => {
     editInputListItem,
     setFocusToItem,
     index,
+    isPending,
   } = props;
+
   const {
     focused,
-    dataInputListItemBtnDelete,
+    dataInputListItemIcon,
+    dataInputListItemIconBtn,
   } = styles;
-
-  const isMountRef = useRef(true);
 
   const [spending, editSpending] = useState({
     id, name, value, status,
   });
+
   const nameInput = useRef();
   const valueInput = useRef();
 
-  const editedSpending = useDebounce(spending, 1000);
-  useEffect(() => {
-    if (!isMountRef.current) {
-      editInputListItem(editedSpending);
-    } else {
-      isMountRef.current = false;
-    }
-  }, [editedSpending]);
+  const onEditComplete = (editedSpending) => {
+    editInputListItem(editedSpending);
+  };
 
   useEffect(() => {
     if (isFocused) {
@@ -139,11 +170,19 @@ const DataInputListItem = (props) => {
       <td onClick={(event) => setFocusOnRow(event, 'last')}>
         { status
           ? <button type="button" onClick={() => editSpending({ ...spending, status: !status })} className="label label-active s_button">Не Учитывать</button>
-          : <button type="button" onClick={() => editSpending({ ...spending, status: !status })} className="label s_button">Учитывать</button>}
+          : <button type="button" onClick={() => editSpending({ ...spending, status })} className="label s_button">Учитывать</button>}
       </td>
       )}
+      <ListItemEditStatus
+        isPending={isPending}
+        storedData={{
+          id, name, value, status,
+        }}
+        onEditComplete={onEditComplete}
+        stateData={spending}
+      />
       <td onClick={(event) => setFocusOnRow(event, 'none')}>
-        <button className={dataInputListItemBtnDelete} type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
+        <button className={[dataInputListItemIcon, dataInputListItemIconBtn].join(' ')} type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
           <FontAwesomeIcon icon={faTimes} />
         </button>
       </td>
@@ -159,6 +198,7 @@ DataInputListItem.defaultProps = {
   focusedInputType: 'none',
   isLast: false,
   useStatus: true,
+  isPending: false,
 };
 
 DataInputListItem.propTypes = {
@@ -175,6 +215,14 @@ DataInputListItem.propTypes = {
   editInputListItem: PropTypes.func.isRequired,
   addInputListItem: PropTypes.func.isRequired,
   setFocusToItem: PropTypes.func.isRequired,
+  isPending: PropTypes.bool,
+};
+
+ListItemEditStatus.propTypes = {
+  isPending: PropTypes.bool.isRequired,
+  storedData: PropTypes.objectOf(PropTypes.any).isRequired,
+  stateData: PropTypes.objectOf(PropTypes.any).isRequired,
+  onEditComplete: PropTypes.func.isRequired,
 };
 
 export default DataInputListItem;
