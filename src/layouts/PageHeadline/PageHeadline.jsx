@@ -34,7 +34,7 @@ const PageHeadline = (props) => {
     breadcrumbs,
     title,
     date,
-    MONTHFormat,
+    MonthFormat,
   } = props;
   const {
     pageHeadline,
@@ -69,8 +69,8 @@ const PageHeadline = (props) => {
                 locale={ru}
                 minDate={startOfYear}
                 maxDate={futureDate}
-                showMonthYearPicker={MONTHFormat}
-                dateFormat={MONTHFormat ? 'MMMM yyyy' : 'd MMMM yyyy'}
+                showMonthYearPicker={MonthFormat}
+                dateFormat={MonthFormat ? 'MMMM yyyy' : 'd MMMM yyyy'}
                 onChange={(dateIt) => setSelectedDay(moment(dateIt).unix() * 1000)}
                 popperModifiers={{
                   offset: {
@@ -91,11 +91,11 @@ const PageHeadline = (props) => {
 PageHeadline.defaultProps = {
   date: null,
   breadcrumbs: [],
-  MONTHFormat: false,
+  MonthFormat: false,
 };
 
 PageHeadline.propTypes = {
-  MONTHFormat: PropTypes.bool,
+  MonthFormat: PropTypes.bool,
   breadcrumbs: PropTypes.arrayOf(PropTypes.object),
   title: PropTypes.string.isRequired,
   date: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),

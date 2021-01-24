@@ -1,16 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import PropTypes from 'prop-types';
-import moment from 'moment';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import Skeleton from 'react-loading-skeleton';
+import { getFormatedNumber } from '@utils/functions';
 import DataInputListItem from './DataInputListItem';
 import styles from './DataInputList.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
-import { getFormatedNumber } from '@utils/functions';
 
 const DataInputList = (props) => {
   const {
@@ -88,6 +86,7 @@ const DataInputList = (props) => {
                 <th>Размер</th>
                 {useStatus && <th>Статус</th>}
                 <th>&nbsp;</th>
+                <th>&nbsp;</th>
               </tr>
             </thead>
             <tfoot>
@@ -112,6 +111,7 @@ const DataInputList = (props) => {
                   name={item.name}
                   value={item.value}
                   status={item.status}
+                  isPending={item.isPending}
                   isFocused={item.id === focusedRowId}
                   focusedInputType={focusedInputType}
                   isLast={item.id === data[data.length - 1].id}

@@ -46,7 +46,7 @@ const Costs = () => {
       }
       return (
         <main className="main">
-          <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date} MONTHFormat />
+          <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date} MonthFormat />
           <PageContainer>
             <PageText text="Введите все Ваши постоянные расходы за месяц." />
             <div className="row">

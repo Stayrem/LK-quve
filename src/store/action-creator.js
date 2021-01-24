@@ -172,11 +172,23 @@ export const editSpending = (spending) => (dispatch, getState) => {
   const { monthSpendings } = getState();
   dispatch(setMonthSpendings(monthSpendings.map((it) => {
     if (it.id === spending.id) {
-      return { ...it, name: spending.name, value: spending.value };
+      return { ...it, isPending: true };
     }
     return it;
   })));
   dispatch(calculateOverviewData());
+  try {
+    await fetchData('https://run.mocky.io/v3/f2635207-4c9d-466a-a590-be0a332cf85a?mocky-delay=1500ms');
+    dispatch(setMonthSpendings(monthSpendings.map((it) => {
+      if (it.id === spending.id) {
+        return { ...it, name: spending.name, value: spending.value };
+      }
+      return it;
+    })));
+    dispatch(calculateOverviewData());
+  } catch (err) {
+    dispatch(setIsFetchFailed(true));
+  }
 };
 
 export const addIncome = () => (dispatch, getState) => {
