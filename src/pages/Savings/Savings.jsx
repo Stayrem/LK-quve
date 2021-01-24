@@ -20,8 +20,8 @@ const Savings = () => {
   const date = useSelector((state) => state.date);
   const isFetchFailed = useSelector((state) => state.fetchError);
   const savingsCurrentYearList = useSelector((state) => state.savings);
-  const incomesCurrentMONTHSum = useSelector((state) => state.incomesSum);
-  const savingsCurrentMONTH = useSelector((state) => state.savingsSelectedMONTH);
+  const incomesCurrentMonthSum = useSelector((state) => state.incomesSum);
+  const savingsCurrentMonth = useSelector((state) => state.savingsSelectedMonth);
   const savingsCurrentYearSum = savingsCurrentYearList
     .reduce((acc, curr) => acc + curr.value, 0);
 
@@ -46,7 +46,7 @@ const Savings = () => {
       }
       return (
         <main className="main">
-          <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date} MONTHFormat />
+          <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date} MonthFormat />
           <PageContainer>
             <div className="row">
               <div className="col">
@@ -57,8 +57,8 @@ const Savings = () => {
               <div className="col-lg-5 mb-3 mb-lg-0">
                 <SavingsAdjuster
                   date={date}
-                  incomesCurrentMonthSum={incomesCurrentMONTHSum}
-                  savingsCurrentMonthSum={savingsCurrentMONTH.value}
+                  incomesCurrentMonthSum={incomesCurrentMonthSum}
+                  savingsCurrentMonthSum={savingsCurrentMonth.value}
                 />
                 <SavingsSum value={savingsCurrentYearSum} />
               </div>
