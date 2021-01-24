@@ -30,8 +30,8 @@ export const setCosts = (data) => ({
   payload: data,
 });
 
-export const setmounthSpendings = (data) => ({
-  type: Type.SET_MOUNTH_SPENDINGS_DATA,
+export const setMonthSpendings = (data) => ({
+  type: Type.SET_Month_SPENDINGS_DATA,
   payload: data,
 });
 
@@ -83,7 +83,7 @@ export const fetchCosts = () => async (dispatch) => {
 export const fetchSpendings = () => async (dispatch) => {
   try {
     const spendings = await fetchData('/mocks/spendings/get.json');
-    dispatch(setmounthSpendings(spendings.data));
+    dispatch(setMonthSpendings(spendings.data));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }
@@ -93,12 +93,12 @@ export const fetchSavings = () => async (dispatch, getState) => {
   const { date } = getState();
   try {
     const savings = await fetchData('/mocks/savings/get.json');
-    const savingsSelectedMounth = savings.data.find((item) => {
-      const selectedMounth = moment(date).format('YYYY-MM');
-      const storedMounth = moment(item.date).format('YYYY-MM');
-      return selectedMounth === storedMounth;
+    const savingsSelectedMonth = savings.data.find((item) => {
+      const selectedMonth = moment(date).format('YYYY-MM');
+      const storedMonth = moment(item.date).format('YYYY-MM');
+      return selectedMonth === storedMonth;
     });
-    dispatch(setSavings({ savings: savings.data, savingsSelectedMounth }));
+    dispatch(setSavings({ savings: savings.data, savingsSelectedMonth }));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }
@@ -108,19 +108,19 @@ export const updateSavingsData = (data) => (dispatch, getState) => {
   const { savings, date } = getState();
   const targetDate = data.date;
   const updatedSavings = savings.map((item) => {
-    const selectedMounth = moment(targetDate).format('YYYY-MM');
-    const storedMounth = moment(item.date).format('YYYY-MM');
-    if (selectedMounth === storedMounth) {
+    const selectedMonth = moment(targetDate).format('YYYY-MM');
+    const storedMonth = moment(item.date).format('YYYY-MM');
+    if (selectedMonth === storedMonth) {
       return data;
     }
     return item;
   });
-  const savingsSelectedMounth = updatedSavings.find((item) => {
-    const selectedMounth = moment(date).format('YYYY-MM');
-    const storedMounth = moment(item.date).format('YYYY-MM');
-    return selectedMounth === storedMounth;
+  const savingsSelectedMonth = updatedSavings.find((item) => {
+    const selectedMonth = moment(date).format('YYYY-MM');
+    const storedMonth = moment(item.date).format('YYYY-MM');
+    return selectedMonth === storedMonth;
   });
-  dispatch(setSavings({ savings: updatedSavings, savingsSelectedMounth }));
+  dispatch(setSavings({ savings: updatedSavings, savingsSelectedMonth }));
 };
 
 const calculateOverviewData = () => async (dispatch, getState) => {
@@ -135,7 +135,7 @@ const calculateOverviewData = () => async (dispatch, getState) => {
     .percent * incomes.reduce((acc, current) => acc + current.value, 0)) / 100;
   const mounthSpendingsSum = mounthSpendings.reduce((acc, current) => acc + current.value, 0);
   /*
-    const selectedDaySpendings = mounthSpendings.find((item) => {
+    const selectedDaySpendings = MonthSpendings.find((item) => {
     const selectedDay = moment(date).format('YYYY-MM-DD');
     const storedDay = moment(item.date).format('YYYY-MM-DD');
     return selectedDay === storedDay;
@@ -157,21 +157,21 @@ const calculateOverviewData = () => async (dispatch, getState) => {
 
 export const addSpending = () => (dispatch, getState) => {
   const { mounthSpendings } = getState();
-  dispatch(setmounthSpendings([...mounthSpendings, { id: nanoid(), name: '', value: null }]));
+  dispatch(setMonthSpendings([...mounthSpendings, { id: nanoid(), name: '', value: null }]));
   dispatch(calculateOverviewData());
 };
 
 export const deleteSpending = (id) => (dispatch, getState) => {
   const { mounthSpendings } = getState();
   const newList = mounthSpendings.filter((it) => it.id !== id);
-  dispatch(setmounthSpendings(newList));
+  dispatch(setMonthSpendings(newList));
   dispatch(calculateOverviewData());
 };
 
 export const editSpending = (spending) => async (dispatch, getState) => {
   const { mounthSpendings } = getState();
 
-  dispatch(setmounthSpendings(mounthSpendings.map((it) => {
+  dispatch(setMonthSpendings(mounthSpendings.map((it) => {
     if (it.id === spending.id) {
       return { ...it, isPending: true };
     }
@@ -180,7 +180,7 @@ export const editSpending = (spending) => async (dispatch, getState) => {
   dispatch(calculateOverviewData());
   try {
     await fetchData('https://run.mocky.io/v3/f2635207-4c9d-466a-a590-be0a332cf85a?mocky-delay=1500ms');
-    dispatch(setmounthSpendings(mounthSpendings.map((it) => {
+    dispatch(setMonthSpendings(mounthSpendings.map((it) => {
       if (it.id === spending.id) {
         return { ...it, name: spending.name, value: spending.value };
       }

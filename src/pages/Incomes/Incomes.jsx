@@ -45,7 +45,7 @@ const Incomes = () => {
       }
       return (
         <main className="main">
-          <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date} mounthFormat />
+          <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date} MonthFormat />
           <PageContainer>
             <PageText text="Введите все Ваши источники дохода за месяц." />
             <div className="row">

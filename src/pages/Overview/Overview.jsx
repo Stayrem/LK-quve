@@ -23,7 +23,7 @@ const Overview = () => {
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
   const isFetchFailed = useSelector((state) => state.fetchError);
-  const mounthSpendingsSum = useSelector((state) => state.mounthSpendingsSum);
+  const monthSpendingsSum = useSelector((state) => state.monthSpendingsSum);
   const daySpendings = useSelector((state) => state.selectedDaySpendings);
   const moneyRemains = useSelector((state) => state.moneyRemains);
   const currentSavingSum = useSelector((state) => state.currentSavingSum);
@@ -33,10 +33,10 @@ const Overview = () => {
   const isSavingsFetched = useSelector((state) => state.isSavingsFetched);
   const isDataFethed = [isIncomesFethed, isCostsFetched, isSpendingsFetched, isSavingsFetched]
     .every((isDataTypeFethed) => isDataTypeFethed === true);
-  const isCartsDataReady = [mounthSpendingsSum, moneyRemains, currentSavingSum]
+  const isCartsDataReady = [monthSpendingsSum, moneyRemains, currentSavingSum]
     .every((data) => data !== null);
 
-  const getCardsState = createCards(mounthSpendingsSum,
+  const getCardsState = createCards(monthSpendingsSum,
     moneyRemains, currentSavingSum, RestSumWidget);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const Overview = () => {
                 <div className="col-lg-6 mb-3 mb-lg-0">
                   <DataInputList
                     date={date}
-                    sum={mounthSpendingsSum}
+                    sum={monthSpendingsSum}
                     data={daySpendings}
                     title="Список трат за сегодня"
                     subtitle={(
