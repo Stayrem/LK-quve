@@ -46,7 +46,7 @@ const Savings = () => {
       }
       return (
         <main className="main">
-          <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date * 1000} />
+          <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date} MonthFormat />
           <PageContainer>
             <div className="row">
               <div className="col">

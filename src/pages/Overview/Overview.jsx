@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import dictionary from '@utils/dictionary';
 import Card from '../../components/Cart/Card';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
@@ -13,7 +14,6 @@ import {
 } from '../../store/action-creator';
 import createCards from '../../utils/create-cards';
 import styles from './Overview.scss';
-import dictionary from '@utils/dictionary';
 import Tooltip from '../../components/Tooltip/Tooltip';
 
 const Overview = () => {
@@ -23,7 +23,7 @@ const Overview = () => {
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
   const isFetchFailed = useSelector((state) => state.fetchError);
-  const monthSpendingsSum = useSelector((state) => state.monthSpendingsSum);
+  const MONTHSpendingsSum = useSelector((state) => state.MONTHSpendingsSum);
   const daySpendings = useSelector((state) => state.selectedDaySpendings);
   const moneyRemains = useSelector((state) => state.moneyRemains);
   const currentSavingSum = useSelector((state) => state.currentSavingSum);
@@ -33,10 +33,10 @@ const Overview = () => {
   const isSavingsFetched = useSelector((state) => state.isSavingsFetched);
   const isDataFethed = [isIncomesFethed, isCostsFetched, isSpendingsFetched, isSavingsFetched]
     .every((isDataTypeFethed) => isDataTypeFethed === true);
-  const isCartsDataReady = [monthSpendingsSum, moneyRemains, currentSavingSum]
+  const isCartsDataReady = [MONTHSpendingsSum, moneyRemains, currentSavingSum]
     .every((data) => data !== null);
 
-  const getCardsState = createCards(monthSpendingsSum,
+  const getCardsState = createCards(MONTHSpendingsSum,
     moneyRemains, currentSavingSum, RestSumWidget);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const Overview = () => {
         return (
           <>
             <PageContainer>
-              <PageHeadline title="Сводка" date={date * 1000} />
+              <PageHeadline title="Сводка" date={date} />
             </PageContainer>
             <div className="container">
               <div className="row">
@@ -70,7 +70,8 @@ const Overview = () => {
               <div className="row">
                 <div className="col-lg-6 mb-3 mb-lg-0">
                   <DataInputList
-                    sum={monthSpendingsSum}
+                    date={date}
+                    sum={MONTHSpendingsSum}
                     data={daySpendings}
                     title="Список трат за сегодня"
                     subtitle={(

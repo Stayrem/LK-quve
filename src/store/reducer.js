@@ -5,7 +5,7 @@ import Type from './action-types';
 const initialState = {
   info: {},
   fetchError: false,
-  date: moment().unix(),
+  date: moment().unix() * 1000,
   isInfoFetched: false,
   incomes: [],
   isIncomesFethed: false,
@@ -15,7 +15,7 @@ const initialState = {
   daySpendings: [],
   isSpendingsFetched: false,
   savings: [],
-  savingsSelectedMonth: 0,
+  savingsSelectedMONTH: 0,
   isSavingsFetched: false,
   currentSavingSum: null,
   incomesSum: null,
@@ -38,7 +38,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         fetchError: payload,
       };
-    case Type.SET_MOUNTH_SPENDINGS_DATA:
+    case Type.SET_MONTH_SPENDINGS_DATA:
       return {
         ...state,
         monthSpendings: payload,

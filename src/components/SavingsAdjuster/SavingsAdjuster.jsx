@@ -5,12 +5,13 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import isNil from 'lodash/isNil';
 import Skeleton from 'react-loading-skeleton';
+import { getFormatedNumber } from '@utils/functions';
+import useDebounce from '../../hooks/use-debounce';
 
 import dictionary from '../../utils/dictionary';
 import { updateSavingsData } from '../../store/action-creator';
 import styles from './SavingsAdjuster.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
-import { getFormatedNumber } from '@utils/functions';
 
 const SavingsAdjuster = (props) => {
   const dispatch = useDispatch();
@@ -68,12 +69,14 @@ const SavingsAdjuster = (props) => {
     }
   };
 
+  const newSavings = useDebounce(newSavingsValue, 300);
+
   useEffect(() => {
     if (isNewSavingsValueChanged) {
       dispatch(updateSavingsData({ date, value: newSavingsValue, percent: newSavingsPercent }));
       setIsNewSavingsValueChanged(false);
     }
-  }, [isNewSavingsValueChanged]);
+  }, [newSavings]);
 
   useEffect(() => {
     if (!isNil(savingsCurrentMonthSum) && !isNil(incomesCurrentMonthSum)) {
@@ -91,7 +94,7 @@ const SavingsAdjuster = (props) => {
         <div className={['panel-header-subtitle', savingsAdjusterHeaderDate].join(' ')}>
           <SkeletonContainer>
             {date
-              ? moment(date * 1000).format('MMMM YYYY')
+              ? moment(date).format('MMMM YYYY')
               : (
                 <Skeleton width={50} height={20} />
               )}
@@ -159,8 +162,7 @@ const SavingsAdjuster = (props) => {
                   <span>
                     {!isNil(incomesCurrentMonthSum)
                       ? `${getFormatedNumber(incomesCurrentMonthSum)}`
-                      : <Skeleton />
-                    }
+                      : <Skeleton />}
                   </span>
                   &nbsp;в месяц
                 </div>

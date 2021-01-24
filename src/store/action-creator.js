@@ -31,7 +31,7 @@ export const setCosts = (data) => ({
 });
 
 export const setMonthSpendings = (data) => ({
-  type: Type.SET_MOUNTH_SPENDINGS_DATA,
+  type: Type.SET_MONTH_SPENDINGS_DATA,
   payload: data,
 });
 
@@ -60,7 +60,7 @@ export const fetchUserInfo = () => async (dispatch) => {
     const userInfo = await fetchData('/mocks/info.json');
     dispatch(setUserInfo(userInfo.data));
   } catch (err) {
-    dispatch(setIsFetchFailed(err.isAxiosError));
+    dispatch(setIsFetchFailed(true));
   }
 };
 
@@ -70,7 +70,7 @@ export const fetchIncomes = () => async (dispatch) => {
     const incomesSum = calculateSum(incomes.data);
     dispatch(setIncomes({ incomes: incomes.data, incomesSum }));
   } catch (err) {
-    dispatch(setIsFetchFailed(err.isAxiosError));
+    dispatch(setIsFetchFailed(true));
   }
 };
 
@@ -85,7 +85,7 @@ export const fetchSpendings = () => async (dispatch) => {
     const spendings = await fetchData('/mocks/spendings/get.json');
     dispatch(setMonthSpendings(spendings.data));
   } catch (err) {
-    dispatch(setIsFetchFailed(err.isAxiosError));
+    dispatch(setIsFetchFailed(true));
   }
 };
 
@@ -94,13 +94,13 @@ export const fetchSavings = () => async (dispatch, getState) => {
   try {
     const savings = await fetchData('/mocks/savings/get.json');
     const savingsSelectedMonth = savings.data.find((item) => {
-      const selectedMonth = moment(date * 1000).format('YYYY-MM');
-      const storedMonth = moment(item.date * 1000).format('YYYY-MM');
+      const selectedMonth = moment(date).format('YYYY-MM');
+      const storedMonth = moment(item.date).format('YYYY-MM');
       return selectedMonth === storedMonth;
     });
     dispatch(setSavings({ savings: savings.data, savingsSelectedMonth }));
   } catch (err) {
-    dispatch(setIsFetchFailed(err.isAxiosError));
+    dispatch(setIsFetchFailed(true));
   }
 };
 
@@ -108,16 +108,16 @@ export const updateSavingsData = (data) => (dispatch, getState) => {
   const { savings, date } = getState();
   const targetDate = data.date;
   const updatedSavings = savings.map((item) => {
-    const selectedMonth = moment(targetDate * 1000).format('YYYY-MM');
-    const storedMonth = moment(item.date * 1000).format('YYYY-MM');
+    const selectedMonth = moment(targetDate).format('YYYY-MM');
+    const storedMonth = moment(item.date).format('YYYY-MM');
     if (selectedMonth === storedMonth) {
       return data;
     }
     return item;
   });
   const savingsSelectedMonth = updatedSavings.find((item) => {
-    const selectedMonth = moment(date * 1000).format('YYYY-MM');
-    const storedMonth = moment(item.date * 1000).format('YYYY-MM');
+    const selectedMonth = moment(date).format('YYYY-MM');
+    const storedMonth = moment(item.date).format('YYYY-MM');
     return selectedMonth === storedMonth;
   });
   dispatch(setSavings({ savings: updatedSavings, savingsSelectedMonth }));
@@ -136,8 +136,8 @@ const calculateOverviewData = () => async (dispatch, getState) => {
   const monthSpendingsSum = monthSpendings.reduce((acc, current) => acc + current.value, 0);
   /*
     const selectedDaySpendings = monthSpendings.find((item) => {
-    const selectedDay = moment(date * 1000).format('YYYY-MM-DD');
-    const storedDay = moment(item.date * 1000).format('YYYY-MM-DD');
+    const selectedDay = moment(date).format('YYYY-MM-DD');
+    const storedDay = moment(item.date).format('YYYY-MM-DD');
     return selectedDay === storedDay;
   });
   */

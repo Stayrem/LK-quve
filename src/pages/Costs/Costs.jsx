@@ -46,13 +46,14 @@ const Costs = () => {
       }
       return (
         <main className="main">
-          <PageHeadline breadcrumbs={breadcrumbs} title="Постоянные расходы" date={date * 1000} />
+          <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date} MONTHFormat />
           <PageContainer>
             <PageText text="Введите все Ваши постоянные расходы за месяц." />
             <div className="row">
               <div className="col-lg-8">
                 <DataInputList
                   title="Добавленные постоянные расходы"
+                  date={date}
                   subtitle={(
                     <Tooltip
                       text="Сюда необходимо ввести все Ваши постоянные месячные расходы."
