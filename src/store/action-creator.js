@@ -30,7 +30,7 @@ export const setCosts = (data) => ({
   payload: data,
 });
 
-export const setmonthSpendings = (data) => ({
+export const setMonthSpendings = (data) => ({
   type: Type.SET_MONTH_SPENDINGS_DATA,
   payload: data,
 });
@@ -83,7 +83,7 @@ export const fetchCosts = () => async (dispatch) => {
 export const fetchSpendings = () => async (dispatch) => {
   try {
     const spendings = await fetchData('/mocks/spendings/get.json');
-    dispatch(setmonthSpendings(spendings.data));
+    dispatch(setMonthSpendings(spendings.data));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }
@@ -157,20 +157,20 @@ const calculateOverviewData = () => async (dispatch, getState) => {
 
 export const addSpending = () => (dispatch, getState) => {
   const { monthSpendings } = getState();
-  dispatch(setmonthSpendings([...monthSpendings, { id: nanoid(), name: '', value: null }]));
+  dispatch(setMonthSpendings([...monthSpendings, { id: nanoid(), name: '', value: null }]));
   dispatch(calculateOverviewData());
 };
 
 export const deleteSpending = (id) => (dispatch, getState) => {
   const { monthSpendings } = getState();
   const newList = monthSpendings.filter((it) => it.id !== id);
-  dispatch(setmonthSpendings(newList));
+  dispatch(setMonthSpendings(newList));
   dispatch(calculateOverviewData());
 };
 
 export const editSpending = (spending) => (dispatch, getState) => {
   const { monthSpendings } = getState();
-  dispatch(setmonthSpendings(monthSpendings.map((it) => {
+  dispatch(setMonthSpendings(monthSpendings.map((it) => {
     if (it.id === spending.id) {
       return { ...it, name: spending.name, value: spending.value };
     }
