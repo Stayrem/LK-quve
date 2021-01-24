@@ -31,7 +31,7 @@ export const setCosts = (data) => ({
 });
 
 export const setMonthSpendings = (data) => ({
-  type: Type.SET_Month_SPENDINGS_DATA,
+  type: Type.SET_MONTH_SPENDINGS_DATA,
   payload: data,
 });
 
