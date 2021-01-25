@@ -1,12 +1,15 @@
 .menu {
   display: flex;
+  height: 100%;
   flex-direction: column;
+  padding: 15px 20px;
 }
 
 .header {
   display: flex;
   align-items: center;
-  padding: 20px;
+  justify-content: space-between;
+  padding: 20px 0 20px 0;
   border-bottom: 1px solid $color-primary;
 
   img {
@@ -14,8 +17,22 @@
   }
 }
 
+.footer {
+  margin-top: auto;
+  border-top: 1px solid $color-primary;
+}
+
+.footerLink {
+  display: block;
+  padding-top:10px;
+}
+
+.footerIcon {
+  margin-right: 10px;
+}
+
 .nav {
-  padding: 20px;
+  padding: 20px 0 20px 0;
 }
 
 .list {
@@ -24,7 +41,7 @@
 
 .link {
   display: flex;
-  padding: 10px 15px;
+  padding: 10px 0 10px 0;
   color: $color-font;
   text-decoration: none;
   border-radius: 5px;
