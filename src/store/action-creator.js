@@ -168,7 +168,7 @@ export const deleteSpending = (id) => (dispatch, getState) => {
   dispatch(calculateOverviewData());
 };
 
-export const editSpending = (spending) => (dispatch, getState) => {
+export const editSpending = (spending) => async (dispatch, getState) => {
   const { monthSpendings } = getState();
   dispatch(setMonthSpendings(monthSpendings.map((it) => {
     if (it.id === spending.id) {
