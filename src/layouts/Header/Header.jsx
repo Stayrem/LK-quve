@@ -87,13 +87,13 @@ const Header = () => {
               ))}
             </ul>
           </nav>
-          <a href="#" className={[headerItem, mobileMenuBtn].join(' ')} onClick={() => toggleMenu((prev) => !prev)}>
+          <button type="button" className={[headerItem, mobileMenuBtn, 'btn'].join(' ')} onClick={() => toggleMenu((prev) => !prev)}>
             <img alt="mobile-menu" src={menu} className={headerLogo} />
-          </a>
+          </button>
           <div className={exitWrapper}>
             {
               auth.user ? (
-                <a href="#" className={[link, headerItem].join(' ')} onClick={() => auth.signOut()}>Выход</a>
+                <a href="/logout" className={[link, headerItem].join(' ')} onClick={() => auth.signOut()}>Выход</a>
               ) : (
                 <Link to="/sign-up" className={[link, headerItem].join(' ')}>Регистрация</Link>
               )
@@ -102,7 +102,7 @@ const Header = () => {
         </div>
       </Container>
       <div className={[mobileMenu, mobMenuClassname].join(' ')}>
-        <HeaderMobileMenu menuItems={menuItems} />
+        <HeaderMobileMenu menuItems={menuItems} menuCloseHandler={toggleMenu} />
       </div>
     </header>
   );
