@@ -6,7 +6,6 @@ import Card from '../../components/Cart/Card';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 import DataInputList from '../../components/DataInputList/DataInputList';
-import RestSumWidget from '../../components/RestSumWidget/RestSumWidget';
 import Saldo from '../../components/Saldo/Saldo';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import {
@@ -20,42 +19,48 @@ const Overview = () => {
   const {
     cardElippser, cardScroller, cardWrapper,
   } = styles;
+
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
   const isFetchFailed = useSelector((state) => state.fetchError);
-  const monthSpendingsSum = useSelector((state) => state.monthSpendingsSum);
-  const daySpendings = useSelector((state) => state.selectedDaySpendings);
-  const moneyRemains = useSelector((state) => state.moneyRemains);
-  const currentSavingSum = useSelector((state) => state.currentSavingSum);
-  const isIncomesFethed = useSelector((state) => state.isIncomesFethed);
+  const currentDailyBudget = useSelector((state) => state.currentDailyBudget);
+  const currentDaySpendingsSum = useSelector((state) => state.currentDaySpendingsSum);
+  const currentSavingsSum = useSelector((state) => state.currentSavingsSum);
+  const currentRestValue = useSelector((state) => state.currentRestValue);
+  const currentRestPercent = useSelector((state) => state.currentRestPercent);
+  const currentDaySpendings = useSelector((state) => state.currentDaySpendings);
+
+  const isIncomesFetched = useSelector((state) => state.isIncomesFethed);
   const isCostsFetched = useSelector((state) => state.isCostsFetched);
-  const isSpendingsFetched = useSelector((state) => state.isSpendingsFetched);
   const isSavingsFetched = useSelector((state) => state.isSavingsFetched);
-  const isDataFethed = [isIncomesFethed, isCostsFetched, isSpendingsFetched, isSavingsFetched]
+  const isSpendingsFetched = useSelector((state) => state.isSpendingsFetched);
+  const isDataFetched = [isIncomesFetched, isCostsFetched, isSpendingsFetched, isSavingsFetched]
     .every((isDataTypeFethed) => isDataTypeFethed === true);
-  const isCartsDataReady = [monthSpendingsSum, moneyRemains, currentSavingSum]
+  const isCartsDataReady = [currentDailyBudget, currentDaySpendingsSum, currentSavingsSum,
+    currentRestValue, currentRestPercent]
     .every((data) => data !== null);
 
-  const getCardsState = createCards(monthSpendingsSum,
-    moneyRemains, currentSavingSum, RestSumWidget);
+  const getCardsState = createCards(currentDailyBudget, currentDaySpendingsSum, currentSavingsSum,
+    currentRestValue, currentRestPercent);
 
   useEffect(() => {
     dispatch(getOverviewData());
     document.title = `Сводка — ${dictionary.APP_NAME}`;
     return () => dispatch(resetStore());
   }, []);
+
   return (
     (() => {
       if (isFetchFailed) {
         return <ErrorPage code={500} message="Ошибка" />;
       }
-      if (isDataFethed && isCartsDataReady) {
+      if (isDataFetched && isCartsDataReady) {
         return (
           <>
             <PageContainer>
               <PageHeadline title="Сводка" date={date} />
             </PageContainer>
-            <div className="container">
+            <PageContainer>
               <div className="row">
                 <div className="col mb-3 mb-md-4">
                   <div className={cardElippser}>
@@ -70,9 +75,8 @@ const Overview = () => {
               <div className="row">
                 <div className="col-lg-6 mb-3 mb-lg-0">
                   <DataInputList
-                    date={date}
-                    sum={monthSpendingsSum}
-                    data={daySpendings}
+                    sum={currentDaySpendingsSum}
+                    data={currentDaySpendings}
                     title="Список трат за сегодня"
                     subtitle={(
                       <Tooltip
@@ -90,9 +94,6 @@ const Overview = () => {
                   <Saldo />
                 </div>
               </div>
-            </div>
-            <PageContainer>
-              <main />
             </PageContainer>
           </>
         );

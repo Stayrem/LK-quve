@@ -21,21 +21,6 @@
   margin-left: auto;
 }
 
-.dayPickerBtn {
-  cursor: pointer;
-  border: none;
-  color: #ffffff;
-  box-shadow: 0 30px 20px -10px rgba(17, 30, 43, 0.5);
-  font-size: 14px;
-  background-color: $color-primary;
-  border-radius: 5px;
-  padding: 15px 30px;
-}
-
-.dayPickerBtnText {
-  padding-left: 15px;
-}
-
 @media (min-width: 768px) {
   .pageHeadline {
     margin-top: 35px;

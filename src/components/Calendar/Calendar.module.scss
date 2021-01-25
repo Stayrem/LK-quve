@@ -1,0 +1,26 @@
+.calendar {
+  cursor: pointer;
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 30px 20px -10px rgba(17, 30, 43, 0.5);
+  font-size: 14px;
+  font-weight: 500;
+  background-color: $color-primary;
+  border-radius: 5px;
+  padding: 10px 15px;
+}
+
+.calendarText {
+  padding-left: 15px;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .calendar {
+    padding: 15px 25px;
+  }
+
+  .calendarText {
+    display: inline-block;
+  }
+}

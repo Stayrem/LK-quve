@@ -23,8 +23,8 @@ const Costs = () => {
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
   const isFetchFailed = useSelector((state) => state.fetchError);
-  const costsCurrentMonthSum = useSelector((state) => state.costsSum);
-  const costsCurrentMonthList = useSelector((state) => state.costs);
+  const currentCostsSum = useSelector((state) => state.currentCostsSum);
+  const currentCosts = useSelector((state) => state.currentCosts);
 
   useEffect(() => {
     dispatch(fetchCosts());
@@ -46,7 +46,9 @@ const Costs = () => {
       }
       return (
         <main className="main">
-          <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date} MonthFormat />
+          <PageContainer>
+            <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date} MonthFormat />
+          </PageContainer>
           <PageContainer>
             <PageText text="Введите все Ваши постоянные расходы за месяц." />
             <div className="row">
@@ -60,8 +62,8 @@ const Costs = () => {
                       id="costs"
                     />
                   )}
-                  sum={costsCurrentMonthSum}
-                  data={costsCurrentMonthList}
+                  sum={currentCostsSum}
+                  data={currentCosts}
                   useStatus={false}
                   onAdd={() => dispatch(addCost())}
                   onDelete={(id) => dispatch(deleteCost(id))}
@@ -69,7 +71,7 @@ const Costs = () => {
                 />
               </div>
               <div className="col-lg-4">
-                <DataPieChart title="Структура постоянных расходов" graphData={costsCurrentMonthList} />
+                <DataPieChart title="Структура постоянных расходов" graphData={currentCosts} />
               </div>
             </div>
           </PageContainer>

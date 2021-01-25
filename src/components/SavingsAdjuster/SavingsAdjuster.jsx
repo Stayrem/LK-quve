@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import isNil from 'lodash/isNil';
 import Skeleton from 'react-loading-skeleton';
-import { getFormatedNumber } from '@utils/functions';
+import { getBeginOfMonth, getFormatedNumber } from '@utils/functions';
 import useDebounce from '../../hooks/use-debounce';
 
 import dictionary from '../../utils/dictionary';
@@ -18,8 +18,8 @@ const SavingsAdjuster = (props) => {
 
   const {
     date,
-    incomesCurrentMonthSum,
-    savingsCurrentMonthSum,
+    currentIncomesSum,
+    currentSavings,
   } = props;
 
   const {
@@ -53,10 +53,10 @@ const SavingsAdjuster = (props) => {
 
     if (type === dictionary.SAVINGS_INPUT_TYPE_PERCENTS) {
       newPercent = value > 100 ? 100 : value;
-      newValue = ((incomesCurrentMonthSum * newPercent) / 100);
+      newValue = ((currentIncomesSum * newPercent) / 100);
     } else if (type === dictionary.SAVINGS_INPUT_TYPE_VALUE) {
-      newValue = value > incomesCurrentMonthSum ? incomesCurrentMonthSum : value;
-      newPercent = Math.round((newValue / incomesCurrentMonthSum) * 100);
+      newValue = value > currentIncomesSum ? currentIncomesSum : value;
+      newPercent = Math.round((newValue / currentIncomesSum) * 100);
     }
 
     if (newValue !== newSavingsValue || newValue !== newSavingsPercent) {
@@ -73,17 +73,21 @@ const SavingsAdjuster = (props) => {
 
   useEffect(() => {
     if (isNewSavingsValueChanged) {
-      dispatch(updateSavingsData({ date, value: newSavingsValue, percent: newSavingsPercent }));
+      dispatch(updateSavingsData({
+        date: getBeginOfMonth(date),
+        value: newSavingsValue,
+        percent: newSavingsPercent,
+      }));
       setIsNewSavingsValueChanged(false);
     }
   }, [newSavings]);
 
   useEffect(() => {
-    if (!isNil(savingsCurrentMonthSum) && !isNil(incomesCurrentMonthSum)) {
-      setNewSavingsValue(savingsCurrentMonthSum);
-      setNewSavingsPercent(Math.round((savingsCurrentMonthSum / incomesCurrentMonthSum) * 100));
+    if (currentSavings && currentIncomesSum) {
+      setNewSavingsValue(currentSavings.value);
+      setNewSavingsPercent(currentSavings.percent);
     }
-  }, [savingsCurrentMonthSum, incomesCurrentMonthSum]);
+  }, [currentSavings, currentIncomesSum]);
 
   return (
     <div className={['panel', savingsAdjuster, 'mb-3'].join(' ')}>
@@ -94,7 +98,7 @@ const SavingsAdjuster = (props) => {
         <div className={['panel-header-subtitle', savingsAdjusterHeaderDate].join(' ')}>
           <SkeletonContainer>
             {date
-              ? moment(date).format('MMMM YYYY')
+              ? `За ${moment(date * 1000).format('MMMM YYYY')}`
               : (
                 <Skeleton width={50} height={20} />
               )}
@@ -160,8 +164,8 @@ const SavingsAdjuster = (props) => {
                 <div className={[savingsAdjusterInputsLabel, 'mt-2'].join(' ')}>
                   От дохода&nbsp;
                   <span>
-                    {!isNil(incomesCurrentMonthSum)
-                      ? `${getFormatedNumber(incomesCurrentMonthSum)}`
+                    {!isNil(currentIncomesSum)
+                      ? `${getFormatedNumber(currentIncomesSum)}`
                       : <Skeleton />}
                   </span>
                   &nbsp;в месяц
@@ -202,14 +206,22 @@ const SavingsAdjuster = (props) => {
 
 SavingsAdjuster.defaultProps = {
   date: null,
-  incomesCurrentMonthSum: null,
-  savingsCurrentMonthSum: null,
+  currentIncomesSum: null,
+  currentSavings: {
+    date: null,
+    percent: 0,
+    value: 0,
+  },
 };
 
 SavingsAdjuster.propTypes = {
   date: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
-  incomesCurrentMonthSum: PropTypes.number,
-  savingsCurrentMonthSum: PropTypes.number,
+  currentIncomesSum: PropTypes.number,
+  currentSavings: PropTypes.shape({
+    date: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
+    percent: PropTypes.number,
+    value: PropTypes.number,
+  }),
 };
 
 export default SavingsAdjuster;

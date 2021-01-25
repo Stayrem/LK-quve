@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 import moment from 'moment';
 import 'moment/locale/ru';
+import { getBeginOfDay, getBeginOfMonth } from '@utils/functions';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
 
@@ -66,24 +67,24 @@ export const fetchUserInfo = () => async (dispatch) => {
 
 export const fetchIncomes = () => async (dispatch) => {
   try {
-    const incomes = await fetchData('/mocks/incomes/get.json');
-    const incomesSum = calculateSum(incomes.data);
-    dispatch(setIncomes({ incomes: incomes.data, incomesSum }));
+    const currentIncomes = await fetchData('/mocks/incomes/get.json');
+    const currentIncomesSum = calculateSum(currentIncomes.data);
+    dispatch(setIncomes({ currentIncomes: currentIncomes.data, currentIncomesSum }));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }
 };
 
 export const fetchCosts = () => async (dispatch) => {
-  const costs = await fetchData('/mocks/costs/get.json');
-  const costsSum = calculateSum(costs.data);
-  dispatch(setCosts({ costs: costs.data, costsSum }));
+  const currentCosts = await fetchData('/mocks/costs/get.json');
+  const currentCostsSum = calculateSum(currentCosts.data);
+  dispatch(setCosts({ currentCosts: currentCosts.data, currentCostsSum }));
 };
 
 export const fetchSpendings = () => async (dispatch) => {
   try {
-    const spendings = await fetchData('/mocks/spendings/get.json');
-    dispatch(setMonthSpendings(spendings.data));
+    const currentMonthSpendings = await fetchData('/mocks/spendings/get.json');
+    dispatch(setMonthSpendings(currentMonthSpendings.data));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }
@@ -92,85 +93,94 @@ export const fetchSpendings = () => async (dispatch) => {
 export const fetchSavings = () => async (dispatch, getState) => {
   const { date } = getState();
   try {
-    const savings = await fetchData('/mocks/savings/get.json');
-    const savingsSelectedMonth = savings.data.find((item) => {
-      const selectedMonth = moment(date).format('YYYY-MM');
-      const storedMonth = moment(item.date).format('YYYY-MM');
+    const currentYearSavings = await fetchData('/mocks/savings/get.json');
+    const currentSavings = currentYearSavings.data.find((item) => {
+      const selectedMonth = getBeginOfMonth(date);
+      const storedMonth = item.date;
       return selectedMonth === storedMonth;
     });
-    dispatch(setSavings({ savings: savings.data, savingsSelectedMonth }));
+    dispatch(setSavings({ currentYearSavings: currentYearSavings.data, currentSavings }));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }
 };
 
 export const updateSavingsData = (data) => (dispatch, getState) => {
-  const { savings, date } = getState();
+  const { currentYearSavings, date } = getState();
   const targetDate = data.date;
-  const updatedSavings = savings.map((item) => {
-    const selectedMonth = moment(targetDate).format('YYYY-MM');
-    const storedMonth = moment(item.date).format('YYYY-MM');
+  const updatedSavings = currentYearSavings.map((item) => {
+    const selectedMonth = getBeginOfMonth(targetDate);
+    const storedMonth = item.date;
     if (selectedMonth === storedMonth) {
       return data;
     }
     return item;
   });
-  const savingsSelectedMonth = updatedSavings.find((item) => {
-    const selectedMonth = moment(date).format('YYYY-MM');
-    const storedMonth = moment(item.date).format('YYYY-MM');
+  const currentSavings = updatedSavings.find((item) => {
+    const selectedMonth = getBeginOfMonth(date);
+    const storedMonth = item.date;
     return selectedMonth === storedMonth;
   });
-  dispatch(setSavings({ savings: updatedSavings, savingsSelectedMonth }));
+  dispatch(setSavings({ currentYearSavings: updatedSavings, currentSavings }));
 };
 
 const calculateOverviewData = () => async (dispatch, getState) => {
   const {
-    savings,
-    incomes,
-    monthSpendings,
-    incomesSum,
-  //  date,
+    currentIncomesSum,
+    currentCostsSum,
+    currentSavings,
+    currentMonthSpendings,
+    date,
   } = getState();
-  const currentSavingSum = (savings[savings.length - 1]
-    .percent * incomes.reduce((acc, current) => acc + current.value, 0)) / 100;
-  const monthSpendingsSum = monthSpendings.reduce((acc, current) => acc + current.value, 0);
+
   /*
-    const selectedDaySpendings = monthSpendings.find((item) => {
-    const selectedDay = moment(date).format('YYYY-MM-DD');
-    const storedDay = moment(item.date).format('YYYY-MM-DD');
+  * Высчитываются данные для сводки для выбранного в календаре дня.
+  * */
+
+  const currentSavingsSum = (currentSavings.percent * currentIncomesSum) / 100;
+  const currentMonthSpendingsSum = currentMonthSpendings.reduce((acc, current) => acc + current.value, 0);
+  const currentDaySpendings = currentMonthSpendings.filter((item) => {
+    const selectedDay = getBeginOfDay(date);
+    const storedDay = item.date;
     return selectedDay === storedDay;
   });
-  */
-  const selectedDaySpendings = monthSpendings;
-  const daySpendingsSum = selectedDaySpendings.reduce((acc, current) => acc + current.value, 0);
-  const moneyRemains = incomesSum - monthSpendingsSum - currentSavingSum;
+  const currentDaySpendingsSum = currentDaySpendings.length > 0
+    ? currentDaySpendings.reduce((acc, current) => acc + current.value, 0)
+    : 0;
+
+  const currentProfit = currentIncomesSum - currentCostsSum - currentSavingsSum;
+  const currentFixedBudget = currentProfit / moment(date).daysInMonth();
+  const currentDailyBudget = Math.round(currentFixedBudget * moment(date * 1000).utc().date() - currentMonthSpendingsSum + currentDaySpendingsSum);
+
+  const currentRestValue = currentProfit - currentMonthSpendingsSum + currentDaySpendingsSum;
+  const currentRestPercent = Math.round((currentRestValue / currentIncomesSum) * 100);
 
   dispatch(setOverviewData({
-    currentSavingSum,
-    incomesSum,
-    monthSpendingsSum,
-    daySpendingsSum,
-    selectedDaySpendings,
-    moneyRemains,
+    currentDailyBudget,
+    currentSavingsSum,
+    currentRestValue,
+    currentRestPercent,
+    currentDaySpendings,
+    currentDaySpendingsSum,
   }));
 };
 
 export const addSpending = () => (dispatch, getState) => {
-  const { monthSpendings } = getState();
-  dispatch(setMonthSpendings([...monthSpendings, { id: nanoid(), name: '', value: null }]));
+  const { currentMonthSpendings } = getState();
+  dispatch(setMonthSpendings([...currentMonthSpendings, { id: nanoid(), name: '', value: null }]));
   dispatch(calculateOverviewData());
 };
 
 export const deleteSpending = (id) => (dispatch, getState) => {
-  const { monthSpendings } = getState();
-  const newList = monthSpendings.filter((it) => it.id !== id);
+  const { currentMonthSpendings } = getState();
+  const newList = currentMonthSpendings.filter((it) => it.id !== id);
   dispatch(setMonthSpendings(newList));
   dispatch(calculateOverviewData());
 };
 
-export const editSpending = (spending) => (dispatch, getState) => {
-  const { monthSpendings } = getState();
-  dispatch(setMonthSpendings(monthSpendings.map((it) => {
+export const editSpending = (spending) => async (dispatch, getState) => {
+  const { currentMonthSpendings } = getState();
+  dispatch(setMonthSpendings(currentMonthSpendings.map((it) => {
     if (it.id === spending.id) {
       return { ...it, isPending: true };
     }
@@ -179,7 +189,7 @@ export const editSpending = (spending) => (dispatch, getState) => {
   dispatch(calculateOverviewData());
   try {
     await fetchData('https://run.mocky.io/v3/f2635207-4c9d-466a-a590-be0a332cf85a?mocky-delay=1500ms');
-    dispatch(setMonthSpendings(monthSpendings.map((it) => {
+    dispatch(setMonthSpendings(currentMonthSpendings.map((it) => {
       if (it.id === spending.id) {
         return { ...it, name: spending.name, value: spending.value };
       }

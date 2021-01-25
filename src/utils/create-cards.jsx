@@ -2,13 +2,14 @@ import React from 'react';
 import moment from 'moment';
 import 'moment/locale/ru';
 import Tooltip from '../components/Tooltip/Tooltip';
+import RestSumWidget from '../components/RestSumWidget/RestSumWidget';
 
-export default (monthSpendingsSum, moneyRemains, currentSavingSum, Component) => ([
+export default (currentDailyBudget, currentDaySpendingsSum, currentSavingsSum, currentRestValue, currentRestPercent) => ([
   {
     title: 'Траты за сегодня',
-    text: monthSpendingsSum,
-    subTitle: `Осталось: ${moneyRemains}`,
-    textColor: monthSpendingsSum > 0 ? '#7DC900' : '#FC4349',
+    text: currentDaySpendingsSum,
+    subTitle: `Осталось: ${currentDailyBudget - currentDaySpendingsSum}`,
+    textColor: currentDailyBudget - currentDaySpendingsSum > 0 ? '#7DC900' : '#FC4349',
     tooltip: <Tooltip
       id="card-spendings"
       text="Сумма, потраченная за текущий день и остаток денег, которые можно сегодня комфортно потратить."
@@ -16,9 +17,9 @@ export default (monthSpendingsSum, moneyRemains, currentSavingSum, Component) =>
   },
   {
     title: 'Бюджет на день',
-    text: moneyRemains / moment().daysInMonth(),
+    text: currentDailyBudget,
     subTitle: `На ${moment().format('D MMMM YYYY')}`,
-    textColor: moneyRemains / moment().daysInMonth() > 0 ? '#7DC900' : '#FC4349',
+    textColor: currentDailyBudget > 0 ? '#7DC900' : '#FC4349',
     tooltip: <Tooltip
       id="card-day-budget"
       text="Столько можно комфортно потратить сегодня не выбиваясь из месячного бюджета."
@@ -26,8 +27,8 @@ export default (monthSpendingsSum, moneyRemains, currentSavingSum, Component) =>
   },
   {
     title: 'Сбережения',
-    text: currentSavingSum,
-    subTitle: `В ${moment().format('MMMM')}`,
+    text: currentSavingsSum,
+    subTitle: `За ${moment().format('MMMM')}`,
     textColor: '#ffffff',
     tooltip: <Tooltip
       id="card-savings"
@@ -36,10 +37,14 @@ export default (monthSpendingsSum, moneyRemains, currentSavingSum, Component) =>
   },
   {
     title: 'Остаток до конца месяца',
-    text: moneyRemains,
-    textColor: moneyRemains > 0 ? '#7DC900' : '#FC4349',
+    text: currentRestValue,
+    textColor: currentRestValue > 0 ? '#7DC900' : '#FC4349',
     subTitle: (
-      <Component restPercent={(monthSpendingsSum * 100) / moneyRemains} />
+      <RestSumWidget restPercent={currentRestPercent} />
     ),
+    tooltip: <Tooltip
+      id="card-rest"
+      text="Столько у Вас остаётся средств до конца месяца, которые можно комфортно потратить."
+    />,
   },
 ]);

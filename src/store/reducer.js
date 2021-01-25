@@ -1,27 +1,28 @@
 import moment from 'moment';
 import 'moment/locale/ru';
 import Type from './action-types';
+import { getBeginOfDay } from '@utils/functions';
 
 const initialState = {
-  info: {},
   fetchError: false,
-  date: moment().unix() * 1000,
+  date: getBeginOfDay(moment().utc().unix()),
+  info: {},
   isInfoFetched: false,
-  incomes: [],
+
+  currentIncomes: [],
+  currentIncomesSum: null,
   isIncomesFethed: false,
-  costs: [],
+
+  currentCosts: [],
+  currentCostsSum: null,
   isCostsFetched: false,
-  monthSpendings: [],
-  daySpendings: [],
-  isSpendingsFetched: false,
-  savings: [],
-  savingsSelectedMONTH: 0,
+
+  currentYearSavings: [],
+  currentSavings: null,
   isSavingsFetched: false,
-  currentSavingSum: null,
-  incomesSum: null,
-  monthSpendingsSum: null,
-  daySpendingsSum: null,
-  moneyRemains: null,
+
+  currentMonthSpendings: [],
+  isSpendingsFetched: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -41,13 +42,13 @@ const reducer = (state = initialState, action) => {
     case Type.SET_MONTH_SPENDINGS_DATA:
       return {
         ...state,
-        monthSpendings: payload,
+        currentMonthSpendings: payload,
         isSpendingsFetched: true,
       };
     case Type.SET_DAY_SPENDINGS_DATA:
       return {
         ...state,
-        daySpendings: payload,
+        currentDaySpendings: payload,
       };
     case Type.SET_INCOMES_DATA:
       return {
