@@ -46,6 +46,8 @@
   .react-datepicker {
     background-color: $color-primary;
     color: #ffffff;
+    border: none;
+    box-shadow: 0 30px 20px -10px rgba(17, 30, 43, 0.5);
   }
 
   .react-datepicker__header {

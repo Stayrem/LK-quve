@@ -13,8 +13,12 @@ const RestSumWidget = (props) => {
   );
 };
 
+RestSumWidget.defaultProps = {
+  restPercent: 100,
+};
+
 RestSumWidget.propTypes = {
-  restPercent: PropTypes.number.isRequired,
+  restPercent: PropTypes.number,
 };
 
 export default RestSumWidget;

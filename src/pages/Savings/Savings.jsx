@@ -19,11 +19,10 @@ const Savings = () => {
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
   const isFetchFailed = useSelector((state) => state.fetchError);
-  const savingsCurrentYearList = useSelector((state) => state.savings);
-  const incomesCurrentMonthSum = useSelector((state) => state.incomesSum);
-  const savingsCurrentMonth = useSelector((state) => state.savingsSelectedMonth);
-  const savingsCurrentYearSum = savingsCurrentYearList
-    .reduce((acc, curr) => acc + curr.value, 0);
+  const currentYearSavings = useSelector((state) => state.currentYearSavings);
+  const currentSavings = useSelector((state) => state.currentSavings);
+  const currentYearSavingsSum = currentYearSavings.reduce((acc, curr) => acc + curr.value, 0);
+  const currentIncomesSum = useSelector((state) => state.currentIncomesSum);
 
   useEffect(() => {
     dispatch(fetchSavings());
@@ -46,7 +45,9 @@ const Savings = () => {
       }
       return (
         <main className="main">
-          <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date} MonthFormat />
+          <PageContainer>
+            <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date} MonthFormat />
+          </PageContainer>
           <PageContainer>
             <div className="row">
               <div className="col">
@@ -57,13 +58,13 @@ const Savings = () => {
               <div className="col-lg-5 mb-3 mb-lg-0">
                 <SavingsAdjuster
                   date={date}
-                  incomesCurrentMonthSum={incomesCurrentMonthSum}
-                  savingsCurrentMonthSum={savingsCurrentMonth.value}
+                  currentIncomesSum={currentIncomesSum}
+                  currentSavings={currentSavings}
                 />
-                <SavingsSum value={savingsCurrentYearSum} />
+                <SavingsSum value={currentYearSavingsSum} />
               </div>
               <div className="col-lg-7">
-                <DataBarChart title="Динамика сбережений по месяцам" graphData={savingsCurrentYearList} />
+                <DataBarChart title="Динамика сбережений по месяцам" graphData={currentYearSavings} />
               </div>
             </div>
           </PageContainer>
