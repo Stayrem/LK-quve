@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCheck, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import isEqual from 'lodash/isEqual';
 import styles from './DataInputListItem.module.scss';
 
@@ -34,7 +34,7 @@ const ListItemEditStatus = (props) => {
     return (
       <td className={dataInputListItemIconTd}>
         <div className={dataInputListItemIcon}>
-          <FontAwesomeIcon icon={faSync} color="#FAC620" />
+          <FontAwesomeIcon icon={faSpinner} color="#FAC620" className="fa-pulse" />
         </div>
       </td>
     );
@@ -62,19 +62,20 @@ const DataInputListItem = (props) => {
 
   const {
     focused,
+    pending,
     dataInputListItemIcon,
     dataInputListItemIconBtn,
   } = styles;
 
-  const [spending, editSpending] = useState({
+  const [item, editItem] = useState({
     id, name, value, status,
   });
 
   const nameInput = useRef();
   const valueInput = useRef();
 
-  const onEditComplete = (editedSpending) => {
-    editInputListItem(editedSpending);
+  const onEditComplete = (editedItem) => {
+    editInputListItem(editedItem);
   };
 
   useEffect(() => {
@@ -95,22 +96,39 @@ const DataInputListItem = (props) => {
   const onKeyUpHandler = (event, isAddingAccepted, isDeletingAccepted) => {
     switch (event.key) {
       case 'Backspace':
-        if (!spending.name && !spending.value && isDeletingAccepted) {
+        if (!item.name && !item.value && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
           deleteInputListItem(id);
         }
-        if (!spending.value && !isDeletingAccepted) {
+        if (!item.value && !isDeletingAccepted) {
           event.preventDefault();
           nameInput.current.focus();
         }
-        if (!spending.name && spending.value && isDeletingAccepted) {
+        if (!item.name && item.value && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
         }
         break;
       case 'Enter':
+        event.preventDefault();
+        if (!isEqual({
+          id, name, value, status,
+        }, item) && !isPending) {
+          onEditComplete(item);
+        } else {
+          if (item.name && item.value && isAddingAccepted && isLast) {
+            addInputListItem();
+          }
+          if (!isAddingAccepted) {
+            valueInput.current.focus();
+          }
+          if (isAddingAccepted && !isLast) {
+            setFocusToItem(id, 'first', 'next');
+          }
+        }
+        break;
       case 'Tab':
         event.preventDefault();
-        if (spending.name && spending.value && isAddingAccepted && isLast) {
+        if (item.name && item.value && isAddingAccepted && isLast) {
           addInputListItem();
         }
         if (!isAddingAccepted) {
@@ -132,10 +150,10 @@ const DataInputListItem = (props) => {
     }
   };
 
+  const trStyles = [isFocused ? focused : '', isPending ? pending : ''];
+
   return (
-    <tr
-      className={isFocused ? focused : ''}
-    >
+    <tr className={trStyles.join(' ')}>
       <td onClick={(event) => setFocusOnRow(event, 'first')}>{index + 1}</td>
       <td className="py-0" onClick={(event) => setFocusOnRow(event, 'first')}>
         <input
@@ -143,7 +161,7 @@ const DataInputListItem = (props) => {
           type="text"
           placeholder="Название..."
           defaultValue={name}
-          onChange={(event) => editSpending({ ...spending, name: event.target.value })}
+          onChange={(event) => editItem({ ...item, name: event.target.value })}
           onKeyDown={(event) => onKeyUpHandler(event, false, true)}
           onClick={(event) => setFocusOnRow(event, 'none')}
         />
@@ -158,8 +176,8 @@ const DataInputListItem = (props) => {
           type="number"
           placeholder="Размер..."
           defaultValue={value}
-          onChange={(event) => editSpending({
-            ...spending,
+          onChange={(event) => editItem({
+            ...item,
             value: parseInt(event.target.value, 10),
           })}
           onKeyDown={(event) => onKeyUpHandler(event, true, false)}
@@ -169,8 +187,8 @@ const DataInputListItem = (props) => {
       {useStatus && (
       <td onClick={(event) => setFocusOnRow(event, 'last')}>
         { status
-          ? <button type="button" onClick={() => editSpending({ ...spending, status: !status })} className="label label-active s_button">Не Учитывать</button>
-          : <button type="button" onClick={() => editSpending({ ...spending, status })} className="label s_button">Учитывать</button>}
+          ? <button type="button" onClick={() => editItem({ ...item, status: !status })} className="label label-active s_button">Не Учитывать</button>
+          : <button type="button" onClick={() => editItem({ ...item, status })} className="label s_button">Учитывать</button>}
       </td>
       )}
       <ListItemEditStatus
@@ -179,7 +197,7 @@ const DataInputListItem = (props) => {
           id, name, value, status,
         }}
         onEditComplete={onEditComplete}
-        stateData={spending}
+        stateData={item}
       />
       <td onClick={(event) => setFocusOnRow(event, 'none')}>
         <button className={[dataInputListItemIcon, dataInputListItemIconBtn].join(' ')} type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
