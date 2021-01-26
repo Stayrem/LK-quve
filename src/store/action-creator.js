@@ -105,25 +105,6 @@ export const fetchSavings = () => async (dispatch, getState) => {
   }
 };
 
-export const updateSavingsData = (data) => (dispatch, getState) => {
-  const { currentYearSavings, date } = getState();
-  const targetDate = data.date;
-  const updatedSavings = currentYearSavings.map((item) => {
-    const selectedMonth = getBeginOfMonth(targetDate);
-    const storedMonth = item.date;
-    if (selectedMonth === storedMonth) {
-      return data;
-    }
-    return item;
-  });
-  const currentSavings = updatedSavings.find((item) => {
-    const selectedMonth = getBeginOfMonth(date);
-    const storedMonth = item.date;
-    return selectedMonth === storedMonth;
-  });
-  dispatch(setSavings({ currentYearSavings: updatedSavings, currentSavings }));
-};
-
 const calculateOverviewData = () => async (dispatch, getState) => {
   const {
     currentIncomesSum,
@@ -166,8 +147,13 @@ const calculateOverviewData = () => async (dispatch, getState) => {
 };
 
 export const addSpending = () => (dispatch, getState) => {
-  const { currentMonthSpendings } = getState();
-  dispatch(setMonthSpendings([...currentMonthSpendings, { id: nanoid(), name: '', value: null }]));
+  const { currentMonthSpendings, date } = getState();
+  dispatch(setMonthSpendings([...currentMonthSpendings, {
+    id: nanoid(),
+    name: '',
+    value: null,
+    date: getBeginOfDay(date),
+  }]));
   dispatch(calculateOverviewData());
 };
 
@@ -201,25 +187,48 @@ export const editSpending = (spending) => async (dispatch, getState) => {
   }
 };
 
+export const editSavingsData = (data) => (dispatch, getState) => {
+  const { currentYearSavings, date } = getState();
+  const targetDate = data.date;
+  const updatedSavings = currentYearSavings.map((item) => {
+    const selectedMonth = getBeginOfMonth(targetDate);
+    const storedMonth = item.date;
+    if (selectedMonth === storedMonth) {
+      return data;
+    }
+    return item;
+  });
+  const currentSavings = updatedSavings.find((item) => {
+    const selectedMonth = getBeginOfMonth(date);
+    const storedMonth = item.date;
+    return selectedMonth === storedMonth;
+  });
+  dispatch(setSavings({ currentYearSavings: updatedSavings, currentSavings }));
+};
+
 export const addIncome = () => (dispatch, getState) => {
-  const { incomes } = getState();
-  const newIncomesList = [...incomes, {
-    id: nanoid(), name: '', value: 0, status: true,
+  const { currentIncomes, date } = getState();
+  const newIncomesList = [...currentIncomes, {
+    id: nanoid(),
+    name: '',
+    value: null,
+    status: true,
+    date: getBeginOfMonth(date),
   }];
-  const incomesSum = calculateSum(newIncomesList);
-  dispatch(setIncomes({ incomes: newIncomesList, incomesSum }));
+  const currentIncomesSum = calculateSum(newIncomesList);
+  dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum }));
 };
 
 export const deleteIncome = (id) => (dispatch, getState) => {
-  const { incomes } = getState();
-  const newIncomesList = incomes.filter((it) => it.id !== id);
-  const incomesSum = calculateSum(newIncomesList);
-  dispatch(setIncomes({ incomes: newIncomesList, incomesSum }));
+  const { currentIncomes } = getState();
+  const newIncomesList = currentIncomes.filter((it) => it.id !== id);
+  const currentIncomesSum = calculateSum(newIncomesList);
+  dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum }));
 };
 
 export const editIncome = (incomeItem) => (dispatch, getState) => {
-  const { incomes } = getState();
-  const newIncomesList = incomes.map((it) => {
+  const { currentIncomes } = getState();
+  const newIncomesList = currentIncomes.map((it) => {
     if (it.id === incomeItem.id) {
       return {
         ...it,
@@ -230,29 +239,33 @@ export const editIncome = (incomeItem) => (dispatch, getState) => {
     }
     return it;
   });
-  const incomesSum = calculateSum(newIncomesList);
-  dispatch(setIncomes({ incomes: newIncomesList, incomesSum }));
+  const currentIncomesSum = calculateSum(newIncomesList);
+  dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum }));
 };
 
 export const addCost = () => (dispatch, getState) => {
-  const { costs } = getState();
-  const newCostsList = [...costs, {
-    id: nanoid(), name: '', value: 0, status: true,
+  const { currentCosts, date } = getState();
+  const newCostsList = [...currentCosts, {
+    id: nanoid(),
+    name: '',
+    value: null,
+    status: true,
+    date: getBeginOfMonth(date),
   }];
-  const costsSum = calculateSum(newCostsList);
-  dispatch(setCosts({ costs: newCostsList, costsSum }));
+  const currentCostsSum = calculateSum(newCostsList);
+  dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
 };
 
 export const deleteCost = (id) => (dispatch, getState) => {
-  const { costs } = getState();
-  const newCostsList = costs.filter((it) => it.id !== id);
-  const costsSum = calculateSum(newCostsList);
-  dispatch(setCosts({ costs: newCostsList, costsSum }));
+  const { currentCosts } = getState();
+  const newCostsList = currentCosts.filter((it) => it.id !== id);
+  const currentCostsSum = calculateSum(newCostsList);
+  dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
 };
 
 export const editCost = (costItem) => (dispatch, getState) => {
-  const { costs } = getState();
-  const newCostsList = costs.map((it) => {
+  const { currentCosts } = getState();
+  const newCostsList = currentCosts.map((it) => {
     if (it.id === costItem.id) {
       return {
         ...it,
@@ -263,8 +276,8 @@ export const editCost = (costItem) => (dispatch, getState) => {
     }
     return it;
   });
-  const costsSum = calculateSum(newCostsList);
-  dispatch(setIncomes({ costs: newCostsList, costsSum }));
+  const currentCostsSum = calculateSum(newCostsList);
+  dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
 };
 
 export const getOverviewData = () => async (dispatch) => {

@@ -49,7 +49,7 @@ const PageHeadline = (props) => {
               selected={selectedDay}
               locale={ru}
               showMonthYearPicker={MonthFormat}
-              dateFormat={MonthFormat ? 'За MMMM yyyy' : 'd MMMM yyyy'}
+              dateFormat={MonthFormat ? 'MMMM yyyy' : 'd MMMM yyyy'}
               onChange={(newDate) => setSelectedDay(newDate)}
               popperModifiers={{
                 offset: {

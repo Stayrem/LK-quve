@@ -9,7 +9,7 @@ import { getBeginOfMonth, getFormatedNumber } from '@utils/functions';
 import useDebounce from '../../hooks/use-debounce';
 
 import dictionary from '../../utils/dictionary';
-import { updateSavingsData } from '../../store/action-creator';
+import { editSavingsData } from '../../store/action-creator';
 import styles from './SavingsAdjuster.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 
@@ -73,7 +73,7 @@ const SavingsAdjuster = (props) => {
 
   useEffect(() => {
     if (isNewSavingsValueChanged) {
-      dispatch(updateSavingsData({
+      dispatch(editSavingsData({
         date: getBeginOfMonth(date),
         value: newSavingsValue,
         percent: newSavingsPercent,

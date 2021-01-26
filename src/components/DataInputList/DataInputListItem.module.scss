@@ -2,9 +2,9 @@
   background-color: $color-primary-darkest;
 }
 
-.dataInputListItemIconTd {
-  width: 83px;
-  padding-right: 0;
+.pending {
+  pointer-events: none;
+  opacity: .5;
 }
 
 .dataInputListItemIcon {

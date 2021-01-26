@@ -36,6 +36,7 @@ const DataInputList = (props) => {
   } = styles;
   const [focusedRowId, setFocusedRowId] = useState(null);
   const [focusedInputType, setFocusedInputType] = useState(null);
+  const [isNewRowAdded, setIsNewRowAdded] = useState(false);
   const tbody = useRef(null);
 
   const setFocusToItem = ((itemId, inputType, neighbour) => {
@@ -46,11 +47,31 @@ const DataInputList = (props) => {
     } else if (neighbour === 'prev') {
       const nextIndex = data.findIndex((item) => item.id === itemId) - 1;
       id = data[nextIndex].id;
+    } else if (neighbour === 'new') {
+      id = data[data.length - 1].id;
     } else {
       id = itemId;
     }
     setFocusedRowId(id);
     setFocusedInputType(inputType);
+  });
+
+  const onAddHandler = (() => {
+    const lastItem = data[data.length - 1];
+    if (!lastItem) {
+      onAdd();
+      setIsNewRowAdded(true);
+    } else if (lastItem.name && lastItem.value) {
+      onAdd();
+      setIsNewRowAdded(true);
+    }
+  });
+
+  const onDeleteHandler = ((id) => {
+    onDelete(id);
+    if (data.length === 1) {
+      onAddHandler();
+    }
   });
 
   const outerAreaClick = ((event) => {
@@ -65,6 +86,13 @@ const DataInputList = (props) => {
       document.removeEventListener('click', outerAreaClick);
     };
   }, []);
+
+  useEffect(() => {
+    if (isNewRowAdded) {
+      setFocusToItem(null, 'first', 'new');
+      setIsNewRowAdded(false);
+    }
+  }, [isNewRowAdded]);
 
   return (
     <div className={['panel', dataInputList].join(' ')}>
@@ -93,7 +121,7 @@ const DataInputList = (props) => {
               <tr>
                 <td colSpan="5">
                   {data && (
-                    <button className={addRowButton} type="button" onClick={onAdd}>
+                    <button className={addRowButton} type="button" onClick={onAddHandler}>
                       <FontAwesomeIcon icon={faPlus} />
                       &nbsp; Добавить строчку &nbsp;
                       <sub>↳ Enter</sub>
@@ -116,8 +144,8 @@ const DataInputList = (props) => {
                   focusedInputType={focusedInputType}
                   isLast={item.id === data[data.length - 1].id}
                   useStatus={useStatus}
-                  addInputListItem={onAdd}
-                  deleteInputListItem={onDelete}
+                  addInputListItem={onAddHandler}
+                  deleteInputListItem={onDeleteHandler}
                   editInputListItem={onEdit}
                   setFocusToItem={setFocusToItem}
                 />
@@ -129,11 +157,9 @@ const DataInputList = (props) => {
       <div className={['panel-footer', dataInputListFooter].join(' ')}>
         <div className={dataInputListSum}>
           Сумма: &nbsp;
-          <SkeletonContainer>
-            <span>
-              {sum ? getFormatedNumber(sum) : <Skeleton width={50} height={15} />}
-            </span>
-          </SkeletonContainer>
+          <span>
+            {sum ? getFormatedNumber(sum) : 0}
+          </span>
         </div>
       </div>
     </div>
@@ -141,7 +167,6 @@ const DataInputList = (props) => {
 };
 
 DataInputList.defaultProps = {
-  date: null,
   sum: null,
   subtitle: null,
   data: [],
@@ -149,7 +174,6 @@ DataInputList.defaultProps = {
 };
 
 DataInputList.propTypes = {
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
   sum: PropTypes.number,
   data: PropTypes.arrayOf(PropTypes.object),
   title: PropTypes.string.isRequired,
