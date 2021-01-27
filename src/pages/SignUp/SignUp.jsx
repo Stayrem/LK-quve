@@ -1,22 +1,22 @@
 import React, { useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import fetchData from '@utils/fetch';
 import dictionary from '@utils/dictionary';
 
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
+import { useAuth } from '../../hooks/use-auth';
 
 const validate = (values) => {
   const errors = {};
-  if (!values.name) {
-    errors.name = 'Имя не заполнено';
+  if (!values.full_name) {
+    errors.full_name = 'Имя не заполнено';
   }
 
   if (!values.password) {
     errors.password = 'Пароль не установлен';
-  } else if (values.password.length < 5) {
-    errors.password = 'Пароль должен быть больше 5 символов';
+  } else if (values.password.length < 8) {
+    errors.password = 'Пароль должен быть больше 8 символов';
   }
 
   if (!values.email) {
@@ -29,6 +29,7 @@ const validate = (values) => {
 };
 
 const SignUp = () => {
+  const auth = useAuth();
   const history = useHistory();
 
   useEffect(() => {
@@ -37,26 +38,25 @@ const SignUp = () => {
 
   const formik = useFormik({
     initialValues: {
-      name: '',
+      full_name: '',
       email: '',
       password: '',
     },
     validate,
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        const response = await fetchData('/api/sign-up', 'POST', values);
-        if (response.code === 200) {
+    onSubmit: (values, { resetForm }) => {
+      auth.signUp(values)
+        .then(() => {
+          resetForm();
           toast.success('Пользователь успешно зарегистрирован!');
           history.push('/sign-in');
-          resetForm();
-        }
-      } catch (error) {
-        if (error.response.status === 422) {
-          toast.error('Такой пользователь уже существует!');
-        } else {
-          toast.error(`Ошибка сервера: ${error.response.status}`);
-        }
-      }
+        }, (error) => {
+          if (error.response.status === 422) {
+            toast.error('Такой пользователь уже существует!');
+          } else {
+            toast.error(`Ошибка сервера: ${error.response.status}`);
+          }
+          formik.setSubmitting(false);
+        });
     },
   });
 
@@ -80,15 +80,15 @@ const SignUp = () => {
                       <input
                         type="text"
                         className="form-control"
-                        id="name"
-                        name="name"
+                        id="full_name"
+                        name="full_name"
                         placeholder="Меня зовут..."
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        value={formik.values.name}
+                        value={formik.values.full_name}
                       />
                     </div>
-                    {formik.touched.name && formik.errors.name ? <small className="text-warning">{formik.errors.name}</small> : null}
+                    {formik.touched.full_name && formik.errors.full_name ? <small className="text-warning">{formik.errors.full_name}</small> : null}
                   </div>
                   <div className="form-group">
                     <div className="input-wrapper">
