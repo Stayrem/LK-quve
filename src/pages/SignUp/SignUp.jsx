@@ -16,7 +16,7 @@ const validate = (values) => {
   if (!values.password) {
     errors.password = 'Пароль не установлен';
   } else if (values.password.length < 8) {
-    errors.password = 'Пароль должен быть больше 8 символов';
+    errors.password = 'Пароль должен быть не менее 8 символов';
   }
 
   if (!values.email) {
@@ -49,11 +49,13 @@ const SignUp = () => {
           resetForm();
           toast.success('Пользователь успешно зарегистрирован!');
           history.push('/sign-in');
-        }, (error) => {
-          if (error.response.status === 422) {
+        })
+        .catch((error) => {
+          const errorStatus = error.response && error.response.status;
+          if (errorStatus === 422) {
             toast.error('Такой пользователь уже существует!');
           } else {
-            toast.error(`Ошибка сервера: ${error.response.status}`);
+            toast.error(`Ошибка сервера: ${errorStatus}`);
           }
           formik.setSubmitting(false);
         });

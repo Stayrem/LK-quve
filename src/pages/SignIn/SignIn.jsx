@@ -45,11 +45,13 @@ const SignIn = () => {
       auth.signIn(values)
         .then(() => {
           resetForm();
-        }, (error) => {
-          if (error.response.status === 401) {
+        })
+        .catch((error) => {
+          const errorStatus = error.response && error.response.status;
+          if (errorStatus === 401) {
             toast.error('Некорректные email или пароль.');
           } else {
-            toast.error(`Ошибка сервера: ${error.response.status}`);
+            toast.error(`Ошибка сервера: ${errorStatus}`);
           }
           formik.setSubmitting(false);
         });
