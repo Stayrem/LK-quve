@@ -37,9 +37,6 @@ const App = () => {
               </Route>
             );
           })}
-          <PrivateRoute path={routesDict.ROOT}>
-            <Redirect to={routesDict.OVERVIEW} />
-          </PrivateRoute>
         </Switch>
         <Footer />
         <ToastContainer

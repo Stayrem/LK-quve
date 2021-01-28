@@ -93,7 +93,7 @@ const Header = () => {
           <div className={exitWrapper}>
             {
               auth.user ? (
-                <a href="/logout" className={[link, headerItem].join(' ')} onClick={() => auth.signOut()}>Выход</a>
+                <a className={[link, headerItem].join(' ')} onClick={() => auth.signOut()}>Выход</a>
               ) : (
                 <Link to="/sign-up" className={[link, headerItem].join(' ')}>Регистрация</Link>
               )

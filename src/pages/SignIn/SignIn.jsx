@@ -5,6 +5,7 @@ import dictionary from '@utils/dictionary';
 import { useFormik } from 'formik';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import { useAuth } from '../../hooks/use-auth';
+import { toast } from 'react-toastify';
 
 const validate = (values) => {
   const errors = {};
@@ -42,7 +43,18 @@ const SignIn = () => {
     validate,
     onSubmit: (values, { resetForm }) => {
       auth.signIn(values)
-        .then(() => resetForm());
+        .then(() => {
+          resetForm();
+        })
+        .catch((error) => {
+          const errorStatus = error.response && error.response.status;
+          if (errorStatus === 401) {
+            toast.error('Некорректные email или пароль.');
+          } else {
+            toast.error(`Ошибка сервера: ${errorStatus}`);
+          }
+          formik.setSubmitting(false);
+        });
     },
   });
 

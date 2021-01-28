@@ -39,6 +39,11 @@ export default [
     isProtected: false,
   },
   {
+    path: routerDict.ROOT,
+    component: Overview,
+    isProtected: true,
+  },
+  {
     path: routerDict.NOT_FOUND,
     component: ErrorPage,
     isProtected: false,
