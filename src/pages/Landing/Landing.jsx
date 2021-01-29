@@ -22,7 +22,7 @@ const Landing = () => {
       <section className={landingHeader}>
         <PageContainer>
           <div className="row">
-            <div className="col-sm-5">
+            <div className="col-lg-5 text-center text-lg-left">
               <h1 className="mb-3">Контролируйте свой личный <span>бюджет</span> легко!</h1>
               <p className="mb-5">Сервис позволяет грамотно планировать свой бюджет, сохранять и преумножать Ваш капитал.</p>
               <Link to={routesDict.SIGN_UP} className="btn btn-primary btn-outline">Начать пользоваться <strong>бесплатно</strong></Link>
@@ -38,19 +38,19 @@ const Landing = () => {
             </div>
           </div>
           <div className="row">
-            <div className="col-sm-3">
+            <div className="col-sm-3 mb-4 mb-sm-0">
               <div className={landingCircleDigit}>1</div>
               <p>Вы указываете свои месячные доходы и постоянные расходы</p>
             </div>
-            <div className="col-sm-3">
+            <div className="col-sm-3 mb-4 mb-sm-0">
               <div className={landingCircleDigit}>2</div>
               <p>Уточняете желаемый объем сберегаемых/инвестируемых средств</p>
             </div>
-            <div className="col-sm-3">
+            <div className="col-sm-3 mb-4 mb-sm-0">
               <div className={landingCircleDigit}>3</div>
               <p>Система рассчитывает оптимальный дневной бюджет и следит за его исполнением</p>
             </div>
-            <div className="col-sm-3">
+            <div className="col-sm-3 mb-4 mb-sm-0">
               <div className={landingCircleDigit}>4</div>
               <p>Детализация позволяет получать аналитику и корректировать личный бюджет</p>
             </div>

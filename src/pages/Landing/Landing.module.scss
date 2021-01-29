@@ -5,14 +5,14 @@
 
   .landingHeader {
     padding-top: 100px;
-    padding-bottom: 250px;
+    padding-bottom: 100px;
     background-image: url('../../assets/images/charts.svg');
     background-size: 100%;
     background-position: bottom center;
     background-repeat: no-repeat;
 
     h1 {
-      font-size: 38px;
+      font-size: 28px;
       line-height: 1.5;
 
       span {
@@ -52,4 +52,33 @@
     align-items: center;
     margin-bottom: 15px;
   }
+}
+
+@media (min-width: 768px) {
+  .landing {
+
+    .landingHeader {
+      padding-bottom: 250px;
+
+      h1 {
+        font-size: 32px;
+      }
+    }
+  }
+}
+
+@media (min-width: 1280px) {
+  .landing {
+
+    .landingHeader {
+
+      h1 {
+        font-size: 38px;
+      }
+    }
+  }
+}
+
+@media (min-width: 1700px) {
+
 }

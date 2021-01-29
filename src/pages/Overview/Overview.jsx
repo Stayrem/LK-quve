@@ -54,51 +54,48 @@ const Overview = () => {
       if (isFetchFailed) {
         return <ErrorPage code={500} message="Ошибка" />;
       }
-      if (isDataFetched && isCartsDataReady) {
-        return (
-          <>
-            <PageContainer>
-              <PageHeadline title="Сводка" date={date} />
-            </PageContainer>
-            <PageContainer>
-              <div className="row">
-                <div className="col mb-3 mb-md-4">
-                  <div className={cardElippser}>
-                    <div className={cardScroller}>
-                      <div className={cardWrapper}>
-                        {getCardsState.map((cart) => <Card key={cart.title} {...cart} />)}
-                      </div>
+      return (
+        <>
+          <PageContainer>
+            <PageHeadline title="Сводка" date={date} />
+          </PageContainer>
+          <PageContainer>
+            <div className="row">
+              <div className="col mb-3 mb-md-4">
+                <div className={cardElippser}>
+                  <div className={cardScroller}>
+                    <div className={cardWrapper}>
+                      {getCardsState.map((cart) => <Card key={cart.title} {...cart} isCartsDataReady={isCartsDataReady && isDataFetched} />)}
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="row">
-                <div className="col-lg-6 mb-3 mb-lg-0">
-                  <DataInputList
-                    sum={currentDaySpendingsSum}
-                    data={currentDaySpendings}
-                    title="Список трат за сегодня"
-                    subtitle={(
-                      <Tooltip
-                        text="Сюда необходимо вводить траты за день. Можно вводить сразу всю сумму, потраченную за день."
-                        id="spendings"
-                      />
-                    )}
-                    useStatus={false}
-                    onAdd={() => dispatch(addSpending())}
-                    onDelete={(id) => dispatch(deleteSpending(id))}
-                    onEdit={(spending) => dispatch(editSpending(spending))}
-                  />
-                </div>
-                <div className="col-lg-6 mb-3 mb-lg-0">
-                  <Saldo />
-                </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 mb-3 mb-lg-0">
+                <DataInputList
+                  sum={currentDaySpendingsSum}
+                  data={currentDaySpendings}
+                  title="Список трат за сегодня"
+                  subtitle={(
+                    <Tooltip
+                      text="Сюда необходимо вводить траты за день. Можно вводить сразу всю сумму, потраченную за день."
+                      id="spendings"
+                    />
+                  )}
+                  useStatus={false}
+                  onAdd={() => dispatch(addSpending())}
+                  onDelete={(id) => dispatch(deleteSpending(id))}
+                  onEdit={(spending) => dispatch(editSpending(spending))}
+                />
               </div>
-            </PageContainer>
-          </>
-        );
-      }
-      return null;
+              <div className="col-lg-6 mb-3 mb-lg-0">
+                <Saldo />
+              </div>
+            </div>
+          </PageContainer>
+        </>
+      );
     })()
   );
 };
