@@ -95,7 +95,7 @@ const Header = () => {
               auth.user ? (
                 <a className={[link, headerItem].join(' ')} onClick={() => auth.signOut()}>Выход</a>
               ) : (
-                <Link to="/sign-up" className={[link, headerItem].join(' ')}>Регистрация</Link>
+                <Link to="/sign-in" className={[link, headerItem].join(' ')}>Вход</Link>
               )
             }
           </div>
