@@ -5,6 +5,7 @@ import Savings from '../../pages/Savings/Savings';
 import SignUp from '../../pages/SignUp/SignUp';
 import SignIn from '../../pages/SignIn/SignIn';
 import ErrorPage from '../../pages/ErrorPage/ErrorPage';
+import Landing from '../../pages/Landing/Landing';
 import routerDict from '../../utils/routesDict';
 
 export default [
@@ -38,10 +39,15 @@ export default [
     component: SignIn,
     isProtected: false,
   },
+  // {
+  //   path: routerDict.ROOT,
+  //   component: Overview,
+  //   isProtected: true,
+  // },
   {
     path: routerDict.ROOT,
-    component: Overview,
-    isProtected: true,
+    component: Landing,
+    isProtected: false,
   },
   {
     path: routerDict.NOT_FOUND,

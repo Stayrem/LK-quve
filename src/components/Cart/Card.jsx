@@ -12,6 +12,7 @@ const Card = (props) => {
     textColor,
     subTitle,
     tooltip,
+    isCartsDataReady,
   } = props;
 
   const {
@@ -26,15 +27,19 @@ const Card = (props) => {
       <div className="d-flex justify-content-between">
         <SkeletonContainer>
           <div style={{ color: textColor }} className={cardText}>
-            {getFormatedNumber(Math.floor(text)) || <Skeleton />}
+            {isCartsDataReady ? getFormatedNumber(Math.floor(text)) : <Skeleton width={150} />}
           </div>
         </SkeletonContainer>
         {tooltip}
       </div>
-      <div className={cardTitle}>{title}</div>
+      <SkeletonContainer>
+        <div className={cardTitle}>
+          {isCartsDataReady ? title : <Skeleton />}
+        </div>
+      </SkeletonContainer>
       <SkeletonContainer>
         <div className={cardSubtitle}>
-          {subTitle || <Skeleton />}
+          {isCartsDataReady ? subTitle : <Skeleton />}
         </div>
       </SkeletonContainer>
     </div>
@@ -44,6 +49,7 @@ const Card = (props) => {
 Card.defaultProps = {
   text: null,
   tooltip: null,
+  isCartsDataReady: false,
 };
 
 Card.propTypes = {
@@ -52,6 +58,7 @@ Card.propTypes = {
   textColor: PropTypes.string.isRequired,
   subTitle: PropTypes.node.isRequired,
   tooltip: PropTypes.node,
+  isCartsDataReady: PropTypes.bool,
 };
 
 export default Card;
