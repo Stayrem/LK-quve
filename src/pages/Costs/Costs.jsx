@@ -18,16 +18,18 @@ import {
   resetStore,
 } from '../../store/action-creator';
 import Tooltip from '../../components/Tooltip/Tooltip';
+import { useAuth } from '../../hooks/use-auth';
 
 const Costs = () => {
   const dispatch = useDispatch();
+  const auth = useAuth();
   const date = useSelector((state) => state.date);
   const isFetchFailed = useSelector((state) => state.fetchError);
   const currentCostsSum = useSelector((state) => state.currentCostsSum);
   const currentCosts = useSelector((state) => state.currentCosts);
 
   useEffect(() => {
-    dispatch(fetchCosts());
+    dispatch(fetchCosts(auth.user));
     document.title = `Постоянные расходы — ${dictionary.APP_NAME}`;
     return () => dispatch(resetStore());
   }, []);

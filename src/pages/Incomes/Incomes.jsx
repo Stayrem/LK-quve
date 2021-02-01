@@ -17,16 +17,18 @@ import {
   resetStore,
 } from '../../store/action-creator';
 import Tooltip from '../../components/Tooltip/Tooltip';
+import { useAuth } from '../../hooks/use-auth';
 
 const Incomes = () => {
   const dispatch = useDispatch();
+  const auth = useAuth();
   const isFetchFailed = useSelector((state) => state.fetchError);
   const date = useSelector((state) => state.date);
   const currentIncomesSum = useSelector((state) => state.currentIncomesSum);
   const currentIncomes = useSelector((state) => state.currentIncomes);
 
   useEffect(() => {
-    dispatch(fetchIncomes());
+    dispatch(fetchIncomes(auth.user));
     document.title = `Доходы — ${dictionary.APP_NAME}`;
     return () => dispatch(resetStore());
   }, []);
@@ -65,8 +67,8 @@ const Incomes = () => {
                   data={currentIncomes}
                   useStatus={false}
                   onAdd={() => dispatch(addIncome())}
-                  onDelete={(id) => dispatch(deleteIncome(id))}
-                  onEdit={(incomeItem) => dispatch(editIncome(incomeItem))}
+                  onDelete={(id) => dispatch(deleteIncome(id, auth.user))}
+                  onEdit={(incomeItem) => dispatch(editIncome(incomeItem, auth.user))}
                 />
               </div>
               <div className="col-lg-4">

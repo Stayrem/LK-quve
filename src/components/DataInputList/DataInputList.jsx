@@ -61,7 +61,7 @@ const DataInputList = (props) => {
     if (!lastItem) {
       onAdd();
       setIsNewRowAdded(true);
-    } else if (lastItem.name && lastItem.value) {
+    } else if (lastItem.category && lastItem.value) {
       onAdd();
       setIsNewRowAdded(true);
     }
@@ -136,11 +136,12 @@ const DataInputList = (props) => {
                   key={item.id}
                   index={i}
                   id={item.id}
-                  name={item.name}
+                  category={item.category}
                   value={item.value}
                   status={item.status}
                   isPending={item.isPending}
                   isFocused={item.id === focusedRowId}
+                  isNew={item.isNew}
                   focusedInputType={focusedInputType}
                   isLast={item.id === data[data.length - 1].id}
                   useStatus={useStatus}
