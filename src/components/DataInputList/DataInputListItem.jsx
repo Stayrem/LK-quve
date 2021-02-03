@@ -45,7 +45,7 @@ const ListItemEditStatus = (props) => {
 const DataInputListItem = (props) => {
   const {
     id,
-    name,
+    category,
     value,
     status,
     isFocused,
@@ -58,6 +58,7 @@ const DataInputListItem = (props) => {
     setFocusToItem,
     index,
     isPending,
+    isNew,
   } = props;
 
   const {
@@ -68,10 +69,10 @@ const DataInputListItem = (props) => {
   } = styles;
 
   const [item, editItem] = useState({
-    id, name, value, status,
+    id, category, value, status, isNew,
   });
 
-  const nameInput = useRef();
+  const categoryInput = useRef();
   const valueInput = useRef();
 
   const onEditComplete = (editedItem) => {
@@ -82,7 +83,7 @@ const DataInputListItem = (props) => {
     if (isFocused) {
       switch (focusedInputType) {
         case 'first':
-          nameInput.current.focus();
+          categoryInput.current.focus();
           break;
         case 'last':
           valueInput.current.focus();
@@ -96,26 +97,26 @@ const DataInputListItem = (props) => {
   const onKeyUpHandler = (event, isAddingAccepted, isDeletingAccepted) => {
     switch (event.key) {
       case 'Backspace':
-        if (!item.name && !item.value && isDeletingAccepted) {
+        if (!item.category && !item.value && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
           deleteInputListItem(id);
         }
         if (!item.value && !isDeletingAccepted) {
           event.preventDefault();
-          nameInput.current.focus();
+          categoryInput.current.focus();
         }
-        if (!item.name && item.value && isDeletingAccepted) {
+        if (!item.category && item.value && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
         }
         break;
       case 'Enter':
         event.preventDefault();
         if (!isEqual({
-          id, name, value, status,
+          id, category, value, status, isNew,
         }, item) && !isPending) {
           onEditComplete(item);
         } else {
-          if (item.name && item.value && isAddingAccepted && isLast) {
+          if (item.category && item.value && isAddingAccepted && isLast) {
             addInputListItem();
           }
           if (!isAddingAccepted) {
@@ -128,7 +129,7 @@ const DataInputListItem = (props) => {
         break;
       case 'Tab':
         event.preventDefault();
-        if (item.name && item.value && isAddingAccepted && isLast) {
+        if (item.category && item.value && isAddingAccepted && isLast) {
           addInputListItem();
         }
         if (!isAddingAccepted) {
@@ -157,11 +158,11 @@ const DataInputListItem = (props) => {
       <td onClick={(event) => setFocusOnRow(event, 'first')}>{index + 1}</td>
       <td className="py-0" onClick={(event) => setFocusOnRow(event, 'first')}>
         <input
-          ref={nameInput}
+          ref={categoryInput}
           type="text"
           placeholder="Название..."
-          defaultValue={name}
-          onChange={(event) => editItem({ ...item, name: event.target.value })}
+          defaultValue={category}
+          onChange={(event) => editItem({ ...item, category: event.target.value })}
           onKeyDown={(event) => onKeyUpHandler(event, false, true)}
           onClick={(event) => setFocusOnRow(event, 'none')}
         />
@@ -194,7 +195,7 @@ const DataInputListItem = (props) => {
       <ListItemEditStatus
         isPending={isPending}
         storedData={{
-          id, name, value, status,
+          id, category, value, status, isNew,
         }}
         onEditComplete={onEditComplete}
         stateData={item}
@@ -209,7 +210,7 @@ const DataInputListItem = (props) => {
 };
 
 DataInputListItem.defaultProps = {
-  name: '',
+  category: '',
   value: null,
   status: true,
   isFocused: false,
@@ -217,12 +218,13 @@ DataInputListItem.defaultProps = {
   isLast: false,
   useStatus: true,
   isPending: false,
+  isNew: false,
 };
 
 DataInputListItem.propTypes = {
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   index: PropTypes.number.isRequired,
-  name: PropTypes.string,
+  category: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   status: PropTypes.bool,
   isFocused: PropTypes.bool,
@@ -234,6 +236,7 @@ DataInputListItem.propTypes = {
   addInputListItem: PropTypes.func.isRequired,
   setFocusToItem: PropTypes.func.isRequired,
   isPending: PropTypes.bool,
+  isNew: PropTypes.bool,
 };
 
 ListItemEditStatus.propTypes = {

@@ -14,6 +14,7 @@ import {
 import createCards from '../../utils/create-cards';
 import styles from './Overview.scss';
 import Tooltip from '../../components/Tooltip/Tooltip';
+import { useAuth } from '../../hooks/use-auth';
 
 const Overview = () => {
   const {
@@ -21,6 +22,7 @@ const Overview = () => {
   } = styles;
 
   const dispatch = useDispatch();
+  const auth = useAuth();
   const date = useSelector((state) => state.date);
   const isFetchFailed = useSelector((state) => state.fetchError);
   const currentDailyBudget = useSelector((state) => state.currentDailyBudget);
@@ -44,7 +46,7 @@ const Overview = () => {
     currentRestValue, currentRestPercent);
 
   useEffect(() => {
-    dispatch(getOverviewData());
+    dispatch(getOverviewData(auth.user));
     document.title = `Сводка — ${dictionary.APP_NAME}`;
     return () => dispatch(resetStore());
   }, []);
