@@ -26,6 +26,7 @@ const Incomes = () => {
   const date = useSelector((state) => state.date);
   const currentIncomesSum = useSelector((state) => state.currentIncomesSum);
   const currentIncomes = useSelector((state) => state.currentIncomes);
+  const isIncomesFetched = useSelector((state) => state.isIncomesFethed);
 
   useEffect(() => {
     dispatch(fetchIncomes(auth.user));
@@ -69,6 +70,7 @@ const Incomes = () => {
                   onAdd={() => dispatch(addIncome())}
                   onDelete={(id) => dispatch(deleteIncome(id, auth.user))}
                   onEdit={(incomeItem) => dispatch(editIncome(incomeItem, auth.user))}
+                  isDataFetched={isIncomesFetched}
                 />
               </div>
               <div className="col-lg-4">

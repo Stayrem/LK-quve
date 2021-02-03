@@ -27,6 +27,7 @@ const Costs = () => {
   const isFetchFailed = useSelector((state) => state.fetchError);
   const currentCostsSum = useSelector((state) => state.currentCostsSum);
   const currentCosts = useSelector((state) => state.currentCosts);
+  const isCostsFetched = useSelector((state) => state.isCostsFetched);
 
   useEffect(() => {
     dispatch(fetchCosts(auth.user));
@@ -49,7 +50,7 @@ const Costs = () => {
       return (
         <main className="main">
           <PageContainer>
-            <PageHeadline breadcrumbs={breadcrumbs} title="Доходы" date={date} MonthFormat />
+            <PageHeadline breadcrumbs={breadcrumbs} title="Постоянные расходы" date={date} MonthFormat />
           </PageContainer>
           <PageContainer>
             <PageText text="Введите все Ваши постоянные расходы за месяц." />
@@ -68,8 +69,9 @@ const Costs = () => {
                   data={currentCosts}
                   useStatus={false}
                   onAdd={() => dispatch(addCost())}
-                  onDelete={(id) => dispatch(deleteCost(id))}
-                  onEdit={(costItem) => dispatch(editCost(costItem))}
+                  onDelete={(id) => dispatch(deleteCost(id, auth.user))}
+                  onEdit={(costItem) => dispatch(editCost(costItem, auth.user))}
+                  isDataFetched={isCostsFetched}
                 />
               </div>
               <div className="col-lg-4">

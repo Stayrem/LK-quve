@@ -142,7 +142,7 @@ const calculateOverviewData = () => async (dispatch, getState) => {
     : 0;
 
   const currentProfit = currentIncomesSum - currentCostsSum - currentSavingsSum;
-  const currentFixedBudget = currentProfit / moment(date).daysInMonth();
+  const currentFixedBudget = currentProfit / moment(date * 1000).daysInMonth();
   const currentDailyBudget = Math.round(currentFixedBudget * moment(date * 1000).utc().date() - currentMonthSpendingsSum + currentDaySpendingsSum);
 
   const currentRestValue = currentProfit - currentMonthSpendingsSum + currentDaySpendingsSum;
@@ -300,39 +300,76 @@ export const addCost = () => (dispatch, getState) => {
     value: null,
     status: true,
     date: getBeginOfMonth(date),
+    isNew: true,
   }];
   const currentCostsSum = calculateSum(newCostsList);
   dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
 };
 
-export const deleteCost = (id) => (dispatch, getState) => {
+export const deleteCost = (id, token) => (dispatch, getState) => {
   const { currentCosts } = getState();
-  const newCostsList = currentCosts.filter((it) => it.id !== id);
-  const currentCostsSum = calculateSum(newCostsList);
-  dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
-};
 
-export const editCost = (costItem) => (dispatch, getState) => {
-  const { currentCosts } = getState();
-  const newCostsList = currentCosts.map((it) => {
-    if (it.id === costItem.id) {
-      return {
-        ...it,
-        name: costItem.name,
-        value: costItem.value,
-        status: costItem.status,
-      };
+  let newCostsList = currentCosts.map((it) => {
+    if (it.id === id) {
+      return { ...it, isPending: true };
     }
     return it;
   });
-  const currentCostsSum = calculateSum(newCostsList);
-  dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
+
+  dispatch(setCosts({ currentCosts: newCostsList }));
+
+  try {
+    fetchData(`/api/costs/${id}/`, 'DELETE', null, getAuthorizationHeaders(token));
+
+    newCostsList = currentCosts.filter((it) => it.id !== id);
+    dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum: calculateSum(newCostsList) }));
+  } catch (err) {
+    dispatch(setIsFetchFailed(true));
+  }
 };
 
-export const getOverviewData = () => async (dispatch) => {
-  await dispatch(fetchSpendings());
-  await dispatch(fetchIncomes());
-  await dispatch(fetchCosts());
-  await dispatch(fetchSavings());
+export const editCost = (costItem, token) => async (dispatch, getState) => {
+  const { currentCosts, date } = getState();
+
+  let newCostsList = currentCosts.map((it) => {
+    if (it.id === costItem.id) {
+      return { ...it, isPending: true };
+    }
+    return it;
+  });
+
+  dispatch(setCosts({ currentCosts: newCostsList }));
+
+  try {
+    const payload = {
+      date: getBeginOfMonth(date),
+      category: costItem.category,
+      value: costItem.value,
+    };
+    const headers = getAuthorizationHeaders(token);
+    const updatedCost = costItem.isNew
+      ? await fetchData('/api/costs/', 'POST', payload, headers)
+      : await fetchData(`/api/costs/${costItem.id}/`, 'PUT', payload, headers);
+
+    newCostsList = currentCosts.map((it) => {
+      if (it.id === costItem.id) {
+        return {
+          id: updatedCost.id, category: costItem.category, value: costItem.value,
+        };
+      }
+      return it;
+    });
+
+    dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum: calculateSum(newCostsList) }));
+  } catch (err) {
+    dispatch(setIsFetchFailed(true));
+  }
+};
+
+export const getOverviewData = (token) => async (dispatch) => {
+  await dispatch(fetchSpendings(token));
+  await dispatch(fetchIncomes(token));
+  await dispatch(fetchCosts(token));
+  await dispatch(fetchSavings(token));
   dispatch(calculateOverviewData());
 };
