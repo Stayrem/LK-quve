@@ -6,7 +6,12 @@ import Type from './action-types';
 const initialState = {
   fetchError: false,
   date: getBeginOfDay(moment().utc().unix()),
-  info: {},
+  user: {
+    accessToken: localStorage.getItem('USER_ACCESS_TOKEN') || null,
+    isAccessTokenActual: true,
+    name: null,
+    email: null,
+  },
   isInfoFetched: false,
 
   currentIncomes: [],
@@ -31,8 +36,20 @@ const reducer = (state = initialState, action) => {
     case Type.SET_USER_INFO:
       return {
         ...state,
-        info: payload,
+        user: {
+          ...state.user,
+          ...payload,
+        },
         isInfoFetched: true,
+      };
+    case Type.SET_USER_ACCESS_TOKEN:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          accessToken: payload,
+          isAccessTokenActual: true,
+        },
       };
     case Type.SET_IS_FETCH_FAILED:
       return {
@@ -67,11 +84,6 @@ const reducer = (state = initialState, action) => {
         ...state,
         ...payload,
         isSavingsFetched: true,
-      };
-    case Type.SET_DAILY_BUDJET:
-      return {
-        ...state,
-        dailyBudjet: payload,
       };
     case Type.SET_DATE:
       return {

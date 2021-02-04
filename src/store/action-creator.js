@@ -18,8 +18,9 @@ export const setUserInfo = (data) => ({
   payload: data,
 });
 
-export const resetStore = () => ({
-  type: Type.RESET_STORE,
+export const setUserToken = (data) => ({
+  type: Type.SET_USER_ACCESS_TOKEN,
+  payload: data,
 });
 
 export const setIncomes = (obj) => ({
@@ -57,10 +58,16 @@ export const setIsFetchFailed = (bool) => ({
   payload: bool,
 });
 
-export const fetchUserInfo = () => async (dispatch) => {
+export const resetStore = () => ({
+  type: Type.RESET_STORE,
+});
+
+export const fetchUserInfo = (token) => async (dispatch) => {
+  const headers = getAuthorizationHeaders(token);
+
   try {
-    const userInfo = await fetchData('/mocks/info.json');
-    dispatch(setUserInfo(userInfo.data));
+    const userInfo = await fetchData('/mocks/info.json', 'GET', null, headers);
+    dispatch(setUserInfo(userInfo));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }

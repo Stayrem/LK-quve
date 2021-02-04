@@ -3,6 +3,7 @@ import { useState } from 'react';
 import {
   Link,
 } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styles from './Header.module.scss';
 import logo from '../../assets/images/logo.svg';
 import menu from '../../assets/images/menu.svg';
@@ -70,6 +71,7 @@ const Header = () => {
   const buttonClassname = isMenuOpened ? active : notActive;
   const mobMenuClassname = isMenuOpened ? mobileMenuOpened : '';
   const auth = useAuth();
+  const accessToken = useSelector((state) => state.user.accessToken);
 
   return (
     <header className={header}>
@@ -80,7 +82,7 @@ const Header = () => {
               <img src={logo} alt="Логотип" className={headerLogo} />
             </Link>
             <ul className={headerNavList}>
-              {auth.user && menuItems.map((listItem) => (
+              {accessToken && menuItems.map((listItem) => (
                 <li key={listItem.id} className={item}>
                   <Link to={listItem.url} className={[link, headerItem].join(' ')}>{listItem.title}</Link>
                 </li>
@@ -92,7 +94,7 @@ const Header = () => {
           </button>
           <div className={exitWrapper}>
             {
-              auth.user ? (
+              accessToken ? (
                 <a className={[link, headerItem].join(' ')} onClick={() => auth.signOut()}>Выход</a>
               ) : (
                 <Link to="/sign-in" className={[link, headerItem].join(' ')}>Вход</Link>
