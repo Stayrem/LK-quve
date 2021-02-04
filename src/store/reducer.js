@@ -8,7 +8,7 @@ const initialState = {
   date: getBeginOfDay(moment().utc().unix()),
   user: {
     accessToken: localStorage.getItem('USER_ACCESS_TOKEN') || null,
-    isAccessTokenActual: true,
+    isAccessTokenActual: !!localStorage.getItem('USER_ACCESS_TOKEN'),
     name: null,
     email: null,
   },
@@ -49,6 +49,14 @@ const reducer = (state = initialState, action) => {
           ...state.user,
           accessToken: payload,
           isAccessTokenActual: true,
+        },
+      };
+    case Type.SET_USER_ACCESS_TOKEN_ACTUALITY:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          isAccessTokenActual: payload,
         },
       };
     case Type.SET_IS_FETCH_FAILED:
@@ -102,7 +110,8 @@ const reducer = (state = initialState, action) => {
 
 const wrappedReducer = (state, action) => {
   if (action.type === Type.RESET_STORE) {
-    return reducer(undefined, action);
+    console.log(initialState);
+    return reducer(initialState, action);
   }
   return reducer(state, action);
 };

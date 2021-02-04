@@ -1,17 +1,11 @@
 import { nanoid } from 'nanoid';
 import moment from 'moment';
 import 'moment/locale/ru';
-import { getBeginOfDay, getBeginOfMonth } from '@utils/functions';
+import {
+  getBeginOfDay, getBeginOfMonth, getSumByArray, getAuthorizationHeaders, handleError,
+} from '@utils/functions';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
-
-const calculateSum = (list) => list.reduce((acc, current) => {
-  return acc + current.value;
-}, 0);
-
-const getAuthorizationHeaders = (token) => ({
-  Authorization: `Bearer ${token}`,
-});
 
 export const setUserInfo = (data) => ({
   type: Type.SET_USER_INFO,
@@ -21,6 +15,11 @@ export const setUserInfo = (data) => ({
 export const setUserToken = (data) => ({
   type: Type.SET_USER_ACCESS_TOKEN,
   payload: data,
+});
+
+export const setUserTokenActuality = (bool) => ({
+  type: Type.SET_USER_ACCESS_TOKEN_ACTUALITY,
+  payload: bool,
 });
 
 export const setIncomes = (obj) => ({
@@ -68,8 +67,8 @@ export const fetchUserInfo = (token) => async (dispatch) => {
   try {
     const userInfo = await fetchData('/mocks/info.json', 'GET', null, headers);
     dispatch(setUserInfo(userInfo));
-  } catch (err) {
-    dispatch(setIsFetchFailed(true));
+  } catch (error) {
+    handleError(dispatch, error);
   }
 };
 
@@ -80,10 +79,10 @@ export const fetchIncomes = (token) => async (dispatch, getState) => {
 
   try {
     const currentIncomes = await fetchData(`/api/incomes/?date=${currentMonth}`, 'GET', null, headers);
-    const currentIncomesSum = currentIncomes.length > 0 ? calculateSum(currentIncomes) : 0;
+    const currentIncomesSum = currentIncomes.length > 0 ? getSumByArray(currentIncomes) : 0;
     dispatch(setIncomes({ currentIncomes, currentIncomesSum }));
-  } catch (err) {
-    dispatch(setIsFetchFailed(true));
+  } catch (error) {
+    handleError(dispatch, error);
   }
 };
 
@@ -93,10 +92,10 @@ export const fetchCosts = (token) => async (dispatch, getState) => {
   const headers = getAuthorizationHeaders(token);
   try {
     const currentCosts = await fetchData(`/api/costs/?date=${currentMonth}`, 'GET', null, headers);
-    const currentCostsSum = currentCosts.length > 0 ? calculateSum(currentCosts) : 0;
+    const currentCostsSum = currentCosts.length > 0 ? getSumByArray(currentCosts) : 0;
     dispatch(setCosts({ currentCosts, currentCostsSum }));
-  } catch (err) {
-    dispatch(setIsFetchFailed(true));
+  } catch (error) {
+    handleError(dispatch, error);
   }
 };
 
@@ -104,8 +103,8 @@ export const fetchSpendings = () => async (dispatch) => {
   try {
     const currentMonthSpendings = await fetchData('/mocks/spendings/get.json');
     dispatch(setMonthSpendings(currentMonthSpendings.data));
-  } catch (err) {
-    dispatch(setIsFetchFailed(true));
+  } catch (error) {
+    handleError(dispatch, error);
   }
 };
 
@@ -119,8 +118,8 @@ export const fetchSavings = () => async (dispatch, getState) => {
       return selectedMonth === storedMonth;
     });
     dispatch(setSavings({ currentYearSavings: currentYearSavings.data, currentSavings }));
-  } catch (err) {
-    dispatch(setIsFetchFailed(true));
+  } catch (error) {
+    handleError(dispatch, error);
   }
 };
 
@@ -192,7 +191,6 @@ export const editSpending = (spending) => async (dispatch, getState) => {
     }
     return it;
   })));
-  //dispatch(calculateOverviewData());
 
   try {
     await fetchData('https://run.mocky.io/v3/f2635207-4c9d-466a-a590-be0a332cf85a?mocky-delay=1500ms');
@@ -236,7 +234,7 @@ export const addIncome = () => (dispatch, getState) => {
     date: getBeginOfMonth(date),
     isNew: true,
   }];
-  const currentIncomesSum = calculateSum(newIncomesList);
+  const currentIncomesSum = getSumByArray(newIncomesList);
   dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum }));
 };
 
@@ -256,7 +254,7 @@ export const deleteIncome = (id, token) => (dispatch, getState) => {
     fetchData(`/api/incomes/${id}/`, 'DELETE', null, getAuthorizationHeaders(token));
 
     newIncomesList = currentIncomes.filter((it) => it.id !== id);
-    dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum: calculateSum(newIncomesList) }));
+    dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum: getSumByArray(newIncomesList) }));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }
@@ -293,7 +291,7 @@ export const editIncome = (incomeItem, token) => async (dispatch, getState) => {
       return it;
     });
 
-    dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum: calculateSum(newIncomesList) }));
+    dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum: getSumByArray(newIncomesList) }));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }
@@ -309,7 +307,7 @@ export const addCost = () => (dispatch, getState) => {
     date: getBeginOfMonth(date),
     isNew: true,
   }];
-  const currentCostsSum = calculateSum(newCostsList);
+  const currentCostsSum = getSumByArray(newCostsList);
   dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
 };
 
@@ -329,7 +327,7 @@ export const deleteCost = (id, token) => (dispatch, getState) => {
     fetchData(`/api/costs/${id}/`, 'DELETE', null, getAuthorizationHeaders(token));
 
     newCostsList = currentCosts.filter((it) => it.id !== id);
-    dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum: calculateSum(newCostsList) }));
+    dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum: getSumByArray(newCostsList) }));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }
@@ -367,14 +365,14 @@ export const editCost = (costItem, token) => async (dispatch, getState) => {
       return it;
     });
 
-    dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum: calculateSum(newCostsList) }));
+    dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum: getSumByArray(newCostsList) }));
   } catch (err) {
     dispatch(setIsFetchFailed(true));
   }
 };
 
 export const getOverviewData = (token) => async (dispatch) => {
-  await dispatch(fetchUserInfo(token));
+  //await dispatch(fetchUserInfo(token));
   await dispatch(fetchSpendings(token));
   await dispatch(fetchIncomes(token));
   await dispatch(fetchCosts(token));
