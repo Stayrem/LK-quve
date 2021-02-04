@@ -374,6 +374,7 @@ export const editCost = (costItem, token) => async (dispatch, getState) => {
 };
 
 export const getOverviewData = (token) => async (dispatch) => {
+  await dispatch(fetchUserInfo(token));
   await dispatch(fetchSpendings(token));
   await dispatch(fetchIncomes(token));
   await dispatch(fetchCosts(token));
