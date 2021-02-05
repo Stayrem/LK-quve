@@ -1,9 +1,9 @@
 import React, {
-  useState, useContext, createContext,
+  useContext, createContext,
 } from 'react';
 import fetchData from '@utils/fetch';
 import { useDispatch } from 'react-redux';
-import { resetStore } from '../store/action-creator';
+import { resetStore, setUserAccessToken } from '../store/action-creator';
 
 const mainAuth = {
   async signIn(values, callback) {
@@ -22,24 +22,25 @@ const authContext = createContext();
 
 function useProvideAuth() {
   const dispatch = useDispatch();
-  const authorizedUser = localStorage.getItem('user');
-  const [user, setUser] = useState(authorizedUser || null);
+  const existingAccessToken = localStorage.getItem('USER_ACCESS_TOKEN') || null;
+
+  if (existingAccessToken) {
+    dispatch(setUserAccessToken(existingAccessToken));
+  }
 
   const signIn = (values) => mainAuth.signIn(values, (token) => {
-    setUser(token);
-    localStorage.setItem('user', token);
+    dispatch(setUserAccessToken(token));
+    localStorage.setItem('USER_ACCESS_TOKEN', token);
   });
 
   const signUp = (values) => mainAuth.signUp(values);
 
   const signOut = () => mainAuth.signOut(() => {
-    setUser(false);
-    localStorage.removeItem('user');
+    localStorage.removeItem('USER_ACCESS_TOKEN');
     dispatch(resetStore());
   });
 
   return {
-    user,
     signIn,
     signUp,
     signOut,
