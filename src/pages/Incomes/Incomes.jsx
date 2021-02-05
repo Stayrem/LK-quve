@@ -18,14 +18,13 @@ import Tooltip from '../../components/Tooltip/Tooltip';
 
 const Incomes = () => {
   const dispatch = useDispatch();
-  const accessToken = useSelector((state) => state.user.accessToken);
   const date = useSelector((state) => state.date);
   const currentIncomesSum = useSelector((state) => state.currentIncomesSum);
   const currentIncomes = useSelector((state) => state.currentIncomes);
   const isIncomesFetched = useSelector((state) => state.isIncomesFethed);
 
   useEffect(() => {
-    dispatch(fetchIncomes(accessToken));
+    dispatch(fetchIncomes());
     document.title = `Доходы — ${dictionary.APP_NAME}`;
   }, []);
 
@@ -59,8 +58,8 @@ const Incomes = () => {
                 data={currentIncomes}
                 useStatus={false}
                 onAdd={() => dispatch(addIncome())}
-                onDelete={(id) => dispatch(deleteIncome(id, accessToken))}
-                onEdit={(incomeItem) => dispatch(editIncome(incomeItem, accessToken))}
+                onDelete={(id) => dispatch(deleteIncome(id))}
+                onEdit={(incomeItem) => dispatch(editIncome(incomeItem))}
                 isDataFetched={isIncomesFetched}
               />
             </div>

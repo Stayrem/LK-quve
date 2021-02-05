@@ -4,9 +4,9 @@ import dictionary from '@utils/dictionary';
 
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import { useAuth } from '../../hooks/use-auth';
-import { useSelector } from 'react-redux';
 
 const validate = (values) => {
   const errors = {};
@@ -86,6 +86,7 @@ const SignIn = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
+                        autoComplete="username"
                       />
                     </div>
                     {formik.touched.email && formik.errors.email ? <small className="text-warning">{formik.errors.email}</small> : null}
@@ -101,6 +102,7 @@ const SignIn = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.password}
+                        autoComplete="current-password"
                       />
                     </div>
                     {formik.touched.password && formik.errors.password ? <small className="text-warning">{formik.errors.password}</small> : null}

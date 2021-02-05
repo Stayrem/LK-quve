@@ -15,7 +15,6 @@ import {
 
 const Savings = () => {
   const dispatch = useDispatch();
-  const accessToken = useSelector((state) => state.user.accessToken);
   const date = useSelector((state) => state.date);
   const currentYearSavings = useSelector((state) => state.currentYearSavings);
   const currentSavings = useSelector((state) => state.currentSavings);
@@ -24,7 +23,7 @@ const Savings = () => {
 
   useEffect(() => {
     dispatch(fetchSavings());
-    dispatch(fetchIncomes(accessToken));
+    dispatch(fetchIncomes());
     document.title = `Сбережения — ${dictionary.APP_NAME}`;
   }, []);
 

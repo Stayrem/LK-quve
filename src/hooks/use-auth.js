@@ -1,9 +1,9 @@
 import React, {
-  useContext, createContext, useEffect,
+  useContext, createContext,
 } from 'react';
 import fetchData from '@utils/fetch';
-import { useDispatch, useSelector } from 'react-redux';
-import { resetStore, setUserToken } from '../store/action-creator';
+import { useDispatch } from 'react-redux';
+import { resetStore, setUserAccessToken } from '../store/action-creator';
 
 const mainAuth = {
   async signIn(values, callback) {
@@ -22,10 +22,14 @@ const authContext = createContext();
 
 function useProvideAuth() {
   const dispatch = useDispatch();
-  const isAccessTokenActual = useSelector((state) => state.user.isAccessTokenActual);
+  const existingAccessToken = localStorage.getItem('USER_ACCESS_TOKEN') || null;
+
+  if (existingAccessToken) {
+    dispatch(setUserAccessToken(existingAccessToken));
+  }
 
   const signIn = (values) => mainAuth.signIn(values, (token) => {
-    dispatch(setUserToken(token));
+    dispatch(setUserAccessToken(token));
     localStorage.setItem('USER_ACCESS_TOKEN', token);
   });
 
@@ -35,12 +39,6 @@ function useProvideAuth() {
     localStorage.removeItem('USER_ACCESS_TOKEN');
     dispatch(resetStore());
   });
-
-  useEffect(() => {
-    if (!isAccessTokenActual) {
-      signOut();
-    }
-  }, [isAccessTokenActual]);
 
   return {
     signIn,

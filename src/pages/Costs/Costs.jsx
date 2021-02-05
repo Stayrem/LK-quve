@@ -19,14 +19,13 @@ import Tooltip from '../../components/Tooltip/Tooltip';
 
 const Costs = () => {
   const dispatch = useDispatch();
-  const accessToken = useSelector((state) => state.user.accessToken);
   const date = useSelector((state) => state.date);
   const currentCostsSum = useSelector((state) => state.currentCostsSum);
   const currentCosts = useSelector((state) => state.currentCosts);
   const isCostsFetched = useSelector((state) => state.isCostsFetched);
 
   useEffect(() => {
-    dispatch(fetchCosts(accessToken));
+    dispatch(fetchCosts());
     document.title = `Постоянные расходы — ${dictionary.APP_NAME}`;
   }, []);
 
@@ -60,8 +59,8 @@ const Costs = () => {
                 data={currentCosts}
                 useStatus={false}
                 onAdd={() => dispatch(addCost())}
-                onDelete={(id) => dispatch(deleteCost(id, accessToken))}
-                onEdit={(costItem) => dispatch(editCost(costItem, accessToken))}
+                onDelete={(id) => dispatch(deleteCost(id))}
+                onEdit={(costItem) => dispatch(editCost(costItem))}
                 isDataFetched={isCostsFetched}
               />
             </div>

@@ -20,7 +20,6 @@ const Overview = () => {
   } = styles;
 
   const dispatch = useDispatch();
-  const accessToken = useSelector((state) => state.user.accessToken);
   const date = useSelector((state) => state.date);
   const currentDailyBudget = useSelector((state) => state.currentDailyBudget);
   const currentDaySpendingsSum = useSelector((state) => state.currentDaySpendingsSum);
@@ -43,7 +42,7 @@ const Overview = () => {
     currentRestValue, currentRestPercent);
 
   useEffect(() => {
-    dispatch(getOverviewData(accessToken));
+    dispatch(getOverviewData());
     document.title = `Сводка — ${dictionary.APP_NAME}`;
   }, []);
 
