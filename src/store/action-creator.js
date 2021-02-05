@@ -188,6 +188,7 @@ export const editSpending = (spending) => async (dispatch, getState) => {
 };
 
 export const editSavingsData = (data) => (dispatch, getState) => {
+  console.log(data)
   const { currentYearSavings, date } = getState();
   const targetDate = data.date;
   const updatedSavings = currentYearSavings.map((item) => {

@@ -4,12 +4,14 @@
       {
         "date": 1606780800,
         "percent": 15,
-        "value": 13755
+        "value": 13755,
+        "type": 0 
       },
       {
         "date": 1609459200,
         "percent": 20,
-        "value": 18340
+        "value": 18340,
+        "type": 0 
       }
 
   ]
