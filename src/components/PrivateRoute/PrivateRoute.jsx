@@ -2,15 +2,15 @@ import * as React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 // eslint-disable-next-line import/extensions
 import routerDict from '@utils/routesDict';
-import { useAuth } from '../../hooks/use-auth.js';
+import { useSelector } from 'react-redux';
 
 const PrivateRoute = ({ children, ...rest }) => {
-  const auth = useAuth();
+  const accessToken = useSelector((state) => state.user.accessToken);
 
   return (
     <Route
       {...rest}
-      render={({ location }) => (auth.user ? (children) : (
+      render={({ location }) => (accessToken ? (children) : (
         <Redirect
           to={{
             pathname: routerDict.SIGN_IN,

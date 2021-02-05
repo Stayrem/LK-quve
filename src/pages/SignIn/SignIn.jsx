@@ -3,9 +3,10 @@ import { Link, useHistory } from 'react-router-dom';
 import dictionary from '@utils/dictionary';
 
 import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import { useAuth } from '../../hooks/use-auth';
-import { toast } from 'react-toastify';
 
 const validate = (values) => {
   const errors = {};
@@ -23,6 +24,7 @@ const validate = (values) => {
 
 const SignIn = () => {
   const auth = useAuth();
+  const accessToken = useSelector((state) => state.user.accessToken);
   const history = useHistory();
 
   useEffect(() => {
@@ -30,10 +32,10 @@ const SignIn = () => {
   }, []);
 
   useEffect(() => {
-    if (auth.user) {
+    if (accessToken) {
       history.push('/');
     }
-  }, [auth.user]);
+  }, [accessToken]);
 
   const formik = useFormik({
     initialValues: {
@@ -84,6 +86,7 @@ const SignIn = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
+                        autoComplete="username"
                       />
                     </div>
                     {formik.touched.email && formik.errors.email ? <small className="text-warning">{formik.errors.email}</small> : null}
@@ -99,6 +102,7 @@ const SignIn = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.password}
+                        autoComplete="current-password"
                       />
                     </div>
                     {formik.touched.password && formik.errors.password ? <small className="text-warning">{formik.errors.password}</small> : null}

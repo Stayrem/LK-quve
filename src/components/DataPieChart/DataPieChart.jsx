@@ -24,11 +24,12 @@ const DataPieChart = (props) => {
     dataPieChartBody,
   } = styles;
   const series = isEmpty(graphData) ? [] : graphData
-    .filter((item) => item.status && item.value)
+    .filter((item) => item.value)
     .map((item) => parseInt(item.value, 10));
   const labels = isEmpty(graphData) ? [] : graphData
-    .filter((item) => item.status && item.name)
-    .map((item) => item.name);
+    .filter((item) => item.category)
+    .filter((item) => item.category)
+    .map((item) => item.category);
   const options = createOptions(labels);
 
   return (
