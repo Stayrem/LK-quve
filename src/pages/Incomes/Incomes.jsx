@@ -65,7 +65,7 @@ const Incomes = () => {
                 data={currentIncomes}
                 useStatus={false}
                 onAdd={() => dispatch(addIncome())}
-                onDelete={(id) => dispatch(deleteIncome(id))}
+                onDelete={(item) => dispatch(deleteIncome(item))}
                 onEdit={(incomeItem) => dispatch(editIncome(incomeItem))}
                 isDataFetched={isIncomesFetched}
               />

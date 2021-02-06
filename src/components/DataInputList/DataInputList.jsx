@@ -63,8 +63,8 @@ const DataInputList = (props) => {
     setIsNewRowAdded(true);
   });
 
-  const onDeleteHandler = ((id) => {
-    onDelete(id);
+  const onDeleteHandler = ((item) => {
+    onDelete(item);
     if (data.length === 1) {
       onAddHandler();
     }
@@ -175,9 +175,10 @@ const DataInputList = (props) => {
           Сумма: &nbsp;
           <SkeletonContainer>
             <span>
-              {isDataFetched && !isNil(sum)
-                ? getFormatedNumber(sum)
-                : <Skeleton width={50} height={15} />
+              {
+                isDataFetched && !isNil(sum)
+                  ? getFormatedNumber(sum)
+                  : <Skeleton width={50} height={15} />
               }
             </span>
           </SkeletonContainer>
