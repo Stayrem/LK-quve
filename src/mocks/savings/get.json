@@ -1,21 +1,17 @@
 {
-  "code": 200,
-  "data": [
-      {
-        "date": 1606780800,
-        "percent": 15,
-        "value": 13755,
-        "type": 0 
-      },
-      {
-        "date": 1609459200,
-        "percent": 20,
-        "value": 18340
-      },
-      {
-        "date": 1612137600,
-        "percent": 30,
-        "value": 18340
-      }
-  ]
+  "currentYearSavings": [
+    {
+      "date": 1606780800,
+      "value": 13755
+    },
+    {
+      "date": 1609459200,
+      "value": 18340
+    }
+  ],
+  "currentSavings": {
+    "date": 1612137600,
+    "value": 30,
+    "type": 1
+  }
 }

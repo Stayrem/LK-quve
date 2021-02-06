@@ -86,6 +86,7 @@ const Overview = () => {
                 onAdd={() => dispatch(addSpending())}
                 onDelete={(id) => dispatch(deleteSpending(id))}
                 onEdit={(spending) => dispatch(editSpending(spending))}
+                isDataFetched={isDataFetched}
               />
             </div>
             <div className="col-lg-6 mb-3 mb-lg-0">

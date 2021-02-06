@@ -21,7 +21,7 @@ axios.interceptors.request.use((config) => {
 }, (error) => Promise.reject(error));
 
 axios.interceptors.response.use(null, (error) => {
-  if (error.config && error.response && error.response.status === 401) {
+  if (error.config && !['/api/auth/sign-in/', '/api/auth/sign-up/'].includes(error.config.url) && error.response && error.response.status === 401) {
     return updateToken()
       .then((token) => {
         localStorage.setItem('USER_ACCESS_TOKEN', token);
