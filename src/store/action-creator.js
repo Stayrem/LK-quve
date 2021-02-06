@@ -9,6 +9,18 @@ import { toast } from 'react-toastify';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
 
+/* Actions */
+
+export const setDate = (epoch) => ({
+  type: Type.SET_DATE,
+  payload: epoch,
+});
+
+export const setIsDateChanged = (bool) => ({
+  type: Type.SET_IS_DATE_CHANGED,
+  payload: bool,
+});
+
 export const setUserInfo = (data) => ({
   type: Type.SET_USER_INFO,
   payload: data,
@@ -29,29 +41,19 @@ export const setCosts = (data) => ({
   payload: data,
 });
 
-export const setMonthSpendings = (data) => ({
-  type: Type.SET_MONTH_SPENDINGS_DATA,
+export const setSavings = (data) => ({
+  type: Type.SET_SAVINGS,
   payload: data,
 });
 
-export const setSavings = (data) => ({
-  type: Type.SET_SAVINGS,
+export const setMonthSpendings = (data) => ({
+  type: Type.SET_MONTH_SPENDINGS_DATA,
   payload: data,
 });
 
 export const setOverviewData = (obj) => ({
   type: Type.SET_OVERVIEW_DATA,
   payload: obj,
-});
-
-export const setDate = (epoch) => ({
-  type: Type.SET_DATE,
-  payload: epoch,
-});
-
-export const setIsDateChanged = (bool) => ({
-  type: Type.SET_IS_DATE_CHANGED,
-  payload: bool,
 });
 
 export const setIsFetchFailed = (bool) => ({
@@ -62,6 +64,8 @@ export const setIsFetchFailed = (bool) => ({
 export const resetStore = () => ({
   type: Type.RESET_STORE,
 });
+
+/* Fetches */
 
 export const fetchUserInfo = () => async (dispatch) => {
   try {
@@ -122,45 +126,7 @@ export const fetchSavings = () => async (dispatch) => {
   }
 };
 
-const calculateOverviewData = () => async (dispatch, getState) => {
-  const {
-    currentIncomesSum,
-    currentCostsSum,
-    currentSavings,
-    currentMonthSpendings,
-    date,
-  } = getState();
-
-  const currentSavingsSum = getAbsFromValue(currentSavings.value, currentSavings.type, currentIncomesSum);
-  const currentMonthSpendingsSum = currentMonthSpendings
-    .reduce((acc, current) => acc + current.value, 0);
-  const currentDaySpendings = currentMonthSpendings.filter((item) => {
-    const selectedDay = getBeginOfDay(date);
-    const storedDay = item.date;
-    return selectedDay === storedDay;
-  });
-  const currentDaySpendingsSum = currentDaySpendings.length > 0
-    ? currentDaySpendings.reduce((acc, current) => acc + current.value, 0)
-    : 0;
-
-  const currentProfit = currentIncomesSum - currentCostsSum - currentSavingsSum;
-  const currentFixedBudget = currentProfit / moment(date * 1000).daysInMonth();
-  const currentDailyBudget = Math.round(currentFixedBudget * moment(date * 1000).utc().date() - currentMonthSpendingsSum + currentDaySpendingsSum);
-
-  const currentRestValue = currentProfit - currentMonthSpendingsSum + currentDaySpendingsSum;
-  const currentRestPercent = currentRestValue > 0
-    ? Math.round((currentRestValue / currentIncomesSum) * 100)
-    : 0;
-
-  dispatch(setOverviewData({
-    currentDailyBudget,
-    currentSavingsSum,
-    currentRestValue,
-    currentRestPercent,
-    currentDaySpendings,
-    currentDaySpendingsSum,
-  }));
-};
+/* Spendings */
 
 export const addSpending = () => (dispatch, getState) => {
   const { currentMonthSpendings, date } = getState();
@@ -205,9 +171,7 @@ export const editSpending = (spending) => async (dispatch, getState) => {
   }
 };
 
-export const editSavings = (data) => (dispatch) => {
-  dispatch(setSavings({ currentSavings: data }));
-};
+/* Incomes */
 
 export const addIncome = () => (dispatch, getState) => {
   const { currentIncomes, date } = getState();
@@ -222,11 +186,11 @@ export const addIncome = () => (dispatch, getState) => {
   dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum }));
 };
 
-export const deleteIncome = (id) => (dispatch, getState) => {
+export const deleteIncome = (item) => (dispatch, getState) => {
   const { currentIncomes } = getState();
 
   let newIncomesList = currentIncomes.map((it) => {
-    if (it.id === id) {
+    if (it.id === item.id) {
       return { ...it, isPending: true };
     }
     return it;
@@ -234,20 +198,28 @@ export const deleteIncome = (id) => (dispatch, getState) => {
 
   dispatch(setIncomes({ currentIncomes: newIncomesList }));
 
-  try {
-    fetchData(`/api/incomes/${id}/`, 'DELETE')
-      .then(() => {
-        newIncomesList = currentIncomes.filter((it) => it.id !== id);
-        dispatch(setIncomes({
-          currentIncomes: newIncomesList,
-          currentIncomesSum: getSumByArray(newIncomesList),
-        }));
-      })
-      .catch(() => {
-        toast.error('Не удалось удалить доход.');
-      });
-  } catch (err) {
-    dispatch(setIsFetchFailed(true));
+  if (!item.isNew) {
+    try {
+      fetchData(`/api/incomes/${item.id}/`, 'DELETE')
+        .then(() => {
+          newIncomesList = currentIncomes.filter((it) => it.id !== item.id);
+          dispatch(setIncomes({
+            currentIncomes: newIncomesList,
+            currentIncomesSum: getSumByArray(newIncomesList),
+          }));
+        })
+        .catch(() => {
+          toast.error('Не удалось удалить доход.');
+        });
+    } catch (err) {
+      dispatch(setIsFetchFailed(true));
+    }
+  } else {
+    newIncomesList = currentIncomes.filter((it) => it.id !== item.id);
+    dispatch(setIncomes({
+      currentIncomes: newIncomesList,
+      currentIncomesSum: getSumByArray(newIncomesList),
+    }));
   }
 };
 
@@ -291,6 +263,8 @@ export const editIncome = (incomeItem) => async (dispatch, getState) => {
   }
 };
 
+/* Costs */
+
 export const addCost = () => (dispatch, getState) => {
   const { currentCosts, date } = getState();
   const newCostsList = [...currentCosts, {
@@ -305,11 +279,11 @@ export const addCost = () => (dispatch, getState) => {
   dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
 };
 
-export const deleteCost = (id) => (dispatch, getState) => {
+export const deleteCost = (item) => (dispatch, getState) => {
   const { currentCosts } = getState();
 
   let newCostsList = currentCosts.map((it) => {
-    if (it.id === id) {
+    if (it.id === item.id) {
       return { ...it, isPending: true };
     }
     return it;
@@ -317,20 +291,28 @@ export const deleteCost = (id) => (dispatch, getState) => {
 
   dispatch(setCosts({ currentCosts: newCostsList }));
 
-  try {
-    fetchData(`/api/costs/${id}/`, 'DELETE')
-      .then(() => {
-        newCostsList = currentCosts.filter((it) => it.id !== id);
-        dispatch(setCosts({
-          currentCosts: newCostsList,
-          currentCostsSum: getSumByArray(newCostsList),
-        }));
-      })
-      .catch(() => {
-        toast.error('Не удалось удалить постоянный расход.');
-      });
-  } catch (err) {
-    dispatch(setIsFetchFailed(true));
+  if (!item.isNew) {
+    try {
+      fetchData(`/api/costs/${item.id}/`, 'DELETE')
+        .then(() => {
+          newCostsList = currentCosts.filter((it) => it.id !== item.id);
+          dispatch(setCosts({
+            currentCosts: newCostsList,
+            currentCostsSum: getSumByArray(newCostsList),
+          }));
+        })
+        .catch(() => {
+          toast.error('Не удалось удалить постоянный расход.');
+        });
+    } catch (err) {
+      dispatch(setIsFetchFailed(true));
+    }
+  } else {
+    newCostsList = currentCosts.filter((it) => it.id !== item.id);
+    dispatch(setCosts({
+      currentCosts: newCostsList,
+      currentCostsSum: getSumByArray(newCostsList),
+    }));
   }
 };
 
@@ -373,6 +355,54 @@ export const editCost = (costItem) => async (dispatch, getState) => {
     toast.error('Не удалось изменить постоянные расходы.');
     dispatch(setIsFetchFailed(true));
   }
+};
+
+/* Savings */
+
+export const editSavings = (data) => (dispatch) => {
+  dispatch(setSavings({ currentSavings: data }));
+};
+
+/* Overview */
+
+const calculateOverviewData = () => async (dispatch, getState) => {
+  const {
+    currentIncomesSum,
+    currentCostsSum,
+    currentSavings,
+    currentMonthSpendings,
+    date,
+  } = getState();
+
+  const currentSavingsSum = getAbsFromValue(currentSavings.value, currentSavings.type, currentIncomesSum);
+  const currentMonthSpendingsSum = currentMonthSpendings
+    .reduce((acc, current) => acc + current.value, 0);
+  const currentDaySpendings = currentMonthSpendings.filter((item) => {
+    const selectedDay = getBeginOfDay(date);
+    const storedDay = item.date;
+    return selectedDay === storedDay;
+  });
+  const currentDaySpendingsSum = currentDaySpendings.length > 0
+    ? currentDaySpendings.reduce((acc, current) => acc + current.value, 0)
+    : 0;
+
+  const currentProfit = currentIncomesSum - currentCostsSum - currentSavingsSum;
+  const currentFixedBudget = currentProfit / moment(date * 1000).daysInMonth();
+  const currentDailyBudget = Math.round(currentFixedBudget * moment(date * 1000).utc().date() - currentMonthSpendingsSum + currentDaySpendingsSum);
+
+  const currentRestValue = currentProfit - currentMonthSpendingsSum + currentDaySpendingsSum;
+  const currentRestPercent = currentRestValue > 0
+    ? Math.round((currentRestValue / currentIncomesSum) * 100)
+    : 0;
+
+  dispatch(setOverviewData({
+    currentDailyBudget,
+    currentSavingsSum,
+    currentRestValue,
+    currentRestPercent,
+    currentDaySpendings,
+    currentDaySpendingsSum,
+  }));
 };
 
 export const getOverviewData = () => async (dispatch) => {

@@ -99,7 +99,7 @@ const DataInputListItem = (props) => {
       case 'Backspace':
         if (!item.category && !item.value && isDeletingAccepted) {
           setFocusToItem(id, 'last', 'prev');
-          deleteInputListItem(id);
+          deleteInputListItem(item);
         }
         if (!item.value && !isDeletingAccepted) {
           event.preventDefault();
@@ -201,7 +201,7 @@ const DataInputListItem = (props) => {
         stateData={item}
       />
       <td onClick={(event) => setFocusOnRow(event, 'none')}>
-        <button className={[dataInputListItemIcon, dataInputListItemIconBtn].join(' ')} type="button" tabIndex="-1" onClick={() => deleteInputListItem(id)}>
+        <button className={[dataInputListItemIcon, dataInputListItemIconBtn].join(' ')} type="button" tabIndex="-1" onClick={() => deleteInputListItem(item)}>
           <FontAwesomeIcon icon={faTimes} />
         </button>
       </td>
