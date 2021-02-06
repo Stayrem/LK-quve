@@ -2,11 +2,13 @@ import { nanoid } from 'nanoid';
 import moment from 'moment';
 import 'moment/locale/ru';
 import {
+  getAbsFromValue,
   getBeginOfDay, getBeginOfMonth, getSumByArray,
 } from '@utils/functions';
 import { toast } from 'react-toastify';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
+import dictionary from '@utils/dictionary';
 
 export const setUserInfo = (data) => ({
   type: Type.SET_USER_INFO,
@@ -101,16 +103,11 @@ export const fetchSpendings = () => async (dispatch) => {
   }
 };
 
-export const fetchSavings = () => async (dispatch, getState) => {
-  const { date } = getState();
+export const fetchSavings = () => async (dispatch) => {
   try {
-    const currentYearSavings = await fetchData('/mocks/savings/get.json');
-    const currentSavings = currentYearSavings.data.find((item) => {
-      const selectedMonth = getBeginOfMonth(date);
-      const storedMonth = item.date;
-      return selectedMonth === storedMonth;
-    });
-    dispatch(setSavings({ currentYearSavings: currentYearSavings.data, currentSavings }));
+    const savings = await fetchData('/mocks/savings/get.json');
+    const { currentSavings, currentYearSavings } = savings;
+    dispatch(setSavings({ currentYearSavings, currentSavings }));
   } catch (error) {
     dispatch(setIsFetchFailed(true));
   }
@@ -125,11 +122,7 @@ const calculateOverviewData = () => async (dispatch, getState) => {
     date,
   } = getState();
 
-  /*
-  * Высчитываются данные для сводки для выбранного в календаре дня.
-  * */
-
-  const currentSavingsSum = (currentSavings.percent * currentIncomesSum) / 100;
+  const currentSavingsSum = getAbsFromValue(currentSavings.value, currentSavings.type, currentIncomesSum);
   const currentMonthSpendingsSum = currentMonthSpendings
     .reduce((acc, current) => acc + current.value, 0);
   const currentDaySpendings = currentMonthSpendings.filter((item) => {
@@ -146,7 +139,9 @@ const calculateOverviewData = () => async (dispatch, getState) => {
   const currentDailyBudget = Math.round(currentFixedBudget * moment(date * 1000).utc().date() - currentMonthSpendingsSum + currentDaySpendingsSum);
 
   const currentRestValue = currentProfit - currentMonthSpendingsSum + currentDaySpendingsSum;
-  const currentRestPercent = Math.round((currentRestValue / currentIncomesSum) * 100);
+  const currentRestPercent = currentRestValue > 0
+    ? Math.round((currentRestValue / currentIncomesSum) * 100)
+    : 0;
 
   dispatch(setOverviewData({
     currentDailyBudget,
@@ -200,24 +195,8 @@ export const editSpending = (spending) => async (dispatch, getState) => {
   }
 };
 
-export const editSavingsData = (data) => (dispatch, getState) => {
-  console.log(data)
-  const { currentYearSavings, date } = getState();
-  const targetDate = data.date;
-  const updatedSavings = currentYearSavings.map((item) => {
-    const selectedMonth = getBeginOfMonth(targetDate);
-    const storedMonth = item.date;
-    if (selectedMonth === storedMonth) {
-      return data;
-    }
-    return item;
-  });
-  const currentSavings = updatedSavings.find((item) => {
-    const selectedMonth = getBeginOfMonth(date);
-    const storedMonth = item.date;
-    return selectedMonth === storedMonth;
-  });
-  dispatch(setSavings({ currentYearSavings: updatedSavings, currentSavings }));
+export const editSavingsData = (data) => (dispatch) => {
+  dispatch(setSavings({ currentSavings: data }));
 };
 
 export const addIncome = () => (dispatch, getState) => {

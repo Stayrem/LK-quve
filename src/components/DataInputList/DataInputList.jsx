@@ -174,7 +174,7 @@ const DataInputList = (props) => {
           Сумма: &nbsp;
           <SkeletonContainer>
             <span>
-              {isDataFetched
+              {isDataFetched && sum
                 ? getFormatedNumber(sum)
                 : <Skeleton width={50} height={15} />
               }

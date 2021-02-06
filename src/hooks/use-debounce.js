@@ -7,7 +7,7 @@ export default function useDebounce(value, delay) {
 
   useEffect(
     () => {
-      // Выставить debouncedValue равным value (переданное значение) 
+      // Выставить debouncedValue равным value (переданное значение)
       // после заданной задержки
       const handler = setTimeout(() => {
         setDebouncedValue(value);
@@ -29,7 +29,7 @@ export default function useDebounce(value, delay) {
     // Вызывается снова, только если значение изменится
     // мы так же можем добавить переменную "delay" в массива зависимостей ...
     // ... если вы собираетесь менять ее динамически.
-    [value]
+    [value],
   );
 
   return debouncedValue;

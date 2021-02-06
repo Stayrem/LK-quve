@@ -6,14 +6,19 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import isNil from 'lodash/isNil';
 import Skeleton from 'react-loading-skeleton';
-import { getBeginOfMonth, getFormatedNumber } from '@utils/functions';
+import {
+  getAbsFromValue,
+  getBeginOfMonth,
+  getFormatedNumber,
+  getPercentFromValue,
+} from '@utils/functions';
 import Select from 'react-select';
-import useDebounce from '../../hooks/use-debounce';
 
 import dictionary from '../../utils/dictionary';
 import { editSavingsData } from '../../store/action-creator';
 import styles from './SavingsAdjuster.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
+import useDebounce from '../../hooks/use-debounce';
 
 const colors = {
   primary: '#17314c',
@@ -49,7 +54,6 @@ const SavingsAdjuster = (props) => {
     date,
     currentIncomesSum,
     currentSavings,
-    type,
   } = props;
 
   const {
@@ -70,59 +74,69 @@ const SavingsAdjuster = (props) => {
   } = styles;
 
   const [newSavingsValue, setNewSavingsValue] = useState(null);
-  const [newSavingsPercent, setNewSavingsPercent] = useState(null);
   const [isNewSavingsValueChanged, setIsNewSavingsValueChanged] = useState(false);
-  const [isSavingsPercent, changeSavingsType] = useState(type);
+  const [savingsType, setSavingsType] = useState(null);
+  const [isSavingsTypeChanged, setIsSavingsTypeChanged] = useState(false);
+  const [isValueAndTypeInited, setIsValueAndTypeInited] = useState(false);
 
   const rangeInput = useRef(null);
-  const newSavingsPercentInput = useRef(null);
+  const newSavingsValueInput = useRef(null);
 
-  const onSavingsChange = (savingsType, value) => {
-    let newPercent = null;
+  const onSavingsChange = (value) => {
     let newValue = null;
 
     if (savingsType === dictionary.SAVINGS_INPUT_TYPE_PERCENTS) {
-      newPercent = value > 100 ? 100 : value;
-      newValue = ((currentIncomesSum * newPercent) / 100);
+      newValue = value > 100 ? 100 : value;
     } else if (savingsType === dictionary.SAVINGS_INPUT_TYPE_VALUE) {
       newValue = value > currentIncomesSum ? currentIncomesSum : value;
-      newPercent = Math.round((newValue / currentIncomesSum) * 100);
     }
 
-    if (newValue !== newSavingsValue || newValue !== newSavingsPercent) {
-      setNewSavingsPercent(newPercent);
+    if (newValue !== newSavingsValue) {
       setNewSavingsValue(newValue);
-      rangeInput.current.value = newPercent;
-      newSavingsPercentInput.current.value = isSavingsPercent ? newPercent : newValue;
+      rangeInput.current.value = getPercentFromValue(newValue, savingsType, currentIncomesSum);
+      newSavingsValueInput.current.value = newValue;
       setIsNewSavingsValueChanged(true);
     }
   };
 
-  const newSavings = useDebounce(newSavingsValue, 300);
+  const onSavingsTypeChanged = (type) => {
+    if (type !== savingsType) {
+      setSavingsType(type);
+      setIsSavingsTypeChanged(true);
+    }
+  };
+
+  const debouncedNewSavingsValue = useDebounce(newSavingsValue, 500);
 
   useEffect(() => {
     if (isNewSavingsValueChanged) {
       dispatch(editSavingsData({
         date: getBeginOfMonth(date),
         value: newSavingsValue,
-        percent: newSavingsPercent,
+        type: savingsType,
       }));
       setIsNewSavingsValueChanged(false);
     }
-  }, [newSavings]);
+  }, [debouncedNewSavingsValue]);
 
   useEffect(() => {
-    if (newSavingsPercent && newSavingsValue) {
-      newSavingsPercentInput.current.value = isSavingsPercent ? newSavingsPercent : newSavingsValue;
+    if (isSavingsTypeChanged) {
+      const recalculatedValue = savingsType === dictionary.SAVINGS_INPUT_TYPE_VALUE
+        ? getAbsFromValue(newSavingsValue, dictionary.SAVINGS_INPUT_TYPE_PERCENTS, currentIncomesSum)
+        : getPercentFromValue(newSavingsValue, dictionary.SAVINGS_INPUT_TYPE_VALUE, currentIncomesSum);
+      onSavingsChange(recalculatedValue);
+      setIsSavingsTypeChanged(false);
     }
-  }, [isSavingsPercent]);
+  }, [isSavingsTypeChanged]);
 
   useEffect(() => {
-    if (currentSavings && currentIncomesSum) {
+    if (currentSavings && currentIncomesSum && !isValueAndTypeInited) {
       setNewSavingsValue(currentSavings.value);
-      setNewSavingsPercent(currentSavings.percent);
+      setSavingsType(currentSavings.type);
+      setIsValueAndTypeInited(true);
     }
   }, [currentSavings, currentIncomesSum]);
+
   return (
     <div className={['panel', savingsAdjuster, 'mb-3'].join(' ')}>
       <div className={['panel-header', savingsAdjusterHeader].join(' ')}>
@@ -141,7 +155,7 @@ const SavingsAdjuster = (props) => {
       </div>
       <div className={['panel-body', savingsAdjusterBody].join(' ')}>
         <SkeletonContainer>
-          {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
+          {(!isNil(newSavingsValue) && !isNil(savingsType))
             ? (
               <div className={savingsAdjusterRange}>
                 <input
@@ -149,49 +163,46 @@ const SavingsAdjuster = (props) => {
                   min="0"
                   max="100"
                   ref={rangeInput}
-                  defaultValue={isSavingsPercent ? newSavingsPercent : newSavingsValue}
-                  onChange={() => onSavingsChange(
-                    dictionary.SAVINGS_INPUT_TYPE_PERCENTS, rangeInput.current.value,
-                  )}
+                  defaultValue={getPercentFromValue(newSavingsValue, savingsType, currentIncomesSum)}
+                  onChange={() => onSavingsChange(savingsType === dictionary.SAVINGS_INPUT_TYPE_PERCENTS
+                    ? rangeInput.current.value
+                    : getAbsFromValue(rangeInput.current.value, dictionary.SAVINGS_INPUT_TYPE_PERCENTS, currentIncomesSum))}
                 />
-                <div className={savingsAdjusterRangeFiller} style={{ width: `${newSavingsPercent}%` }} />
-
+                <div
+                  className={savingsAdjusterRangeFiller}
+                  style={{ width: `${getPercentFromValue(newSavingsValue, savingsType, currentIncomesSum)}%` }}
+                />
               </div>
             ) : (
               <Skeleton />
             )}
         </SkeletonContainer>
         <SkeletonContainer>
-          {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
+          {(!isNil(newSavingsValue) && !isNil(savingsType))
             ? (
               <div>
                 <div className={savingsAdjusterInputsWrapper}>
-                  <div className={[savingsAdjusterInput, isSavingsPercent ? `${savingsAdjusterInputPercentage}` : ''].join(' ')}>
+                  <div className={[savingsAdjusterInput, (savingsType === dictionary.SAVINGS_INPUT_TYPE_PERCENTS) ? `${savingsAdjusterInputPercentage}` : ''].join(' ')}>
                     <input
                       type="number"
                       min="0"
-                      max="100"
                       placeholder="30"
-                      ref={newSavingsPercentInput}
-                      defaultValue={newSavingsPercent}
-                      onChange={() => onSavingsChange(
-                        isSavingsPercent ? dictionary
-                          .SAVINGS_INPUT_TYPE_PERCENTS : dictionary.SAVINGS_INPUT_TYPE_VALUE,
-                        newSavingsPercentInput.current.value,
-                      )}
+                      ref={newSavingsValueInput}
+                      defaultValue={newSavingsValue}
+                      onChange={() => onSavingsChange(newSavingsValueInput.current.value)}
                     />
                   </div>
                   <div className={savingsAdjusterSelectWrapper}>
                     <Select
-                      options={[options[!isSavingsPercent ? 1 : 0]]}
-                      onChange={(option) => changeSavingsType(option.value)}
+                      options={[options[savingsType === dictionary.SAVINGS_INPUT_TYPE_VALUE ? 1 : 0]]}
+                      onChange={(option) => onSavingsTypeChanged(option.value)}
                       classNamePrefix="quve"
                       isSearchable={false}
                       components={{
                         IndicatorSeparator: () => null,
                         DropdownIndicator: () => <FontAwesomeIcon icon={faChevronDown} />,
                       }}
-                      defaultValue={options[isSavingsPercent]}
+                      defaultValue={options[savingsType]}
                       theme={(theme) => ({
                         ...theme,
                         borderRadius: 0,
@@ -224,8 +235,8 @@ const SavingsAdjuster = (props) => {
         <div className={savingsAdjusterCalculationsWrapper}>
           <div className={[savingsAdjusterCalculation, 'mb-3'].join(' ')}>
             <SkeletonContainer>
-              {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
-                ? `= ${getFormatedNumber(newSavingsValue)} в месяц`
+              {(!isNil(newSavingsValue))
+                ? `= ${getFormatedNumber(getAbsFromValue(newSavingsValue, savingsType, currentIncomesSum))} в месяц`
                 : (
                   <Skeleton />
                 )}
@@ -233,8 +244,8 @@ const SavingsAdjuster = (props) => {
           </div>
           <div className={savingsAdjusterCalculation}>
             <SkeletonContainer>
-              {(!isNil(newSavingsValue) && !isNil(newSavingsPercent))
-                ? `= ${getFormatedNumber(newSavingsValue * 12)} в год`
+              {(!isNil(newSavingsValue))
+                ? `= ${getFormatedNumber(getAbsFromValue(newSavingsValue, savingsType, currentIncomesSum) * 12)} в год`
                 : (
                   <Skeleton />
                 )}
@@ -248,23 +259,21 @@ const SavingsAdjuster = (props) => {
 
 SavingsAdjuster.defaultProps = {
   date: null,
-  type: 0,
   currentIncomesSum: null,
   currentSavings: {
     date: null,
-    percent: 0,
+    type: 0,
     value: 0,
   },
 };
 
 SavingsAdjuster.propTypes = {
   date: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
-  type: PropTypes.number,
   currentIncomesSum: PropTypes.number,
   currentSavings: PropTypes.shape({
     date: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
-    percent: PropTypes.number,
-    value: PropTypes.number,
+    type: PropTypes.number,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
 };
 

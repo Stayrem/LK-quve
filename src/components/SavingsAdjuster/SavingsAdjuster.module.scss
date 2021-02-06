@@ -81,6 +81,7 @@
 .savingsAdjusterSelectWrapper {
   width: 140px;
   margin-left: auto;
+  border-bottom: 2px solid $color-primary-lighter;
 }
 
 .savingsAdjusterInputsLabel {
@@ -97,6 +98,8 @@
   width: 50%;
   border-bottom: 2px solid $color-primary-lighter;
   position: relative;
+  display: flex;
+  align-items: center;
 
   input {
     background-color: transparent;
