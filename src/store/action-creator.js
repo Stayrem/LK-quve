@@ -68,6 +68,7 @@ export const fetchUserInfo = () => async (dispatch) => {
     const userInfo = await fetchData('/mocks/info.json', 'GET');
     dispatch(setUserInfo(userInfo));
   } catch (error) {
+    toast.error('Не удалось загрузить данные пользователя.');
     dispatch(setIsFetchFailed(true));
   }
 };
@@ -81,6 +82,7 @@ export const fetchIncomes = () => async (dispatch, getState) => {
     const currentIncomesSum = currentIncomes.length > 0 ? getSumByArray(currentIncomes) : 0;
     dispatch(setIncomes({ currentIncomes, currentIncomesSum }));
   } catch (error) {
+    toast.error('Не удалось загрузить доходы.');
     dispatch(setIsFetchFailed(true));
   }
 };
@@ -94,6 +96,7 @@ export const fetchCosts = () => async (dispatch, getState) => {
     const currentCostsSum = currentCosts.length > 0 ? getSumByArray(currentCosts) : 0;
     dispatch(setCosts({ currentCosts, currentCostsSum }));
   } catch (error) {
+    toast.error('Не удалось загрузить постоянные расходы.');
     dispatch(setIsFetchFailed(true));
   }
 };
@@ -103,6 +106,7 @@ export const fetchSpendings = () => async (dispatch) => {
     const currentMonthSpendings = await fetchData('/mocks/spendings/get.json');
     dispatch(setMonthSpendings(currentMonthSpendings.data));
   } catch (error) {
+    toast.error('Не удалось загрузить дневные траты.');
     dispatch(setIsFetchFailed(true));
   }
 };
@@ -113,6 +117,7 @@ export const fetchSavings = () => async (dispatch) => {
     const { currentSavings, currentYearSavings } = savings;
     dispatch(setSavings({ currentYearSavings, currentSavings }));
   } catch (error) {
+    toast.error('Не удалось загрузить сбережения.');
     dispatch(setIsFetchFailed(true));
   }
 };
@@ -195,11 +200,12 @@ export const editSpending = (spending) => async (dispatch, getState) => {
     })));
     dispatch(calculateOverviewData());
   } catch (err) {
+    toast.error('Не удалось изменить дневные траты.');
     dispatch(setIsFetchFailed(true));
   }
 };
 
-export const editSavingsData = (data) => (dispatch) => {
+export const editSavings = (data) => (dispatch) => {
   dispatch(setSavings({ currentSavings: data }));
 };
 
@@ -280,6 +286,7 @@ export const editIncome = (incomeItem) => async (dispatch, getState) => {
       currentIncomesSum: getSumByArray(newIncomesList),
     }));
   } catch (err) {
+    toast.error('Не удалось изменить доходы.');
     dispatch(setIsFetchFailed(true));
   }
 };
@@ -363,6 +370,7 @@ export const editCost = (costItem) => async (dispatch, getState) => {
       currentCostsSum: getSumByArray(newCostsList),
     }));
   } catch (err) {
+    toast.error('Не удалось изменить постоянные расходы.');
     dispatch(setIsFetchFailed(true));
   }
 };

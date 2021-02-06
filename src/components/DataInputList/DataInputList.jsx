@@ -6,6 +6,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import Skeleton from 'react-loading-skeleton';
 import { getFormatedNumber } from '@utils/functions';
+import isNil from 'lodash/isNil';
 import DataInputListItem from './DataInputListItem';
 import styles from './DataInputList.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
@@ -174,7 +175,7 @@ const DataInputList = (props) => {
           Сумма: &nbsp;
           <SkeletonContainer>
             <span>
-              {isDataFetched && sum
+              {isDataFetched && !isNil(sum)
                 ? getFormatedNumber(sum)
                 : <Skeleton width={50} height={15} />
               }

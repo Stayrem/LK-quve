@@ -176,7 +176,7 @@ const DataInputListItem = (props) => {
           ref={valueInput}
           type="text"
           placeholder="Размер..."
-          defaultValue={value && value.toLocaleString()}
+          defaultValue={value}
           onChange={(event) => editItem({
             ...item,
             value: parseInt(event.target.value, 10),

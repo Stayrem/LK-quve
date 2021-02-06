@@ -39,11 +39,11 @@ export default [
     component: SignIn,
     isProtected: false,
   },
-  // {
-  //   path: routerDict.ROOT,
-  //   component: Overview,
-  //   isProtected: true,
-  // },
+  {
+    path: routerDict.ROOT,
+    component: Overview,
+    isProtected: true,
+  },
   {
     path: routerDict.ROOT,
     component: Landing,
