@@ -15,7 +15,7 @@ import {
 import Select from 'react-select';
 
 import dictionary from '../../utils/dictionary';
-import { editSavingsData } from '../../store/action-creator';
+import { editSavings } from '../../store/action-creator';
 import styles from './SavingsAdjuster.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
 import useDebounce from '../../hooks/use-debounce';
@@ -110,7 +110,7 @@ const SavingsAdjuster = (props) => {
 
   useEffect(() => {
     if (isNewSavingsValueChanged) {
-      dispatch(editSavingsData({
+      dispatch(editSavings({
         date: getBeginOfMonth(date),
         value: newSavingsValue,
         type: savingsType,
