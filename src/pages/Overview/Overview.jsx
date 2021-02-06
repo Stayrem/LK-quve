@@ -8,7 +8,7 @@ import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 import DataInputList from '../../components/DataInputList/DataInputList';
 import Saldo from '../../components/Saldo/Saldo';
 import {
-  getOverviewData, addSpending, deleteSpending, editSpending,
+  getOverviewData, addSpending, deleteSpending, editSpending, resetStore,
 } from '../../store/action-creator';
 import createCards from '../../utils/create-cards';
 import styles from './Overview.scss';
@@ -21,6 +21,7 @@ const Overview = () => {
 
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
+  const isDateChanged = useSelector((state) => state.isDateChanged);
   const currentDailyBudget = useSelector((state) => state.currentDailyBudget);
   const currentDaySpendingsSum = useSelector((state) => state.currentDaySpendingsSum);
   const currentSavingsSum = useSelector((state) => state.currentSavingsSum);
@@ -45,6 +46,12 @@ const Overview = () => {
     dispatch(getOverviewData());
     document.title = `Сводка — ${dictionary.APP_NAME}`;
   }, []);
+
+  useEffect(() => {
+    if (isDateChanged) {
+      dispatch(getOverviewData());
+    }
+  }, [isDateChanged]);
 
   return (
     (() => (

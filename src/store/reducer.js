@@ -6,6 +6,8 @@ import Type from './action-types';
 const initialState = {
   fetchError: false,
   date: getBeginOfDay(moment().utc().unix()),
+  isDateChanged: false,
+
   user: {
     accessToken: null,
     name: null,
@@ -87,6 +89,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         date: payload,
+      };
+    case Type.SET_IS_DATE_CHANGED:
+      return {
+        ...state,
+        isDateChanged: payload,
       };
     case Type.SET_OVERVIEW_DATA:
       return {

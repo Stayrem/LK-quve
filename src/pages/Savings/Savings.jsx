@@ -16,6 +16,7 @@ import {
 const Savings = () => {
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
+  const isDateChanged = useSelector((state) => state.isDateChanged);
   const currentYearSavings = useSelector((state) => state.currentYearSavings);
   const currentSavings = useSelector((state) => state.currentSavings);
   const currentYearSavingsSum = currentYearSavings.reduce((acc, curr) => acc + curr.value, 0);
@@ -26,6 +27,13 @@ const Savings = () => {
     dispatch(fetchIncomes());
     document.title = `Сбережения — ${dictionary.APP_NAME}`;
   }, []);
+
+  useEffect(() => {
+    if (isDateChanged) {
+      dispatch(fetchSavings());
+      dispatch(fetchIncomes());
+    }
+  }, [isDateChanged]);
 
   const breadcrumbs = [
     {

@@ -20,6 +20,7 @@ import Tooltip from '../../components/Tooltip/Tooltip';
 const Costs = () => {
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
+  const isDateChanged = useSelector((state) => state.isDateChanged);
   const currentCostsSum = useSelector((state) => state.currentCostsSum);
   const currentCosts = useSelector((state) => state.currentCosts);
   const isCostsFetched = useSelector((state) => state.isCostsFetched);
@@ -28,6 +29,12 @@ const Costs = () => {
     dispatch(fetchCosts());
     document.title = `Постоянные расходы — ${dictionary.APP_NAME}`;
   }, []);
+
+  useEffect(() => {
+    if (isDateChanged) {
+      dispatch(fetchCosts());
+    }
+  }, [isDateChanged]);
 
   const breadcrumbs = [
     {
