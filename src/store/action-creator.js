@@ -8,7 +8,6 @@ import {
 import { toast } from 'react-toastify';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
-import dictionary from '@utils/dictionary';
 
 export const setUserInfo = (data) => ({
   type: Type.SET_USER_INFO,
@@ -48,6 +47,11 @@ export const setOverviewData = (obj) => ({
 export const setDate = (epoch) => ({
   type: Type.SET_DATE,
   payload: epoch,
+});
+
+export const setIsDateChanged = (bool) => ({
+  type: Type.SET_IS_DATE_CHANGED,
+  payload: bool,
 });
 
 export const setIsFetchFailed = (bool) => ({

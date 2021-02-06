@@ -1,12 +1,12 @@
 import React, { useState, useEffect, createRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import 'moment/locale/ru';
 import PropTypes from 'prop-types';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import ru from 'date-fns/locale/ru';
 import { getBeginOfDay } from '@utils/functions';
-import { setDate } from '../../store/action-creator';
+import { setDate, setIsDateChanged } from '../../store/action-creator';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import styles from './PageHeadline.module.scss';
@@ -28,11 +28,20 @@ const PageHeadline = (props) => {
   } = styles;
 
   const dispatch = useDispatch();
+  const isDateChanged = useSelector((state) => state.isDateChanged);
   const [selectedDay, setSelectedDay] = useState(new Date(date * 1000));
   const calendarRef = createRef();
 
+  const onDateChanged = (value) => {
+    setSelectedDay(value);
+    dispatch(setIsDateChanged(true));
+  };
+
   useEffect(() => {
-    dispatch(setDate(getBeginOfDay(moment(selectedDay).utc().unix())));
+    if (isDateChanged) {
+      dispatch(setDate(getBeginOfDay(moment(selectedDay).utc().unix())));
+      dispatch(setIsDateChanged(false));
+    }
   }, [selectedDay]);
 
   return (
@@ -50,7 +59,7 @@ const PageHeadline = (props) => {
               locale={ru}
               showMonthYearPicker={MonthFormat}
               dateFormat={MonthFormat ? 'MMMM yyyy' : 'd MMMM yyyy'}
-              onChange={(newDate) => setSelectedDay(newDate)}
+              onChange={(newDate) => onDateChanged(newDate)}
               popperModifiers={{
                 offset: {
                   enabled: true,
