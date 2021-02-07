@@ -50,7 +50,7 @@ const DataInputList = (props) => {
       const nextIndex = data.findIndex((item) => item.id === itemId) - 1;
       id = data[nextIndex].id;
     } else if (neighbour === 'new') {
-      id = data[data.length - 1].id;
+      id = data.length > 0 ? data[data.length - 1].id : null;
     } else {
       id = itemId;
     }

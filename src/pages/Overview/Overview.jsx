@@ -8,7 +8,7 @@ import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 import DataInputList from '../../components/DataInputList/DataInputList';
 import Saldo from '../../components/Saldo/Saldo';
 import {
-  getOverviewData, addSpending, deleteSpending, editSpending, resetStore,
+  getOverviewData, addCashFlow, deleteCashFlow, editCashFlow,
 } from '../../store/action-creator';
 import createCards from '../../utils/create-cards';
 import styles from './Overview.scss';
@@ -23,11 +23,11 @@ const Overview = () => {
   const date = useSelector((state) => state.date);
   const isDateChanged = useSelector((state) => state.isDateChanged);
   const currentDailyBudget = useSelector((state) => state.currentDailyBudget);
-  const currentDaySpendingsSum = useSelector((state) => state.currentDaySpendingsSum);
   const currentSavingsSum = useSelector((state) => state.currentSavingsSum);
   const currentRestValue = useSelector((state) => state.currentRestValue);
   const currentRestPercent = useSelector((state) => state.currentRestPercent);
-  const currentDaySpendings = useSelector((state) => state.currentDaySpendings);
+  const currentSpendings = useSelector((state) => state.currentSpendings);
+  const currentSpendingsSum = useSelector((state) => state.currentSpendingsSum);
 
   const isIncomesFetched = useSelector((state) => state.isIncomesFethed);
   const isCostsFetched = useSelector((state) => state.isCostsFetched);
@@ -35,17 +35,23 @@ const Overview = () => {
   const isSpendingsFetched = useSelector((state) => state.isSpendingsFetched);
   const isDataFetched = [isIncomesFetched, isCostsFetched, isSpendingsFetched, isSavingsFetched]
     .every((isDataTypeFethed) => isDataTypeFethed === true);
-  const isCartsDataReady = [currentDailyBudget, currentDaySpendingsSum, currentSavingsSum,
+  const isCartsDataReady = [currentDailyBudget, currentSpendingsSum, currentSavingsSum,
     currentRestValue, currentRestPercent]
     .every((data) => data !== null);
 
-  const getCardsState = createCards(currentDailyBudget, currentDaySpendingsSum, currentSavingsSum,
+  const getCardsState = createCards(currentDailyBudget, currentSpendingsSum, currentSavingsSum,
     currentRestValue, currentRestPercent);
 
   useEffect(() => {
     dispatch(getOverviewData());
     document.title = `Сводка — ${dictionary.APP_NAME}`;
   }, []);
+
+  useEffect(() => {
+    if (isDateChanged) {
+      dispatch(getOverviewData());
+    }
+  }, [isDateChanged]);
 
   useEffect(() => {
     if (isDateChanged) {
@@ -80,8 +86,8 @@ const Overview = () => {
           <div className="row">
             <div className="col-lg-6 mb-3 mb-lg-0">
               <DataInputList
-                sum={currentDaySpendingsSum}
-                data={currentDaySpendings}
+                sum={currentSpendingsSum}
+                data={currentSpendings}
                 title="Список трат за сегодня"
                 subtitle={(
                   <Tooltip
@@ -90,9 +96,9 @@ const Overview = () => {
                   />
                 )}
                 useStatus={false}
-                onAdd={() => dispatch(addSpending())}
-                onDelete={(id) => dispatch(deleteSpending(id))}
-                onEdit={(spending) => dispatch(editSpending(spending))}
+                onAdd={() => dispatch(addCashFlow(dictionary.DATA_LIST_TYPE_SPENDINGS))}
+                onDelete={(item) => dispatch(deleteCashFlow(item, dictionary.DATA_LIST_TYPE_SPENDINGS))}
+                onEdit={(item) => dispatch(editCashFlow(item, dictionary.DATA_LIST_TYPE_SPENDINGS))}
                 isDataFetched={isDataFetched}
               />
             </div>

@@ -1,3 +1,3 @@
-export default (currentMonthSpendings) => {
+export default (currentSpendings) => {
 
 };
