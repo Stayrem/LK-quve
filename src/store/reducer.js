@@ -27,7 +27,9 @@ const initialState = {
   currentSavings: null,
   isSavingsFetched: false,
 
-  currentMonthSpendings: [],
+  currentSpendings: [],
+  currentSpendingsSum: null,
+  prevDaysSpendingsSum: null,
   isSpendingsFetched: false,
 };
 
@@ -56,16 +58,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         fetchError: payload,
       };
-    case Type.SET_MONTH_SPENDINGS_DATA:
+    case Type.SET_SPENDINGS_DATA:
       return {
         ...state,
         ...payload,
         isSpendingsFetched: true,
-      };
-    case Type.SET_DAY_SPENDINGS_DATA:
-      return {
-        ...state,
-        currentDaySpendings: payload,
       };
     case Type.SET_INCOMES_DATA:
       return {

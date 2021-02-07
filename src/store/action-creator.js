@@ -6,9 +6,9 @@ import {
   getBeginOfDay, getBeginOfMonth, getSumByArray,
 } from '@utils/functions';
 import { toast } from 'react-toastify';
+import dictionary from '@utils/dictionary';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
-import dictionary from '@utils/dictionary';
 
 /* Actions */
 
@@ -47,8 +47,8 @@ export const setSavings = (data) => ({
   payload: data,
 });
 
-export const setMonthSpendings = (data) => ({
-  type: Type.SET_MONTH_SPENDINGS_DATA,
+export const setSpendings = (data) => ({
+  type: Type.SET_SPENDINGS_DATA,
   payload: data,
 });
 
@@ -106,10 +106,14 @@ export const fetchCosts = () => async (dispatch, getState) => {
   }
 };
 
-export const fetchSpendings = () => async (dispatch) => {
+export const fetchSpendings = () => async (dispatch, getState) => {
+  const { date } = getState();
+
   try {
-    const currentMonthSpendings = await fetchData('/mocks/spendings/get.json');
-    dispatch(setMonthSpendings({ currentMonthSpendings }));
+    const response = await fetchData('/mocks/spendings/get.json');
+    const { prevDaysSpendingsSum, currentSpendings } = response;
+    const currentSpendingsSum = currentSpendings.length > 0 ? getSumByArray(currentSpendings) : 0;
+    dispatch(setSpendings({ prevDaysSpendingsSum, currentSpendings, currentSpendingsSum }));
   } catch (error) {
     toast.error('Не удалось загрузить дневные траты.');
     dispatch(setIsFetchFailed(true));
@@ -134,28 +138,16 @@ const calculateOverviewData = () => async (dispatch, getState) => {
     currentIncomesSum,
     currentCostsSum,
     currentSavings,
-    currentMonthSpendings,
+    prevDaysSpendingsSum,
     date,
   } = getState();
 
   const currentSavingsSum = getAbsFromValue(currentSavings.value, currentSavings.type, currentIncomesSum);
-  const currentMonthSpendingsSum = currentMonthSpendings.length > 0
-    ? currentMonthSpendings.reduce((acc, current) => acc + current.value, 0)
-    : 0;
-  const currentDaySpendings = currentMonthSpendings.filter((item) => {
-    const selectedDay = getBeginOfDay(date);
-    const storedDay = item.date;
-    return selectedDay === storedDay;
-  });
-  const currentDaySpendingsSum = currentDaySpendings.length > 0
-    ? currentDaySpendings.reduce((acc, current) => acc + current.value, 0)
-    : 0;
-
   const currentProfit = currentIncomesSum - currentCostsSum - currentSavingsSum;
   const currentFixedBudget = currentProfit / moment(date * 1000).daysInMonth();
-  const currentDailyBudget = Math.round(currentFixedBudget * moment(date * 1000).utc().date() - currentMonthSpendingsSum + currentDaySpendingsSum);
+  const currentDailyBudget = Math.round(currentFixedBudget * moment(date * 1000).utc().date() - prevDaysSpendingsSum);
 
-  const currentRestValue = currentProfit - currentMonthSpendingsSum + currentDaySpendingsSum;
+  const currentRestValue = currentProfit - prevDaysSpendingsSum;
   const currentRestPercent = currentRestValue > 0
     ? Math.round((currentRestValue / currentIncomesSum) * 100)
     : 0;
@@ -165,96 +157,7 @@ const calculateOverviewData = () => async (dispatch, getState) => {
     currentSavingsSum,
     currentRestValue,
     currentRestPercent,
-    currentDaySpendings,
-    currentDaySpendingsSum,
   }));
-};
-
-/* Spendings */
-
-export const addSpending = () => (dispatch, getState) => {
-  const { currentMonthSpendings, date } = getState();
-  const newCurrentMonthSpendings = [...currentMonthSpendings, {
-    id: nanoid(),
-    name: '',
-    value: null,
-    date: getBeginOfDay(date),
-    isNew: true,
-  }];
-
-  dispatch(setMonthSpendings({ currentMonthSpendings: newCurrentMonthSpendings }));
-  dispatch(calculateOverviewData());
-};
-
-export const deleteSpending = (item) => (dispatch, getState) => {
-  const { currentMonthSpendings } = getState();
-
-  let newCurrentMonthSpendings = currentMonthSpendings.map((it) => {
-    if (it.id === item.id) {
-      return { ...it, isPending: true };
-    }
-    return it;
-  });
-
-  dispatch(setMonthSpendings({ currentMonthSpendings: newCurrentMonthSpendings }));
-
-  if (!item.isNew) {
-    try {
-      fetchData(`/api/spendings/${item.id}/`, 'DELETE')
-        .then(() => {
-          newCurrentMonthSpendings = currentMonthSpendings.filter((it) => it.id !== item.id);
-          dispatch(setMonthSpendings({ currentMonthSpendings: newCurrentMonthSpendings }));
-          dispatch(calculateOverviewData());
-        })
-        .catch(() => {
-          toast.error('Не удалось удалить дневные траты.');
-        });
-    } catch (err) {
-      dispatch(setIsFetchFailed(true));
-    }
-  } else {
-    newCurrentMonthSpendings = currentMonthSpendings.filter((it) => it.id !== item.id);
-    dispatch(setMonthSpendings({ currentMonthSpendings: newCurrentMonthSpendings }));
-    dispatch(calculateOverviewData());
-  }
-};
-
-export const editSpending = (spending) => async (dispatch, getState) => {
-  const { currentMonthSpendings, date } = getState();
-
-  let newCurrentMonthSpendings = currentMonthSpendings.map((it) => {
-    if (it.id === spending.id) {
-      return { ...it, isPending: true };
-    }
-    return it;
-  });
-
-  dispatch(setMonthSpendings({ currentMonthSpendings: newCurrentMonthSpendings }));
-
-  try {
-    const payload = {
-      date: getBeginOfMonth(date),
-      category: spending.category,
-      value: spending.value,
-    };
-    const updatedSpending = spending.isNew
-      ? await fetchData('/api/spendings/', 'POST', payload)
-      : await fetchData(`/api/spendings/${spending.id}/`, 'PUT', payload);
-
-    newCurrentMonthSpendings = currentMonthSpendings.map((it) => {
-      if (it.id === spending.id) {
-        return {
-          id: updatedSpending.id, category: updatedSpending.category, value: updatedSpending.value,
-        };
-      }
-      return it;
-    });
-
-    dispatch(setMonthSpendings({ currentMonthSpendings: newCurrentMonthSpendings }));
-  } catch (err) {
-    toast.error('Не удалось изменить дневные траты.');
-    dispatch(setIsFetchFailed(true));
-  }
 };
 
 /* CashFlows */
@@ -264,7 +167,7 @@ export const addCashFlow = (type) => (dispatch, getState) => {
   let dispatchedFunction = null;
   let dispatchedObject = {};
 
-  const { currentIncomes, currentCosts, date } = getState();
+  const { currentIncomes, currentCosts, currentSpendings, date } = getState();
 
   switch (type) {
     case dictionary.DATA_LIST_TYPE_INCOMES:
@@ -281,6 +184,14 @@ export const addCashFlow = (type) => (dispatch, getState) => {
       dispatchedObject = {
         currentCosts: [],
         currentCostsSum: null,
+      };
+      break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      currentCashFlows = currentSpendings;
+      dispatchedFunction = setSpendings;
+      dispatchedObject = {
+        currentSpendings: [],
+        currentSpendingsSum: null,
       };
       break;
     default:
@@ -310,6 +221,12 @@ export const addCashFlow = (type) => (dispatch, getState) => {
         currentCostsSum: getSumByArray(newCashFlowsList),
       };
       break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      dispatchedObject = {
+        currentSpendings: newCashFlowsList,
+        currentSpendingsSum: getSumByArray(newCashFlowsList),
+      };
+      break;
     default:
       break;
   }
@@ -323,7 +240,7 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
   let dispatchedObject = {};
   let requestURL = '';
 
-  const { currentIncomes, currentCosts } = getState();
+  const { currentIncomes, currentCosts, currentSpendings } = getState();
 
   switch (type) {
     case dictionary.DATA_LIST_TYPE_INCOMES:
@@ -343,6 +260,15 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
         currentCostsSum: null,
       };
       requestURL = `/api/costs/${item.id}/`;
+      break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      currentCashFlows = currentSpendings;
+      dispatchedFunction = setSpendings;
+      dispatchedObject = {
+        currentSpendings: [],
+        currentSpendingsSum: null,
+      };
+      requestURL = `/api/spendings/${item.id}/`;
       break;
     default:
       toast.error('Не выбран тип CashFlow-объекта.');
@@ -369,6 +295,12 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
         currentCosts: newCashFlowsList,
       };
       break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      dispatchedObject = {
+        ...dispatchedObject,
+        currentSpendings: newCashFlowsList,
+      };
+      break;
     default:
       break;
   }
@@ -392,6 +324,12 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
               dispatchedObject = {
                 currentCosts: newCashFlowsList,
                 currentCostsSum: getSumByArray(newCashFlowsList),
+              };
+              break;
+            case dictionary.DATA_LIST_TYPE_SPENDINGS:
+              dispatchedObject = {
+                currentSpendings: newCashFlowsList,
+                currentSpendingsSum: getSumByArray(newCashFlowsList),
               };
               break;
             default:
@@ -422,6 +360,12 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
           currentCostsSum: getSumByArray(newCashFlowsList),
         };
         break;
+      case dictionary.DATA_LIST_TYPE_SPENDINGS:
+        dispatchedObject = {
+          currentSpendings: newCashFlowsList,
+          currentSpendingsSum: getSumByArray(newCashFlowsList),
+        };
+        break;
       default:
         break;
     }
@@ -437,7 +381,7 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
   let addRequestURL = '';
   let editRequestURL = '';
 
-  const { currentIncomes, currentCosts, date } = getState();
+  const { currentIncomes, currentCosts, currentSpendings, date } = getState();
 
   switch (type) {
     case dictionary.DATA_LIST_TYPE_INCOMES:
@@ -459,6 +403,16 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
       };
       addRequestURL = '/api/costs/';
       editRequestURL = `/api/costs/${item.id}/`;
+      break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      currentCashFlows = currentSpendings;
+      dispatchedFunction = setSpendings;
+      dispatchedObject = {
+        currentSpending: [],
+        currentSpendingSum: null,
+      };
+      addRequestURL = '/api/spendings/';
+      editRequestURL = `/api/spendings/${item.id}/`;
       break;
     default:
       toast.error('Не выбран тип CashFlow-объекта.');
@@ -483,6 +437,12 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
       dispatchedObject = {
         ...dispatchedObject,
         currentCosts: newCashFlowsList,
+      };
+      break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      dispatchedObject = {
+        ...dispatchedObject,
+        currentSpending: newCashFlowsList,
       };
       break;
     default:
@@ -521,6 +481,12 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
         dispatchedObject = {
           currentCosts: newCashFlowsList,
           currentCostsSum: getSumByArray(newCashFlowsList),
+        };
+        break;
+      case dictionary.DATA_LIST_TYPE_SPENDINGS:
+        dispatchedObject = {
+          currentSpending: newCashFlowsList,
+          currentSpendingSum: getSumByArray(newCashFlowsList),
         };
         break;
       default:
