@@ -10,10 +10,7 @@ import DataInputList from '../../components/DataInputList/DataInputList';
 import DataPieChart from '../../components/DataPieChart/DataPieChart';
 
 import {
-  fetchCosts,
-  addCost,
-  deleteCost,
-  editCost,
+  fetchCosts, addCashFlow, deleteCashFlow, editCashFlow,
 } from '../../store/action-creator';
 import Tooltip from '../../components/Tooltip/Tooltip';
 
@@ -65,9 +62,9 @@ const Costs = () => {
                 sum={currentCostsSum}
                 data={currentCosts}
                 useStatus={false}
-                onAdd={() => dispatch(addCost())}
-                onDelete={(id) => dispatch(deleteCost(id))}
-                onEdit={(costItem) => dispatch(editCost(costItem))}
+                onAdd={() => dispatch(addCashFlow(dictionary.DATA_LIST_TYPE_COSTS))}
+                onDelete={(item) => dispatch(deleteCashFlow(item, dictionary.DATA_LIST_TYPE_COSTS))}
+                onEdit={(item) => dispatch(editCashFlow(item, dictionary.DATA_LIST_TYPE_COSTS))}
                 isDataFetched={isCostsFetched}
               />
             </div>

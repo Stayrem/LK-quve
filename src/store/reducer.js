@@ -59,7 +59,7 @@ const reducer = (state = initialState, action) => {
     case Type.SET_MONTH_SPENDINGS_DATA:
       return {
         ...state,
-        currentMonthSpendings: payload,
+        ...payload,
         isSpendingsFetched: true,
       };
     case Type.SET_DAY_SPENDINGS_DATA:
@@ -79,7 +79,7 @@ const reducer = (state = initialState, action) => {
         ...payload,
         isCostsFetched: true,
       };
-    case Type.SET_SAVINGS:
+    case Type.SET_SAVINGS_DATA:
       return {
         ...state,
         ...payload,
