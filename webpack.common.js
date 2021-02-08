@@ -1,13 +1,10 @@
 const path = require('path');
-const chalk = require('chalk');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssnanoPlugin = require('cssnano-webpack-plugin');
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const autoprefixer = require('autoprefixer');
-const CopyPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const autoprefixer = require('autoprefixer');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const hash = isDevelopment ? '' : '-[contenthash:8]';
@@ -21,29 +18,28 @@ const PATH = {
   MOCKS: path.join(__dirname, 'src/mocks'),
   ASSETS: path.join(__dirname, 'src/assets'),
 };
+
 module.exports = {
-  mode: isDevelopment ? 'development' : 'production',
   entry: './src/index.jsx',
-  output: {
-    filename: `main${hash}.js`,
-    path: PATH.DIST,
-  },
-  devServer: {
-    contentBase: PATH.DIST,
-    compress: false,
-    writeToDisk: true,
-    hot: true,
-    port: 1337,
-    historyApiFallback: true,
-    proxy: {
-      '/api': 'http://localhost:8000',
-    },
-  },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'src/template/index.html'),
+    }),
+    //new BundleAnalyzerPlugin(),
+    new MomentLocalesPlugin({
+      localesToKeep: ['ru'],
+    }),
+  ],
   resolve: {
     extensions: ['.jsx', '.js'],
     alias: {
       '@utils': path.join(PATH.SRC, 'utils'),
     },
+  },
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'build'),
   },
   module: {
     rules: [
@@ -73,10 +69,13 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              plugins: [
-                autoprefixer(),
-              ],
-              sourceMap: true,
+              postcssOptions: {
+                plugins: [
+                  [
+                    autoprefixer(),
+                  ],
+                ],
+              },
             },
           },
           {
@@ -125,35 +124,6 @@ module.exports = {
           name: '[name].[ext]',
         },
       },
-    ],
-  },
-  devtool: 'source-map',
-  plugins: [
-    new ProgressBarPlugin({
-      format: `  build [:bar] ${chalk.green.bold(':percent')} (:elapsed seconds)`,
-      clear: false,
-    }),
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      template: PATH.TEMPLATE,
-    }),
-    new MiniCssExtractPlugin({
-      filename: `[name]${hash}.css`,
-    }),
-    new CopyPlugin({
-      patterns: [
-        { from: PATH.MOCKS, to: path.join(PATH.DIST, 'mocks') },
-      ],
-    }),
-    new MomentLocalesPlugin({
-      localesToKeep: ['es-us', 'ru'],
-    }),
-  ],
-  optimization: {
-    minimizer: [
-      new CssnanoPlugin({
-        sourceMap: true,
-      }),
     ],
   },
 };
