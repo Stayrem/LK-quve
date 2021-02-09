@@ -2,7 +2,6 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 
@@ -26,10 +25,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src/template/index.html'),
     }),
-    //new BundleAnalyzerPlugin(),
-    new MomentLocalesPlugin({
-      localesToKeep: ['ru'],
-    }),
+    new BundleAnalyzerPlugin(),
   ],
   resolve: {
     extensions: ['.jsx', '.js'],

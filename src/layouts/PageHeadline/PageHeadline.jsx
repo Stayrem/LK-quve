@@ -1,18 +1,14 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
-import 'moment/locale/ru';
+import { DateTime } from 'luxon';
 import PropTypes from 'prop-types';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import ru from 'date-fns/locale/ru';
+import DatePicker from 'react-datepicker';
 import { getBeginOfDay } from '@utils/functions';
 import { setDate, setIsDateChanged } from '../../store/action-creator';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import styles from './PageHeadline.module.scss';
 import Calendar from '../../components/Calendar/Calendar';
-
-registerLocale('ru', ru); // register it with the name you want
 
 const PageHeadline = (props) => {
   const {
@@ -39,7 +35,7 @@ const PageHeadline = (props) => {
 
   useEffect(() => {
     if (isDateChanged) {
-      dispatch(setDate(getBeginOfDay(moment(selectedDay).utc().unix())));
+      dispatch(setDate(getBeginOfDay(DateTime.local().ts)));
       dispatch(setIsDateChanged(false));
     }
   }, [selectedDay]);
