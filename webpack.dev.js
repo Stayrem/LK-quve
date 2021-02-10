@@ -1,3 +1,4 @@
+const { HotModuleReplacementPlugin } = require('webpack');
 const { merge } = require('webpack-merge');
 const path = require('path');
 const chalk = require('chalk');
@@ -26,10 +27,11 @@ module.exports = merge(common, {
   },
   devServer: {
     contentBase: PATH.DIST,
-    compress: false,
-    writeToDisk: true,
     hot: true,
     port: 1337,
+    open: true,
+    compress: true,
+    writeToDisk: true,
     historyApiFallback: true,
     proxy: {
       '/api': 'http://localhost:8000',
@@ -52,6 +54,7 @@ module.exports = merge(common, {
         { from: PATH.MOCKS, to: path.join(PATH.DIST, 'mocks') },
       ],
     }),
+    new HotModuleReplacementPlugin(),
   ],
   optimization: {
     minimizer: [

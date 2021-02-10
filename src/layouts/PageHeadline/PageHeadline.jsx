@@ -25,7 +25,7 @@ const PageHeadline = (props) => {
 
   const dispatch = useDispatch();
   const isDateChanged = useSelector((state) => state.isDateChanged);
-  const [selectedDay, setSelectedDay] = useState(new Date(date * 1000));
+  const [selectedDay, setSelectedDay] = useState(new Date(date));
   const calendarRef = createRef();
 
   const onDateChanged = (value) => {
@@ -52,7 +52,6 @@ const PageHeadline = (props) => {
             <DatePicker
               customInput={<Calendar ref={calendarRef} />}
               selected={selectedDay}
-              locale={ru}
               showMonthYearPicker={MonthFormat}
               dateFormat={MonthFormat ? 'MMMM yyyy' : 'd MMMM yyyy'}
               onChange={(newDate) => onDateChanged(newDate)}

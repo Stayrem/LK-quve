@@ -10,6 +10,7 @@ const hash = isDevelopment ? '' : '-[contenthash:8]';
 
 const PATH = {
   DIST: path.join(__dirname, 'dist'),
+  BUILD: path.join(__dirname, 'build'),
   SRC: path.join(__dirname, 'src'),
   TEMPLATE: path.join(__dirname, 'src/template/index.html'),
   FONTS: path.join(__dirname, 'src/assets/fonts'),
@@ -23,9 +24,9 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src/template/index.html'),
+      template: PATH.TEMPLATE,
     }),
-    new BundleAnalyzerPlugin(),
+    //new BundleAnalyzerPlugin(),
   ],
   resolve: {
     extensions: ['.jsx', '.js'],
@@ -35,7 +36,7 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'build'),
+    path: PATH.BUILD,
   },
   module: {
     rules: [
