@@ -1,11 +1,10 @@
-import moment from 'moment';
-import 'moment/locale/ru';
+import { DateTime } from 'luxon';
 import { getBeginOfDay } from '@utils/functions';
 import Type from './action-types';
 
 const initialState = {
   fetchError: false,
-  date: getBeginOfDay(moment().utc().unix()),
+  date: getBeginOfDay(DateTime.local().ts),
   isDateChanged: false,
 
   user: {

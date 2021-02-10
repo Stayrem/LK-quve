@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import moment from 'moment';
 import isNil from 'lodash/isNil';
 import Skeleton from 'react-loading-skeleton';
 import {
@@ -14,6 +13,7 @@ import {
 } from '@utils/functions';
 import Select from 'react-select';
 
+import { DateTime } from 'luxon';
 import dictionary from '../../utils/dictionary';
 import { editSavings } from '../../store/action-creator';
 import styles from './SavingsAdjuster.module.scss';
@@ -146,7 +146,7 @@ const SavingsAdjuster = (props) => {
         <div className={['panel-header-subtitle', savingsAdjusterHeaderDate].join(' ')}>
           <SkeletonContainer>
             {date
-              ? `За ${moment(date * 1000).format('MMMM YYYY')}`
+              ? `За ${DateTime.fromMillis(date).toFormat('MMMM YYYY')}`
               : (
                 <Skeleton width={50} height={20} />
               )}

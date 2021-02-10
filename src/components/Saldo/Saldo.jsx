@@ -1,9 +1,9 @@
-import React  from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
-import * as moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
 
+import { DateTime } from 'luxon';
 import styles from './Saldo.module.scss';
 import defaultOptions from './chart-options';
 import Tooltip from '../Tooltip/Tooltip';
@@ -26,7 +26,7 @@ const Saldo = (props) => {
     data: isEmpty(graphData) ? [] : graphData.map((item) => parseInt(item.value, 10)),
   }];
   const labels = isEmpty(graphData) ? [] : graphData
-    .map((item) => moment.unix(item.date).utc().format('DD MMM'));
+    .map((item) => DateTime.fromMillis(item.date * 1000).toFormat('DD MMM'));
   const options = createOptions(labels, series);
 
   return (

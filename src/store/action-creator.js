@@ -1,14 +1,12 @@
 import { nanoid } from 'nanoid';
-import moment from 'moment';
-import 'moment/locale/ru';
 import {
-  getAbsFromValue,
-  getBeginOfDay, getBeginOfMonth, getSumByArray,
+  getAbsFromValue, getBeginOfMonth, getSumByArray,
 } from '@utils/functions';
 import { toast } from 'react-toastify';
 import dictionary from '@utils/dictionary';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
+import { DateTime } from 'luxon';
 
 /* Actions */
 
@@ -80,7 +78,7 @@ export const fetchUserInfo = () => async (dispatch) => {
 
 export const fetchIncomes = () => async (dispatch, getState) => {
   const { date } = getState();
-  const currentMonth = getBeginOfMonth(date);
+  const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
     const currentIncomes = await fetchData(`/api/incomes/?date=${currentMonth}`, 'GET');
@@ -94,7 +92,7 @@ export const fetchIncomes = () => async (dispatch, getState) => {
 
 export const fetchCosts = () => async (dispatch, getState) => {
   const { date } = getState();
-  const currentMonth = getBeginOfMonth(date);
+  const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
     const currentCosts = await fetchData(`/api/costs/?date=${currentMonth}`, 'GET');
@@ -108,6 +106,7 @@ export const fetchCosts = () => async (dispatch, getState) => {
 
 export const fetchSpendings = () => async (dispatch, getState) => {
   const { date } = getState();
+  const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
     const response = await fetchData('/mocks/spendings/get.json');
@@ -120,9 +119,12 @@ export const fetchSpendings = () => async (dispatch, getState) => {
   }
 };
 
-export const fetchSavings = () => async (dispatch) => {
+export const fetchSavings = () => async (dispatch, getState) => {
+  const { date } = getState();
+  const currentMonth = getBeginOfMonth(date) / 1000;
+
   try {
-    const savings = await fetchData('/mocks/savings/get.json');
+    const savings = await fetchData(`/api/savings/?date=${currentMonth}`, 'GET');
     const { currentSavings, currentYearSavings } = savings;
     dispatch(setSavings({ currentYearSavings, currentSavings }));
   } catch (error) {
@@ -142,10 +144,11 @@ const calculateOverviewData = () => async (dispatch, getState) => {
     date,
   } = getState();
 
+  const currentDateTime = DateTime.fromMillis(date);
   const currentSavingsSum = getAbsFromValue(currentSavings.value, currentSavings.type, currentIncomesSum);
   const currentProfit = currentIncomesSum - currentCostsSum - currentSavingsSum;
-  const currentFixedBudget = currentProfit / moment(date * 1000).daysInMonth();
-  const currentDailyBudget = Math.round(currentFixedBudget * moment(date * 1000).utc().date() - prevDaysSpendingsSum);
+  const currentFixedBudget = currentProfit / currentDateTime.daysInMonth;
+  const currentDailyBudget = Math.round(currentFixedBudget * currentDateTime.day - prevDaysSpendingsSum);
 
   const currentRestValue = currentProfit - prevDaysSpendingsSum;
   const currentRestPercent = currentRestValue > 0
@@ -503,7 +506,13 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
 /* Savings */
 
 export const editSavings = (data) => (dispatch) => {
-  dispatch(setSavings({ currentSavings: data }));
+  try {
+    const updatedSavings = fetchData('/api/savings/', 'PUT', data);
+    dispatch(setSavings({ currentSavings: updatedSavings }));
+  } catch (err) {
+    toast.error('Не удалось изменить сбережения.');
+    dispatch(setIsFetchFailed(true));
+  }
 };
 
 /* Overview */

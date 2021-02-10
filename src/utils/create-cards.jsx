@@ -1,6 +1,5 @@
 import React from 'react';
-import moment from 'moment';
-import 'moment/locale/ru';
+import { DateTime } from 'luxon';
 import Tooltip from '../components/Tooltip/Tooltip';
 import RestSumWidget from '../components/RestSumWidget/RestSumWidget';
 
@@ -18,7 +17,7 @@ export default (currentDailyBudget, currentDaySpendingsSum, currentSavingsSum, c
   {
     title: 'Бюджет на день',
     text: currentDailyBudget,
-    subTitle: `На ${moment().format('D MMMM YYYY')}`,
+    subTitle: `На ${DateTime.local().toFormat('D MMMM YYYY')}`,
     textColor: currentDailyBudget > 0 ? '#7DC900' : '#FC4349',
     tooltip: <Tooltip
       id="card-day-budget"
@@ -28,7 +27,7 @@ export default (currentDailyBudget, currentDaySpendingsSum, currentSavingsSum, c
   {
     title: 'Сбережения',
     text: currentSavingsSum,
-    subTitle: `За ${moment().format('MMMM')}`,
+    subTitle: `За ${DateTime.local().toFormat('MMMM')}`,
     textColor: '#ffffff',
     tooltip: <Tooltip
       id="card-savings"

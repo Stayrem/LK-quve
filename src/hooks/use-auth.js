@@ -3,7 +3,8 @@ import React, {
 } from 'react';
 import fetchData from '@utils/fetch';
 import { useDispatch } from 'react-redux';
-import { resetStore, setUserAccessToken } from '../store/action-creator';
+import { resetStore, setUserAccessToken, setUserInfo } from '../store/action-creator';
+import { parseJwt } from '../utils/functions';
 
 const mainAuth = {
   async signIn(values, callback) {
@@ -26,10 +27,12 @@ function useProvideAuth() {
 
   if (existingAccessToken) {
     dispatch(setUserAccessToken(existingAccessToken));
+    dispatch(setUserInfo({ email: parseJwt(existingAccessToken).email }));
   }
 
   const signIn = (values) => mainAuth.signIn(values, (token) => {
     dispatch(setUserAccessToken(token));
+    dispatch(setUserInfo({ email: parseJwt(token).email }));
     localStorage.setItem('USER_ACCESS_TOKEN', token);
   });
 
