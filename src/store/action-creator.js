@@ -119,9 +119,12 @@ export const fetchSpendings = () => async (dispatch, getState) => {
   }
 };
 
-export const fetchSavings = () => async (dispatch) => {
+export const fetchSavings = () => async (dispatch, getState) => {
+  const { date } = getState();
+  const currentMonth = getBeginOfMonth(date) / 1000;
+
   try {
-    const savings = await fetchData('/mocks/savings/get.json');
+    const savings = await fetchData(`/api/savings/?date=${currentMonth}`, 'GET');
     const { currentSavings, currentYearSavings } = savings;
     dispatch(setSavings({ currentYearSavings, currentSavings }));
   } catch (error) {
@@ -503,7 +506,13 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
 /* Savings */
 
 export const editSavings = (data) => (dispatch) => {
-  dispatch(setSavings({ currentSavings: data }));
+  try {
+    const updatedSavings = fetchData('/api/savings/', 'PUT', data);
+    dispatch(setSavings({ currentSavings: updatedSavings }));
+  } catch (err) {
+    toast.error('Не удалось изменить сбережения.');
+    dispatch(setIsFetchFailed(true));
+  }
 };
 
 /* Overview */

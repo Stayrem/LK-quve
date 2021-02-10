@@ -9,15 +9,18 @@ const updateToken = async () => {
 };
 
 axios.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem('USER_ACCESS_TOKEN') || null;
+  if (!['/api/auth/sign-in/', '/api/auth/sign-up/'].includes(config.url)) {
+    const accessToken = localStorage.getItem('USER_ACCESS_TOKEN') || null;
 
-  return {
-    ...config,
-    headers: {
-      ...config.headers,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  };
+    return {
+      ...config,
+      headers: {
+        ...config.headers,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+  }
+  return config;
 }, (error) => Promise.reject(error));
 
 axios.interceptors.response.use(null, (error) => {

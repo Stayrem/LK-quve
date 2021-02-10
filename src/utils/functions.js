@@ -20,3 +20,5 @@ export const getPercentFromValue = (value, type, incomes) => ((type === dictiona
 export const getAbsFromValue = (value, type, incomes) => ((type === dictionary.SAVINGS_INPUT_TYPE_PERCENTS)
   ? Math.round((value * incomes) / 100)
   : value);
+
+export const parseJwt = (token) => JSON.parse(atob(token.split('.')[1]));
