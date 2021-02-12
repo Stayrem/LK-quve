@@ -2,7 +2,8 @@ import React, { useState, useEffect, createRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import PropTypes from 'prop-types';
-import DatePicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import ru from 'date-fns/locale/ru';
 import { getBeginOfDay } from '@utils/functions';
 import { setDate, setIsDateChanged } from '../../store/action-creator';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
@@ -35,10 +36,12 @@ const PageHeadline = (props) => {
 
   useEffect(() => {
     if (isDateChanged) {
-      dispatch(setDate(getBeginOfDay(DateTime.local().ts)));
+      dispatch(setDate(getBeginOfDay(DateTime.fromJSDate(selectedDay).ts)));
       dispatch(setIsDateChanged(false));
     }
   }, [selectedDay]);
+
+  registerLocale('ru', ru);
 
   return (
     <div className={pageHeadline}>
@@ -52,8 +55,10 @@ const PageHeadline = (props) => {
             <DatePicker
               customInput={<Calendar ref={calendarRef} />}
               selected={selectedDay}
+              locale="ru"
               showMonthYearPicker={MonthFormat}
-              dateFormat={MonthFormat ? 'MMMM yyyy' : 'd MMMM yyyy'}
+              dateFormat={MonthFormat ? 'LLLL y' : 'd MMMM y'}
+              todayButton="Сегодня"
               onChange={(newDate) => onDateChanged(newDate)}
               popperModifiers={{
                 offset: {

@@ -4,9 +4,9 @@ import {
 } from '@utils/functions';
 import { toast } from 'react-toastify';
 import dictionary from '@utils/dictionary';
+import { DateTime } from 'luxon';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
-import { DateTime } from 'luxon';
 
 /* Actions */
 
@@ -124,7 +124,8 @@ export const fetchSavings = () => async (dispatch, getState) => {
   const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
-    const savings = await fetchData(`/api/savings/?date=${currentMonth}`, 'GET');
+    //const savings = await fetchData(`/api/savings/?date=${currentMonth}`, 'GET');
+    const savings = await fetchData('/mocks/savings/get.json', 'GET');
     const { currentSavings, currentYearSavings } = savings;
     dispatch(setSavings({ currentYearSavings, currentSavings }));
   } catch (error) {
@@ -170,7 +171,9 @@ export const addCashFlow = (type) => (dispatch, getState) => {
   let dispatchedFunction = null;
   let dispatchedObject = {};
 
-  const { currentIncomes, currentCosts, currentSpendings, date } = getState();
+  const {
+    currentIncomes, currentCosts, currentSpendings, date,
+  } = getState();
 
   switch (type) {
     case dictionary.DATA_LIST_TYPE_INCOMES:
@@ -384,7 +387,9 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
   let addRequestURL = '';
   let editRequestURL = '';
 
-  const { currentIncomes, currentCosts, currentSpendings, date } = getState();
+  const {
+    currentIncomes, currentCosts, currentSpendings, date,
+  } = getState();
 
   switch (type) {
     case dictionary.DATA_LIST_TYPE_INCOMES:
@@ -456,7 +461,7 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
 
   try {
     const payload = {
-      date: getBeginOfMonth(date),
+      date: getBeginOfMonth(date) / 1000,
       category: item.category,
       value: item.value,
     };
