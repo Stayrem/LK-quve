@@ -40,7 +40,7 @@ const Overview = () => {
     .every((data) => data !== null);
 
   const getCardsState = createCards(currentDailyBudget, currentSpendingsSum, currentSavingsSum,
-    currentRestValue, currentRestPercent);
+    currentRestValue, currentRestPercent, date);
 
   useEffect(() => {
     dispatch(getOverviewData());

@@ -146,7 +146,7 @@ const SavingsAdjuster = (props) => {
         <div className={['panel-header-subtitle', savingsAdjusterHeaderDate].join(' ')}>
           <SkeletonContainer>
             {date
-              ? `За ${DateTime.fromMillis(date).toFormat('MMMM YYYY')}`
+              ? `За ${DateTime.fromMillis(date).setLocale('ru').toFormat('LLLL y г.')}`
               : (
                 <Skeleton width={50} height={20} />
               )}

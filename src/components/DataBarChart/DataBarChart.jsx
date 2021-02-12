@@ -31,7 +31,7 @@ const DataBarChart = (props) => {
     name: '',
     data: isEmpty(graphData) ? [] : graphData.map((item) => parseInt(item.value, 10)),
   }];
-  const labels = isEmpty(graphData) ? [] : graphData.map((item) => DateTime.fromMillis(item.date * 1000).toFormat('MMMM YYYY'));
+  const labels = isEmpty(graphData) ? [] : graphData.map((item) => DateTime.fromMillis(item.date * 1000).setLocale('ru').toFormat('За LLLL y'));
   const options = createOptions(labels, series);
 
   return (

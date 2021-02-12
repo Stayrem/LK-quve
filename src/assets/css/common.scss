@@ -71,6 +71,10 @@
     opacity: 0.5;
   }
 
+  .react-datepicker__today-button {
+    background-color: $color-primary;
+  }
+
   .panel {
     display: flex;
     flex-direction: column;
