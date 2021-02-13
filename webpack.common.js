@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const hash = isDevelopment ? '' : '-[contenthash:8]';
+const hash = isDevelopment ? '[contenthash:8]' : '';
 
 const PATH = {
   DIST: path.join(__dirname, 'dist'),
@@ -35,8 +35,8 @@ module.exports = {
     },
   },
   output: {
-    filename: '[name].bundle.js',
-    path: PATH.BUILD,
+    filename: isDevelopment ? `[name]-${hash}.js` : '[name].bundle.js',
+    path: isDevelopment ? PATH.DIST : PATH.BUILD,
   },
   module: {
     rules: [

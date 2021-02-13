@@ -6,6 +6,7 @@ import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import { useAuth } from '../../hooks/use-auth';
+import { sendAmplitudeEvent } from '../../utils/amplitude';
 
 const validate = (values) => {
   const errors = {};
@@ -47,6 +48,7 @@ const SignUp = () => {
       auth.signUp(values)
         .then(() => {
           resetForm();
+          sendAmplitudeEvent('sign-up completed');
           toast.success('Пользователь успешно зарегистрирован!');
           history.push('/sign-in');
         })

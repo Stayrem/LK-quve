@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import { useAuth } from '../../hooks/use-auth';
+import { sendAmplitudeEvent } from '../../utils/amplitude';
 
 const validate = (values) => {
   const errors = {};
@@ -47,13 +48,24 @@ const SignIn = () => {
       auth.signIn(values)
         .then(() => {
           resetForm();
+          sendAmplitudeEvent('sign-in', {
+            'is_success': true,
+          });
         })
         .catch((error) => {
           const errorStatus = error.response && error.response.status;
           if (errorStatus === 401) {
             toast.error('Некорректные email или пароль.');
+            sendAmplitudeEvent('sign-in', {
+              'is_success': false,
+              reason: 'Incorrect email or password',
+            });
           } else {
             toast.error(`Ошибка сервера: ${errorStatus}`);
+            sendAmplitudeEvent('sign-in', {
+              'is_success': false,
+              reason: 'Other',
+            });
           }
           formik.setSubmitting(false);
         });

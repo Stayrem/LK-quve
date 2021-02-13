@@ -7,6 +7,7 @@ import dictionary from '@utils/dictionary';
 import { DateTime } from 'luxon';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
+import { sendAmplitudeEvent } from '../utils/amplitude';
 
 /* Actions */
 
@@ -124,7 +125,7 @@ export const fetchSavings = () => async (dispatch, getState) => {
   const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
-    //const savings = await fetchData(`/api/savings/?date=${currentMonth}`, 'GET');
+    // const savings = await fetchData(`/api/savings/?date=${currentMonth}`, 'GET');
     const savings = await fetchData('/mocks/savings/get.json', 'GET');
     const { currentSavings, currentYearSavings } = savings;
     dispatch(setSavings({ currentYearSavings, currentSavings }));
@@ -343,6 +344,10 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
           }
 
           dispatch(dispatchedFunction(dispatchedObject));
+          sendAmplitudeEvent('cashflow edited', {
+            type,
+            action: 'Deleting',
+          });
         })
         .catch(() => {
           toast.error('Не удалось удалить постоянный расход.');
@@ -502,6 +507,10 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
     }
 
     dispatch(dispatchedFunction(dispatchedObject));
+    sendAmplitudeEvent('cashflow edited', {
+      type,
+      action: item.isNew ? 'Adding' : 'Updating',
+    });
   } catch (err) {
     toast.error('Не удалось изменить постоянные расходы.');
     dispatch(setIsFetchFailed(true));
@@ -514,6 +523,10 @@ export const editSavings = (data) => (dispatch) => {
   try {
     const updatedSavings = fetchData('/api/savings/', 'PUT', data);
     dispatch(setSavings({ currentSavings: updatedSavings }));
+    sendAmplitudeEvent('cashflow edited', {
+      type: 'SAVINGS',
+      action: 'Updating',
+    });
   } catch (err) {
     toast.error('Не удалось изменить сбережения.');
     dispatch(setIsFetchFailed(true));

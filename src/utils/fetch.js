@@ -1,5 +1,6 @@
 import axios from 'axios';
 import store from '../store/store';
+import envConfig from './config';
 import { resetStore, setUserAccessToken } from '../store/action-creator';
 
 const updateToken = async () => {
@@ -9,7 +10,7 @@ const updateToken = async () => {
 };
 
 axios.interceptors.request.use((config) => {
-  if (!['/api/auth/sign-in/', '/api/auth/sign-up/'].includes(config.url)) {
+  if (![`${envConfig.url.API}/api/auth/sign-in/`, `${envConfig.url.API}/api/auth/sign-up/`].includes(config.url)) {
     const accessToken = localStorage.getItem('USER_ACCESS_TOKEN') || null;
 
     return {
@@ -24,7 +25,7 @@ axios.interceptors.request.use((config) => {
 }, (error) => Promise.reject(error));
 
 axios.interceptors.response.use(null, (error) => {
-  if (error.config && !['/api/auth/sign-in/', '/api/auth/sign-up/'].includes(error.config.url) && error.response && error.response.status === 401) {
+  if (error.config && ![`${envConfig.url.API}/api/auth/sign-in/`, `${envConfig.url.API}/api/auth/sign-up/`].includes(error.config.url) && error.response && error.response.status === 401) {
     return updateToken()
       .then((token) => {
         localStorage.setItem('USER_ACCESS_TOKEN', token);
@@ -42,7 +43,9 @@ axios.interceptors.response.use(null, (error) => {
   return Promise.reject(error);
 });
 
-export default async (url, method = 'GET', payload = {}) => {
+export default async (path, method = 'GET', payload = {}) => {
+  const url = [envConfig.url.API, path].join('');
+
   switch (method) {
     case 'POST': {
       const response = await axios.post(url, payload);

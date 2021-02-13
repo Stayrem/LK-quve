@@ -111,7 +111,7 @@ const SavingsAdjuster = (props) => {
   useEffect(() => {
     if (isNewSavingsValueChanged) {
       dispatch(editSavings({
-        date: getBeginOfMonth(date),
+        date: getBeginOfMonth(date) / 1000,
         value: newSavingsValue,
         type: savingsType,
       }));
