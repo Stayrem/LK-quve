@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import routesDict from '@utils/routesDict';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import styles from './Landing.module.scss';
+import { sendAmplitudeEvent } from '../../utils/amplitude';
 
 const Landing = () => {
   const {
@@ -14,7 +15,8 @@ const Landing = () => {
   } = styles;
 
   useEffect(() => {
-    document.title = `Quve — Сервис контроля личного бюджета`;
+    document.title = 'Quve — Сервис контроля личного бюджета';
+    sendAmplitudeEvent('landing viewed');
   }, []);
 
   return (

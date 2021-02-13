@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
 } from 'react-router-dom';
@@ -11,9 +11,13 @@ import Footer from '../../layouts/Footer/Footer';
 import styles from './App.module.scss';
 import { ProvideAuth } from '../../hooks/use-auth';
 import PrivateRoute from '../PrivateRoute/PrivateRoute';
+import { initAmplitude } from '../../utils/amplitude';
 
 const App = () => {
   const { wrapper } = styles;
+
+  initAmplitude();
+
   return (
     <ProvideAuth>
       <Router>

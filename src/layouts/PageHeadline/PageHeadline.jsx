@@ -10,6 +10,7 @@ import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import styles from './PageHeadline.module.scss';
 import Calendar from '../../components/Calendar/Calendar';
+import { sendAmplitudeEvent } from '../../utils/amplitude';
 
 const PageHeadline = (props) => {
   const {
@@ -38,6 +39,8 @@ const PageHeadline = (props) => {
     if (isDateChanged) {
       dispatch(setDate(getBeginOfDay(DateTime.fromJSDate(selectedDay).ts)));
       dispatch(setIsDateChanged(false));
+
+      sendAmplitudeEvent(MonthFormat ? 'month changed' : 'date changed');
     }
   }, [selectedDay]);
 
