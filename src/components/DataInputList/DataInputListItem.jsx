@@ -59,6 +59,7 @@ const DataInputListItem = (props) => {
     index,
     isPending,
     isNew,
+    isDataFetched,
   } = props;
 
   const {
@@ -68,16 +69,20 @@ const DataInputListItem = (props) => {
     dataInputListItemIconBtn,
   } = styles;
 
-  const [item, editItem] = useState({
+  const [item, setItem] = useState({
     id, category, value, status, isNew,
   });
 
   const categoryInput = useRef();
   const valueInput = useRef();
 
-  const onEditComplete = (editedItem) => {
-    editInputListItem(editedItem);
-  };
+  useEffect(() => {
+    if (isDataFetched) {
+      setItem({
+        id, category, value, status, isNew,
+      });
+    }
+  }, [isDataFetched]);
 
   useEffect(() => {
     if (isFocused) {
@@ -93,6 +98,10 @@ const DataInputListItem = (props) => {
       }
     }
   }, [isFocused, focusedInputType]);
+
+  const onEditComplete = (editedItem) => {
+    editInputListItem(editedItem);
+  };
 
   const onKeyUpHandler = (event, isAddingAccepted, isDeletingAccepted) => {
     switch (event.key) {
@@ -162,7 +171,7 @@ const DataInputListItem = (props) => {
           type="text"
           placeholder="Название..."
           defaultValue={category}
-          onChange={(event) => editItem({ ...item, category: event.target.value })}
+          onChange={(event) => setItem({ ...item, category: event.target.value })}
           onKeyDown={(event) => onKeyUpHandler(event, false, true)}
           onClick={(event) => setFocusOnRow(event, 'none')}
         />
@@ -177,7 +186,7 @@ const DataInputListItem = (props) => {
           type="text"
           placeholder="Размер..."
           defaultValue={value}
-          onChange={(event) => editItem({
+          onChange={(event) => setItem({
             ...item,
             value: parseInt(event.target.value, 10),
           })}
@@ -186,11 +195,11 @@ const DataInputListItem = (props) => {
         />
       </td>
       {useStatus && (
-      <td onClick={(event) => setFocusOnRow(event, 'last')}>
-        { status
-          ? <button type="button" onClick={() => editItem({ ...item, status: !status })} className="label label-active s_button">Не Учитывать</button>
-          : <button type="button" onClick={() => editItem({ ...item, status })} className="label s_button">Учитывать</button>}
-      </td>
+        <td onClick={(event) => setFocusOnRow(event, 'last')}>
+          { status
+            ? <button type="button" onClick={() => setItem({ ...item, status: !status })} className="label label-active s_button">Не Учитывать</button>
+            : <button type="button" onClick={() => setItem({ ...item, status })} className="label s_button">Учитывать</button>}
+        </td>
       )}
       <ListItemEditStatus
         isPending={isPending}
@@ -219,6 +228,7 @@ DataInputListItem.defaultProps = {
   useStatus: true,
   isPending: false,
   isNew: false,
+  isDataFetched: false,
 };
 
 DataInputListItem.propTypes = {
@@ -237,6 +247,7 @@ DataInputListItem.propTypes = {
   setFocusToItem: PropTypes.func.isRequired,
   isPending: PropTypes.bool,
   isNew: PropTypes.bool,
+  isDataFetched: PropTypes.bool,
 };
 
 ListItemEditStatus.propTypes = {

@@ -1,10 +1,10 @@
 import { nanoid } from 'nanoid';
-import {
-  getAbsFromValue, getBeginOfMonth, getSumByArray,
-} from '@utils/functions';
 import { toast } from 'react-toastify';
 import dictionary from '@utils/dictionary';
 import { DateTime } from 'luxon';
+import {
+  getAbsFromValue, getBeginOfMonth, getBeginOfDay, getSumByArray,
+} from '../utils/functions';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
 import { sendAmplitudeEvent } from '../utils/amplitude';
@@ -48,6 +48,11 @@ export const setSavings = (data) => ({
 
 export const setSpendings = (data) => ({
   type: Type.SET_SPENDINGS_DATA,
+  payload: data,
+});
+
+export const setSaldo = (data) => ({
+  type: Type.SET_SALDO_DATA,
   payload: data,
 });
 
@@ -107,11 +112,12 @@ export const fetchCosts = () => async (dispatch, getState) => {
 
 export const fetchSpendings = () => async (dispatch, getState) => {
   const { date } = getState();
-  const currentMonth = getBeginOfMonth(date) / 1000;
+  const currentDay = getBeginOfDay(date) / 1000;
 
   try {
-    const response = await fetchData('/mocks/spendings/get.json');
-    const { prevDaysSpendingsSum, currentSpendings } = response;
+    const response = await fetchData(`/api/spendings/?date=${currentDay}`, 'GET');
+    const prevDaysSpendingsSum = response.prev_days_sum;
+    const currentSpendings = response.today_spendings;
     const currentSpendingsSum = currentSpendings.length > 0 ? getSumByArray(currentSpendings) : 0;
     dispatch(setSpendings({ prevDaysSpendingsSum, currentSpendings, currentSpendingsSum }));
   } catch (error) {
@@ -125,12 +131,39 @@ export const fetchSavings = () => async (dispatch, getState) => {
   const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
-    // const savings = await fetchData(`/api/savings/?date=${currentMonth}`, 'GET');
-    const savings = await fetchData('/mocks/savings/get.json', 'GET');
-    const { currentSavings, currentYearSavings } = savings;
+    const savings = await fetchData(`/api/savings/?date=${currentMonth}`, 'GET');
+    const currentSavingsUnformated = savings.find((item) => item.date === currentMonth);
+    const currentSavings = currentSavingsUnformated
+      ? {
+        ...currentSavingsUnformated,
+        value: currentSavingsUnformated.type === 0
+          ? currentSavingsUnformated.value
+          : currentSavingsUnformated.percent,
+      }
+      : {
+        date: currentMonth,
+        value: 0,
+        type: 0,
+      };
+    const currentYearSavings = savings.filter((item) => item.date !== currentMonth);
     dispatch(setSavings({ currentYearSavings, currentSavings }));
   } catch (error) {
     toast.error('Не удалось загрузить сбережения.');
+    dispatch(setIsFetchFailed(true));
+  }
+};
+
+export const fetchSaldo = () => async (dispatch, getState) => {
+  const { date } = getState();
+  const currentDay = getBeginOfDay(date) / 1000;
+
+  try {
+    const response = await fetchData(`/api/saldo/?date=${currentDay}`, 'GET');
+    const currentSaldo = response;
+
+    dispatch(setSaldo({ currentSaldo }));
+  } catch (error) {
+    toast.error('Не удалось загрузить динамику дневных остатков.');
     dispatch(setIsFetchFailed(true));
   }
 };
@@ -154,7 +187,7 @@ const calculateOverviewData = () => async (dispatch, getState) => {
 
   const currentRestValue = currentProfit - prevDaysSpendingsSum;
   const currentRestPercent = currentRestValue > 0
-    ? Math.round((currentRestValue / currentIncomesSum) * 100)
+    ? Math.round((currentRestValue / currentProfit) * 100)
     : 0;
 
   dispatch(setOverviewData({
@@ -421,8 +454,8 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
       currentCashFlows = currentSpendings;
       dispatchedFunction = setSpendings;
       dispatchedObject = {
-        currentSpending: [],
-        currentSpendingSum: null,
+        currentSpendings: [],
+        currentSpendingsSum: null,
       };
       addRequestURL = '/api/spendings/';
       editRequestURL = `/api/spendings/${item.id}/`;
@@ -455,7 +488,7 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
     case dictionary.DATA_LIST_TYPE_SPENDINGS:
       dispatchedObject = {
         ...dispatchedObject,
-        currentSpending: newCashFlowsList,
+        currentSpendings: newCashFlowsList,
       };
       break;
     default:
@@ -466,7 +499,9 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
 
   try {
     const payload = {
-      date: getBeginOfMonth(date) / 1000,
+      date: type === dictionary.DATA_LIST_TYPE_SPENDINGS
+        ? getBeginOfDay(date) / 1000
+        : getBeginOfMonth(date) / 1000,
       category: item.category,
       value: item.value,
     };
@@ -498,8 +533,8 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
         break;
       case dictionary.DATA_LIST_TYPE_SPENDINGS:
         dispatchedObject = {
-          currentSpending: newCashFlowsList,
-          currentSpendingSum: getSumByArray(newCashFlowsList),
+          currentSpendings: newCashFlowsList,
+          currentSpendingsSum: getSumByArray(newCashFlowsList),
         };
         break;
       default:
@@ -522,7 +557,8 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
 export const editSavings = (data) => (dispatch) => {
   try {
     const updatedSavings = fetchData('/api/savings/', 'PUT', data);
-    dispatch(setSavings({ currentSavings: updatedSavings }));
+    dispatch(setSavings({ currentSavings: data }));
+
     sendAmplitudeEvent('cashflow edited', {
       type: 'SAVINGS',
       action: 'Updating',
@@ -541,4 +577,5 @@ export const getOverviewData = () => async (dispatch) => {
   await dispatch(fetchCosts());
   await dispatch(fetchSavings());
   dispatch(calculateOverviewData());
+  await dispatch(fetchSaldo());
 };

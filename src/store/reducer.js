@@ -9,6 +9,7 @@ const initialState = {
 
   user: {
     accessToken: null,
+    id: null,
     name: null,
     email: null,
   },
@@ -30,6 +31,9 @@ const initialState = {
   currentSpendingsSum: null,
   prevDaysSpendingsSum: null,
   isSpendingsFetched: false,
+
+  currentSaldo: [],
+  isSaldoFetched: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -81,10 +85,20 @@ const reducer = (state = initialState, action) => {
         ...payload,
         isSavingsFetched: true,
       };
+    case Type.SET_SALDO_DATA:
+      return {
+        ...state,
+        ...payload,
+        isSaldoFetched: true,
+      };
     case Type.SET_DATE:
       return {
         ...state,
         date: payload,
+        isSpendingsFetched: false,
+        isIncomesFethed: false,
+        isCostsFetched: false,
+        isSavingsFetched: false,
       };
     case Type.SET_IS_DATE_CHANGED:
       return {

@@ -28,6 +28,7 @@ const Overview = () => {
   const currentRestPercent = useSelector((state) => state.currentRestPercent);
   const currentSpendings = useSelector((state) => state.currentSpendings);
   const currentSpendingsSum = useSelector((state) => state.currentSpendingsSum);
+  const currentSaldo = useSelector((state) => state.currentSaldo);
 
   const isIncomesFetched = useSelector((state) => state.isIncomesFethed);
   const isCostsFetched = useSelector((state) => state.isCostsFetched);
@@ -46,12 +47,6 @@ const Overview = () => {
     dispatch(getOverviewData());
     document.title = `Сводка — ${dictionary.APP_NAME}`;
   }, []);
-
-  useEffect(() => {
-    if (isDateChanged) {
-      dispatch(getOverviewData());
-    }
-  }, [isDateChanged]);
 
   useEffect(() => {
     if (isDateChanged) {
@@ -103,7 +98,7 @@ const Overview = () => {
               />
             </div>
             <div className="col-lg-6 mb-3 mb-lg-0">
-              <Saldo />
+              <Saldo graphData={currentSaldo} />
             </div>
           </div>
         </PageContainer>

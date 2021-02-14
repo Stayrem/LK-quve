@@ -146,6 +146,7 @@ const DataInputList = (props) => {
                     deleteInputListItem={onDeleteHandler}
                     editInputListItem={onEdit}
                     setFocusToItem={setFocusToItem}
+                    isDataDetched={isDataFetched}
                   />
                 )) : (
                   <tr>

@@ -1,11 +1,4 @@
 {
-  "prevDaysSpendingsSum": 4023,
-  "currentSpendings": [
-    {
-      "id": 0,
-      "category": "Кофу",
-      "value": 1000,
-      "date": 1612656000
-    }
-  ]
+  "prevDaysSpendingsSum": 12165,
+  "currentSpendings": []
 }

@@ -9,9 +9,9 @@ export const getFormatedNumber = (number) => number
   .toString()
   .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ' ');
 
-export const getBeginOfDay = (date) => DateTime.fromMillis(date).startOf('day').ts;
+export const getBeginOfDay = (date) => DateTime.fromMillis(date).toUTC().startOf('day').ts;
 
-export const getBeginOfMonth = (date) => DateTime.fromMillis(date).startOf('month').ts;
+export const getBeginOfMonth = (date) => DateTime.fromMillis(date).toUTC().startOf('month').ts;
 
 export const getPercentFromValue = (value, type, incomes) => ((type === dictionary.SAVINGS_INPUT_TYPE_VALUE)
   ? Math.round((value / incomes) * 100)

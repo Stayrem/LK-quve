@@ -21,6 +21,11 @@ const Savings = () => {
   const currentSavings = useSelector((state) => state.currentSavings);
   const currentYearSavingsSum = currentYearSavings.reduce((acc, curr) => acc + curr.value, 0);
   const currentIncomesSum = useSelector((state) => state.currentIncomesSum);
+  const isSavingsFetched = useSelector((state) => state.isSavingsFetched);
+  const isIncomesFethed = useSelector((state) => state.isIncomesFethed);
+
+  const isDataFetched = [isSavingsFetched, isIncomesFethed]
+    .every((isDataTypeFethed) => isDataTypeFethed === true);
 
   useEffect(() => {
     dispatch(fetchSavings());
@@ -60,6 +65,7 @@ const Savings = () => {
                 date={date}
                 currentIncomesSum={currentIncomesSum}
                 currentSavings={currentSavings}
+                isDataFetched={isDataFetched}
               />
               <SavingsSum value={currentYearSavingsSum} />
             </div>
