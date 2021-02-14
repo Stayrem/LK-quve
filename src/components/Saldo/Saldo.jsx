@@ -23,10 +23,10 @@ const Saldo = (props) => {
   } = styles;
   const series = [{
     name: 'Дневной остаток',
-    data: isEmpty(graphData) ? [] : graphData.map((item) => parseInt(item.value, 10)),
+    data: isEmpty(graphData) ? [] : graphData.map((item) => item.value),
   }];
   const labels = isEmpty(graphData) ? [] : graphData
-    .map((item) => DateTime.fromMillis(item.date * 1000).toFormat('DD MMM'));
+    .map((item) => DateTime.fromMillis(item.date * 1000).setLocale('ru').toFormat('dd MMMM'));
   const options = createOptions(labels, series);
 
   return (
@@ -38,7 +38,7 @@ const Saldo = (props) => {
         <div className="panel-header-subtitle">
           <Tooltip
             id="saldo"
-            text="График показывает динамику дневного дефицита или профицита бюджета. Если линия выше нуля, то с бюджетом всё хорошо, если ниже, то стоит начать сокращать ежедневные траты."
+            text="График показывает динамику дневного дефицита или профицита бюджета. Если последнее значение больше нуля, то с бюджетом всё хорошо, если ниже, то стоит начать сокращать ежедневные траты."
           />
         </div>
       </div>

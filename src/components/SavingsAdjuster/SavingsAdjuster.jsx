@@ -54,6 +54,7 @@ const SavingsAdjuster = (props) => {
     date,
     currentIncomesSum,
     currentSavings,
+    isDataFetched
   } = props;
 
   const {
@@ -77,12 +78,11 @@ const SavingsAdjuster = (props) => {
   const [isNewSavingsValueChanged, setIsNewSavingsValueChanged] = useState(false);
   const [savingsType, setSavingsType] = useState(null);
   const [isSavingsTypeChanged, setIsSavingsTypeChanged] = useState(false);
-  const [isValueAndTypeInited, setIsValueAndTypeInited] = useState(false);
 
   const rangeInput = useRef(null);
   const newSavingsValueInput = useRef(null);
 
-  const onSavingsChange = (value) => {
+  const onSavingsValueChange = (value) => {
     let newValue = null;
 
     if (savingsType === dictionary.SAVINGS_INPUT_TYPE_PERCENTS) {
@@ -109,6 +109,18 @@ const SavingsAdjuster = (props) => {
   const debouncedNewSavingsValue = useDebounce(newSavingsValue, 500);
 
   useEffect(() => {
+    if (isDataFetched) {
+      setNewSavingsValue(currentSavings.value);
+      setSavingsType(currentSavings.type);
+    }
+
+    if (isDataFetched && rangeInput.current && newSavingsValueInput.current) {
+      rangeInput.current.value = getPercentFromValue(currentSavings.value, currentSavings.type, currentIncomesSum);
+      newSavingsValueInput.current.value = currentSavings.value;
+    }
+  }, [isDataFetched]);
+
+  useEffect(() => {
     if (isNewSavingsValueChanged) {
       dispatch(editSavings({
         date: getBeginOfMonth(date) / 1000,
@@ -124,18 +136,10 @@ const SavingsAdjuster = (props) => {
       const recalculatedValue = savingsType === dictionary.SAVINGS_INPUT_TYPE_VALUE
         ? getAbsFromValue(newSavingsValue, dictionary.SAVINGS_INPUT_TYPE_PERCENTS, currentIncomesSum)
         : getPercentFromValue(newSavingsValue, dictionary.SAVINGS_INPUT_TYPE_VALUE, currentIncomesSum);
-      onSavingsChange(recalculatedValue);
+      onSavingsValueChange(recalculatedValue);
       setIsSavingsTypeChanged(false);
     }
   }, [isSavingsTypeChanged]);
-
-  useEffect(() => {
-    if (currentSavings && currentIncomesSum && !isValueAndTypeInited) {
-      setNewSavingsValue(currentSavings.value);
-      setSavingsType(currentSavings.type);
-      setIsValueAndTypeInited(true);
-    }
-  }, [currentSavings, currentIncomesSum]);
 
   return (
     <div className={['panel', savingsAdjuster, 'mb-3'].join(' ')}>
@@ -164,7 +168,7 @@ const SavingsAdjuster = (props) => {
                   max="100"
                   ref={rangeInput}
                   defaultValue={getPercentFromValue(newSavingsValue, savingsType, currentIncomesSum)}
-                  onChange={() => onSavingsChange(savingsType === dictionary.SAVINGS_INPUT_TYPE_PERCENTS
+                  onChange={() => onSavingsValueChange(savingsType === dictionary.SAVINGS_INPUT_TYPE_PERCENTS
                     ? rangeInput.current.value
                     : getAbsFromValue(rangeInput.current.value, dictionary.SAVINGS_INPUT_TYPE_PERCENTS, currentIncomesSum))}
                 />
@@ -189,7 +193,7 @@ const SavingsAdjuster = (props) => {
                       placeholder="30"
                       ref={newSavingsValueInput}
                       defaultValue={newSavingsValue}
-                      onChange={() => onSavingsChange(newSavingsValueInput.current.value)}
+                      onChange={() => onSavingsValueChange(newSavingsValueInput.current.value)}
                     />
                   </div>
                   <div className={savingsAdjusterSelectWrapper}>
@@ -265,6 +269,7 @@ SavingsAdjuster.defaultProps = {
     type: 0,
     value: 0,
   },
+  isDataFetched: false,
 };
 
 SavingsAdjuster.propTypes = {
@@ -275,6 +280,7 @@ SavingsAdjuster.propTypes = {
     type: PropTypes.number,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
+  isDataFetched: PropTypes.bool,
 };
 
 export default SavingsAdjuster;

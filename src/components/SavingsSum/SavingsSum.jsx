@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Skeleton from 'react-loading-skeleton';
+import isNil from 'lodash/isNil';
 import { getFormatedNumber } from '@utils/functions';
 import styles from './SavingsSum.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
@@ -33,7 +34,7 @@ const SavingsSum = (props) => {
       <div className={['panel-body', savingsSumBody].join(' ')}>
         <SkeletonContainer>
           <span>
-            {value ? getFormatedNumber(value) : <Skeleton height={20} width={100} />}
+            {!isNil(value) ? getFormatedNumber(value) : <Skeleton height={20} width={100} />}
           </span>
         </SkeletonContainer>
       </div>
