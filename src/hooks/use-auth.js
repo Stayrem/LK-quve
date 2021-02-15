@@ -2,10 +2,12 @@ import React, {
   useContext, createContext,
 } from 'react';
 import fetchData from '@utils/fetch';
-import { useDispatch } from 'react-redux';
-import { resetStore, setUserAccessToken, setUserInfo } from '../store/action-creator';
-import { parseJwt } from '../utils/functions';
-import { sendAmplitudeEvent } from '../utils/amplitude';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  fetchUserInfo,
+  resetStore,
+  setUserAccessToken,
+} from '../store/action-creator';
 
 const mainAuth = {
   async signIn(values, callback) {
@@ -24,21 +26,21 @@ const authContext = createContext();
 
 function useProvideAuth() {
   const dispatch = useDispatch();
+  const isInfoFetched = useSelector((state) => state.isInfoFetched);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const existingAccessToken = localStorage.getItem('USER_ACCESS_TOKEN') || null;
 
-  if (existingAccessToken) {
+  if (existingAccessToken && !accessToken) {
     dispatch(setUserAccessToken(existingAccessToken));
-    dispatch(setUserInfo({ email: parseJwt(existingAccessToken).email }));
+  }
 
-    sendAmplitudeEvent('session started');
+  if (!isInfoFetched && accessToken) {
+    dispatch(fetchUserInfo());
   }
 
   const signIn = (values) => mainAuth.signIn(values, (token) => {
     dispatch(setUserAccessToken(token));
-    dispatch(setUserInfo({ email: parseJwt(token).email }));
     localStorage.setItem('USER_ACCESS_TOKEN', token);
-
-    sendAmplitudeEvent('session started');
   });
 
   const signUp = (values) => mainAuth.signUp(values);

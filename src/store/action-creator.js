@@ -7,7 +7,7 @@ import {
 } from '../utils/functions';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
-import { sendAmplitudeEvent } from '../utils/amplitude';
+import { sendAmplitudeEvent, setAmplitudeUserId } from '../utils/amplitude';
 
 /* Actions */
 
@@ -74,8 +74,11 @@ export const resetStore = () => ({
 
 export const fetchUserInfo = () => async (dispatch) => {
   try {
-    const userInfo = await fetchData('/mocks/info.json', 'GET');
+    const userInfo = await fetchData('/api/users/', 'GET');
     dispatch(setUserInfo(userInfo));
+
+    setAmplitudeUserId(userInfo.id);
+    sendAmplitudeEvent('session started');
   } catch (error) {
     toast.error('Не удалось загрузить данные пользователя.');
     dispatch(setIsFetchFailed(true));

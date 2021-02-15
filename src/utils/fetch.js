@@ -2,6 +2,7 @@ import axios from 'axios';
 import store from '../store/store';
 import envConfig from './config';
 import { resetStore, setUserAccessToken } from '../store/action-creator';
+import { sendAmplitudeEvent } from './amplitude';
 
 const updateToken = async () => {
   const accessToken = await axios.post('/api/auth/refresh/');
@@ -30,6 +31,8 @@ axios.interceptors.response.use(null, (error) => {
       .then((token) => {
         localStorage.setItem('USER_ACCESS_TOKEN', token);
         store.dispatch(setUserAccessToken(token));
+
+        sendAmplitudeEvent('session started');
 
         return axios.request(error.config);
       })

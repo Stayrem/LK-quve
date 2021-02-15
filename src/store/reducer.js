@@ -10,7 +10,7 @@ const initialState = {
   user: {
     accessToken: null,
     id: null,
-    name: null,
+    full_name: null,
     email: null,
   },
   isInfoFetched: false,
