@@ -1,9 +1,9 @@
-import React  from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
-import * as moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
 
+import { DateTime } from 'luxon';
 import styles from './Saldo.module.scss';
 import defaultOptions from './chart-options';
 import Tooltip from '../Tooltip/Tooltip';
@@ -23,10 +23,10 @@ const Saldo = (props) => {
   } = styles;
   const series = [{
     name: 'Дневной остаток',
-    data: isEmpty(graphData) ? [] : graphData.map((item) => parseInt(item.value, 10)),
+    data: isEmpty(graphData) ? [] : graphData.map((item) => item.value),
   }];
   const labels = isEmpty(graphData) ? [] : graphData
-    .map((item) => moment.unix(item.date).utc().format('DD MMM'));
+    .map((item) => DateTime.fromMillis(item.date * 1000).setLocale('ru').toFormat('dd MMMM'));
   const options = createOptions(labels, series);
 
   return (
@@ -38,7 +38,7 @@ const Saldo = (props) => {
         <div className="panel-header-subtitle">
           <Tooltip
             id="saldo"
-            text="График показывает динамику дневного дефицита или профицита бюджета. Если линия выше нуля, то с бюджетом всё хорошо, если ниже, то стоит начать сокращать ежедневные траты."
+            text="График показывает динамику дневного дефицита или профицита бюджета. Если последнее значение больше нуля, то с бюджетом всё хорошо, если ниже, то стоит начать сокращать ежедневные траты."
           />
         </div>
       </div>

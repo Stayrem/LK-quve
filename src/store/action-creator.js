@@ -1,24 +1,34 @@
 import { nanoid } from 'nanoid';
-import moment from 'moment';
-import 'moment/locale/ru';
-import { getBeginOfDay, getBeginOfMonth } from '@utils/functions';
+import { toast } from 'react-toastify';
+import dictionary from '@utils/dictionary';
+import { DateTime } from 'luxon';
+import {
+  getAbsFromValue, getBeginOfMonth, getBeginOfDay, getSumByArray,
+} from '../utils/functions';
 import Type from './action-types';
 import fetchData from '../utils/fetch';
+import { sendAmplitudeEvent, setAmplitudeUserId } from '../utils/amplitude';
 
-const calculateSum = (list) => list.reduce((acc, current) => {
-  if (current.status) {
-    return acc + current.value;
-  }
-  return acc + 0;
-}, 0);
+/* Actions */
+
+export const setDate = (epoch) => ({
+  type: Type.SET_DATE,
+  payload: epoch,
+});
+
+export const setIsDateChanged = (bool) => ({
+  type: Type.SET_IS_DATE_CHANGED,
+  payload: bool,
+});
 
 export const setUserInfo = (data) => ({
   type: Type.SET_USER_INFO,
   payload: data,
 });
 
-export const resetStore = () => ({
-  type: Type.RESET_STORE,
+export const setUserAccessToken = (data) => ({
+  type: Type.SET_USER_ACCESS_TOKEN,
+  payload: data,
 });
 
 export const setIncomes = (obj) => ({
@@ -31,13 +41,18 @@ export const setCosts = (data) => ({
   payload: data,
 });
 
-export const setMonthSpendings = (data) => ({
-  type: Type.SET_MONTH_SPENDINGS_DATA,
+export const setSavings = (data) => ({
+  type: Type.SET_SAVINGS_DATA,
   payload: data,
 });
 
-export const setSavings = (data) => ({
-  type: Type.SET_SAVINGS,
+export const setSpendings = (data) => ({
+  type: Type.SET_SPENDINGS_DATA,
+  payload: data,
+});
+
+export const setSaldo = (data) => ({
+  type: Type.SET_SALDO_DATA,
   payload: data,
 });
 
@@ -46,239 +61,518 @@ export const setOverviewData = (obj) => ({
   payload: obj,
 });
 
-export const setDate = (epoch) => ({
-  type: Type.SET_DATE,
-  payload: epoch,
-});
-
 export const setIsFetchFailed = (bool) => ({
   type: Type.SET_IS_FETCH_FAILED,
   payload: bool,
 });
 
+export const resetStore = () => ({
+  type: Type.RESET_STORE,
+});
+
+/* Fetches */
+
 export const fetchUserInfo = () => async (dispatch) => {
   try {
-    const userInfo = await fetchData('/mocks/info.json');
-    dispatch(setUserInfo(userInfo.data));
-  } catch (err) {
+    const userInfo = await fetchData('/api/users/', 'GET');
+    dispatch(setUserInfo(userInfo));
+
+    setAmplitudeUserId(userInfo.id);
+    sendAmplitudeEvent('session started');
+  } catch (error) {
+    toast.error('Не удалось загрузить данные пользователя.');
     dispatch(setIsFetchFailed(true));
   }
 };
 
-export const fetchIncomes = () => async (dispatch) => {
+export const fetchIncomes = () => async (dispatch, getState) => {
+  const { date } = getState();
+  const currentMonth = getBeginOfMonth(date) / 1000;
+
   try {
-    const currentIncomes = await fetchData('/mocks/incomes/get.json');
-    const currentIncomesSum = calculateSum(currentIncomes.data);
-    dispatch(setIncomes({ currentIncomes: currentIncomes.data, currentIncomesSum }));
-  } catch (err) {
+    const currentIncomes = await fetchData(`/api/incomes/?date=${currentMonth}`, 'GET');
+    const currentIncomesSum = currentIncomes.length > 0 ? getSumByArray(currentIncomes) : 0;
+    dispatch(setIncomes({ currentIncomes, currentIncomesSum }));
+  } catch (error) {
+    toast.error('Не удалось загрузить доходы.');
     dispatch(setIsFetchFailed(true));
   }
 };
 
-export const fetchCosts = () => async (dispatch) => {
-  const currentCosts = await fetchData('/mocks/costs/get.json');
-  const currentCostsSum = calculateSum(currentCosts.data);
-  dispatch(setCosts({ currentCosts: currentCosts.data, currentCostsSum }));
+export const fetchCosts = () => async (dispatch, getState) => {
+  const { date } = getState();
+  const currentMonth = getBeginOfMonth(date) / 1000;
+
+  try {
+    const currentCosts = await fetchData(`/api/costs/?date=${currentMonth}`, 'GET');
+    const currentCostsSum = currentCosts.length > 0 ? getSumByArray(currentCosts) : 0;
+    dispatch(setCosts({ currentCosts, currentCostsSum }));
+  } catch (error) {
+    toast.error('Не удалось загрузить постоянные расходы.');
+    dispatch(setIsFetchFailed(true));
+  }
 };
 
-export const fetchSpendings = () => async (dispatch) => {
+export const fetchSpendings = () => async (dispatch, getState) => {
+  const { date } = getState();
+  const currentDay = getBeginOfDay(date) / 1000;
+
   try {
-    const currentMonthSpendings = await fetchData('/mocks/spendings/get.json');
-    dispatch(setMonthSpendings(currentMonthSpendings.data));
-  } catch (err) {
+    const response = await fetchData(`/api/spendings/?date=${currentDay}`, 'GET');
+    const prevDaysSpendingsSum = response.prev_days_sum;
+    const currentSpendings = response.today_spendings;
+    const currentSpendingsSum = currentSpendings.length > 0 ? getSumByArray(currentSpendings) : 0;
+    dispatch(setSpendings({ prevDaysSpendingsSum, currentSpendings, currentSpendingsSum }));
+  } catch (error) {
+    toast.error('Не удалось загрузить дневные траты.');
     dispatch(setIsFetchFailed(true));
   }
 };
 
 export const fetchSavings = () => async (dispatch, getState) => {
   const { date } = getState();
+  const currentMonth = getBeginOfMonth(date) / 1000;
+
   try {
-    const currentYearSavings = await fetchData('/mocks/savings/get.json');
-    const currentSavings = currentYearSavings.data.find((item) => {
-      const selectedMonth = getBeginOfMonth(date);
-      const storedMonth = item.date;
-      return selectedMonth === storedMonth;
-    });
-    dispatch(setSavings({ currentYearSavings: currentYearSavings.data, currentSavings }));
-  } catch (err) {
+    const savings = await fetchData(`/api/savings/?date=${currentMonth}`, 'GET');
+    const currentSavingsUnformated = savings.find((item) => item.date === currentMonth);
+    const currentSavings = currentSavingsUnformated
+      ? {
+        ...currentSavingsUnformated,
+        value: currentSavingsUnformated.type === 0
+          ? currentSavingsUnformated.value
+          : currentSavingsUnformated.percent,
+      }
+      : {
+        date: currentMonth,
+        value: 0,
+        type: 0,
+      };
+    const currentYearSavings = savings.filter((item) => item.date !== currentMonth);
+    dispatch(setSavings({ currentYearSavings, currentSavings }));
+  } catch (error) {
+    toast.error('Не удалось загрузить сбережения.');
     dispatch(setIsFetchFailed(true));
   }
 };
+
+export const fetchSaldo = () => async (dispatch, getState) => {
+  const { date } = getState();
+  const currentDay = getBeginOfDay(date) / 1000;
+
+  try {
+    const response = await fetchData(`/api/saldo/?date=${currentDay}`, 'GET');
+    const currentSaldo = response;
+
+    dispatch(setSaldo({ currentSaldo }));
+  } catch (error) {
+    toast.error('Не удалось загрузить динамику дневных остатков.');
+    dispatch(setIsFetchFailed(true));
+  }
+};
+
+/* Overview */
 
 const calculateOverviewData = () => async (dispatch, getState) => {
   const {
     currentIncomesSum,
     currentCostsSum,
     currentSavings,
-    currentMonthSpendings,
+    prevDaysSpendingsSum,
     date,
   } = getState();
 
-  /*
-  * Высчитываются данные для сводки для выбранного в календаре дня.
-  * */
-
-  const currentSavingsSum = (currentSavings.percent * currentIncomesSum) / 100;
-  const currentMonthSpendingsSum = currentMonthSpendings.reduce((acc, current) => acc + current.value, 0);
-  const currentDaySpendings = currentMonthSpendings.filter((item) => {
-    const selectedDay = getBeginOfDay(date);
-    const storedDay = item.date;
-    return selectedDay === storedDay;
-  });
-  const currentDaySpendingsSum = currentDaySpendings.length > 0
-    ? currentDaySpendings.reduce((acc, current) => acc + current.value, 0)
-    : 0;
-
+  const currentDateTime = DateTime.fromMillis(date);
+  const currentSavingsSum = getAbsFromValue(currentSavings.value, currentSavings.type, currentIncomesSum);
   const currentProfit = currentIncomesSum - currentCostsSum - currentSavingsSum;
-  const currentFixedBudget = currentProfit / moment(date).daysInMonth();
-  const currentDailyBudget = Math.round(currentFixedBudget * moment(date * 1000).utc().date() - currentMonthSpendingsSum + currentDaySpendingsSum);
+  const currentFixedBudget = currentProfit / currentDateTime.daysInMonth;
+  const currentDailyBudget = Math.round(currentFixedBudget * currentDateTime.day - prevDaysSpendingsSum);
 
-  const currentRestValue = currentProfit - currentMonthSpendingsSum + currentDaySpendingsSum;
-  const currentRestPercent = Math.round((currentRestValue / currentIncomesSum) * 100);
+  const currentRestValue = currentProfit - prevDaysSpendingsSum;
+  const currentRestPercent = currentRestValue > 0
+    ? Math.round((currentRestValue / currentProfit) * 100)
+    : 0;
 
   dispatch(setOverviewData({
     currentDailyBudget,
     currentSavingsSum,
     currentRestValue,
     currentRestPercent,
-    currentDaySpendings,
-    currentDaySpendingsSum,
   }));
 };
 
-export const addSpending = () => (dispatch, getState) => {
-  const { currentMonthSpendings, date } = getState();
-  dispatch(setMonthSpendings([...currentMonthSpendings, {
+/* CashFlows */
+
+export const addCashFlow = (type) => (dispatch, getState) => {
+  let currentCashFlows = [];
+  let dispatchedFunction = null;
+  let dispatchedObject = {};
+
+  const {
+    currentIncomes, currentCosts, currentSpendings, date,
+  } = getState();
+
+  switch (type) {
+    case dictionary.DATA_LIST_TYPE_INCOMES:
+      currentCashFlows = currentIncomes;
+      dispatchedFunction = setIncomes;
+      dispatchedObject = {
+        currentIncomes: [],
+        currentIncomesSum: null,
+      };
+      break;
+    case dictionary.DATA_LIST_TYPE_COSTS:
+      currentCashFlows = currentCosts;
+      dispatchedFunction = setCosts;
+      dispatchedObject = {
+        currentCosts: [],
+        currentCostsSum: null,
+      };
+      break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      currentCashFlows = currentSpendings;
+      dispatchedFunction = setSpendings;
+      dispatchedObject = {
+        currentSpendings: [],
+        currentSpendingsSum: null,
+      };
+      break;
+    default:
+      toast.error('Не выбран тип CashFlow-объекта.');
+      return false;
+  }
+
+  const newCashFlowsList = [...currentCashFlows, {
     id: nanoid(),
     name: '',
     value: null,
-    date: getBeginOfDay(date),
-  }]));
-  dispatch(calculateOverviewData());
+    status: true,
+    date: getBeginOfMonth(date),
+    isNew: true,
+  }];
+
+  switch (type) {
+    case dictionary.DATA_LIST_TYPE_INCOMES:
+      dispatchedObject = {
+        currentIncomes: newCashFlowsList,
+        currentIncomesSum: getSumByArray(newCashFlowsList),
+      };
+      break;
+    case dictionary.DATA_LIST_TYPE_COSTS:
+      dispatchedObject = {
+        currentCosts: newCashFlowsList,
+        currentCostsSum: getSumByArray(newCashFlowsList),
+      };
+      break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      dispatchedObject = {
+        currentSpendings: newCashFlowsList,
+        currentSpendingsSum: getSumByArray(newCashFlowsList),
+      };
+      break;
+    default:
+      break;
+  }
+
+  dispatch(dispatchedFunction(dispatchedObject));
 };
 
-export const deleteSpending = (id) => (dispatch, getState) => {
-  const { currentMonthSpendings } = getState();
-  const newList = currentMonthSpendings.filter((it) => it.id !== id);
-  dispatch(setMonthSpendings(newList));
-  dispatch(calculateOverviewData());
-};
+export const deleteCashFlow = (item, type) => (dispatch, getState) => {
+  let currentCashFlows = [];
+  let dispatchedFunction = null;
+  let dispatchedObject = {};
+  let requestURL = '';
 
-export const editSpending = (spending) => async (dispatch, getState) => {
-  const { currentMonthSpendings } = getState();
-  dispatch(setMonthSpendings(currentMonthSpendings.map((it) => {
-    if (it.id === spending.id) {
-      return { ...it, isPending: true };
+  const { currentIncomes, currentCosts, currentSpendings } = getState();
+
+  switch (type) {
+    case dictionary.DATA_LIST_TYPE_INCOMES:
+      currentCashFlows = currentIncomes;
+      dispatchedFunction = setIncomes;
+      dispatchedObject = {
+        currentIncomes: [],
+        currentIncomesSum: null,
+      };
+      requestURL = `/api/incomes/${item.id}/`;
+      break;
+    case dictionary.DATA_LIST_TYPE_COSTS:
+      currentCashFlows = currentCosts;
+      dispatchedFunction = setCosts;
+      dispatchedObject = {
+        currentCosts: [],
+        currentCostsSum: null,
+      };
+      requestURL = `/api/costs/${item.id}/`;
+      break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      currentCashFlows = currentSpendings;
+      dispatchedFunction = setSpendings;
+      dispatchedObject = {
+        currentSpendings: [],
+        currentSpendingsSum: null,
+      };
+      requestURL = `/api/spendings/${item.id}/`;
+      break;
+    default:
+      toast.error('Не выбран тип CashFlow-объекта.');
+      return false;
+  }
+
+  let newCashFlowsList = currentCashFlows.map((cashFlow) => {
+    if (cashFlow.id === item.id) {
+      return { ...cashFlow, isPending: true };
     }
-    return it;
-  })));
-  dispatch(calculateOverviewData());
+    return cashFlow;
+  });
+
+  switch (type) {
+    case dictionary.DATA_LIST_TYPE_INCOMES:
+      dispatchedObject = {
+        ...dispatchedObject,
+        currentIncomes: newCashFlowsList,
+      };
+      break;
+    case dictionary.DATA_LIST_TYPE_COSTS:
+      dispatchedObject = {
+        ...dispatchedObject,
+        currentCosts: newCashFlowsList,
+      };
+      break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      dispatchedObject = {
+        ...dispatchedObject,
+        currentSpendings: newCashFlowsList,
+      };
+      break;
+    default:
+      break;
+  }
+
+  dispatch(dispatchedFunction(dispatchedObject));
+
+  if (!item.isNew) {
+    try {
+      fetchData(requestURL, 'DELETE')
+        .then(() => {
+          newCashFlowsList = currentCashFlows.filter((cashFlow) => cashFlow.id !== item.id);
+
+          switch (type) {
+            case dictionary.DATA_LIST_TYPE_INCOMES:
+              dispatchedObject = {
+                currentIncomes: newCashFlowsList,
+                currentIncomesSum: getSumByArray(newCashFlowsList),
+              };
+              break;
+            case dictionary.DATA_LIST_TYPE_COSTS:
+              dispatchedObject = {
+                currentCosts: newCashFlowsList,
+                currentCostsSum: getSumByArray(newCashFlowsList),
+              };
+              break;
+            case dictionary.DATA_LIST_TYPE_SPENDINGS:
+              dispatchedObject = {
+                currentSpendings: newCashFlowsList,
+                currentSpendingsSum: getSumByArray(newCashFlowsList),
+              };
+              break;
+            default:
+              break;
+          }
+
+          dispatch(dispatchedFunction(dispatchedObject));
+          sendAmplitudeEvent('cashflow edited', {
+            type,
+            action: 'Deleting',
+          });
+        })
+        .catch(() => {
+          toast.error('Не удалось удалить постоянный расход.');
+        });
+    } catch (err) {
+      dispatch(setIsFetchFailed(true));
+    }
+  } else {
+    newCashFlowsList = currentCashFlows.filter((cashFlow) => cashFlow.id !== item.id);
+
+    switch (type) {
+      case dictionary.DATA_LIST_TYPE_INCOMES:
+        dispatchedObject = {
+          currentIncomes: newCashFlowsList,
+          currentIncomesSum: getSumByArray(newCashFlowsList),
+        };
+        break;
+      case dictionary.DATA_LIST_TYPE_COSTS:
+        dispatchedObject = {
+          currentCosts: newCashFlowsList,
+          currentCostsSum: getSumByArray(newCashFlowsList),
+        };
+        break;
+      case dictionary.DATA_LIST_TYPE_SPENDINGS:
+        dispatchedObject = {
+          currentSpendings: newCashFlowsList,
+          currentSpendingsSum: getSumByArray(newCashFlowsList),
+        };
+        break;
+      default:
+        break;
+    }
+
+    dispatch(dispatchedFunction(dispatchedObject));
+  }
+};
+
+export const editCashFlow = (item, type) => async (dispatch, getState) => {
+  let currentCashFlows = [];
+  let dispatchedFunction = null;
+  let dispatchedObject = {};
+  let addRequestURL = '';
+  let editRequestURL = '';
+
+  const {
+    currentIncomes, currentCosts, currentSpendings, date,
+  } = getState();
+
+  switch (type) {
+    case dictionary.DATA_LIST_TYPE_INCOMES:
+      currentCashFlows = currentIncomes;
+      dispatchedFunction = setIncomes;
+      dispatchedObject = {
+        currentIncomes: [],
+        currentIncomesSum: null,
+      };
+      addRequestURL = '/api/incomes/';
+      editRequestURL = `/api/incomes/${item.id}/`;
+      break;
+    case dictionary.DATA_LIST_TYPE_COSTS:
+      currentCashFlows = currentCosts;
+      dispatchedFunction = setCosts;
+      dispatchedObject = {
+        currentCosts: [],
+        currentCostsSum: null,
+      };
+      addRequestURL = '/api/costs/';
+      editRequestURL = `/api/costs/${item.id}/`;
+      break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      currentCashFlows = currentSpendings;
+      dispatchedFunction = setSpendings;
+      dispatchedObject = {
+        currentSpendings: [],
+        currentSpendingsSum: null,
+      };
+      addRequestURL = '/api/spendings/';
+      editRequestURL = `/api/spendings/${item.id}/`;
+      break;
+    default:
+      toast.error('Не выбран тип CashFlow-объекта.');
+      return false;
+  }
+
+  let newCashFlowsList = currentCashFlows.map((cashFlow) => {
+    if (cashFlow.id === item.id) {
+      return { ...cashFlow, isPending: true };
+    }
+    return cashFlow;
+  });
+
+  switch (type) {
+    case dictionary.DATA_LIST_TYPE_INCOMES:
+      dispatchedObject = {
+        ...dispatchedObject,
+        currentIncomes: newCashFlowsList,
+      };
+      break;
+    case dictionary.DATA_LIST_TYPE_COSTS:
+      dispatchedObject = {
+        ...dispatchedObject,
+        currentCosts: newCashFlowsList,
+      };
+      break;
+    case dictionary.DATA_LIST_TYPE_SPENDINGS:
+      dispatchedObject = {
+        ...dispatchedObject,
+        currentSpendings: newCashFlowsList,
+      };
+      break;
+    default:
+      break;
+  }
+
+  dispatch(dispatchedFunction(dispatchedObject));
+
   try {
-    await fetchData('https://run.mocky.io/v3/f2635207-4c9d-466a-a590-be0a332cf85a?mocky-delay=1500ms');
-    dispatch(setMonthSpendings(currentMonthSpendings.map((it) => {
-      if (it.id === spending.id) {
-        return { ...it, name: spending.name, value: spending.value };
+    const payload = {
+      date: type === dictionary.DATA_LIST_TYPE_SPENDINGS
+        ? getBeginOfDay(date) / 1000
+        : getBeginOfMonth(date) / 1000,
+      category: item.category,
+      value: item.value,
+    };
+    const updatedCashFlow = item.isNew
+      ? await fetchData(addRequestURL, 'POST', payload)
+      : await fetchData(editRequestURL, 'PUT', payload);
+
+    newCashFlowsList = currentCashFlows.map((cashFlow) => {
+      if (cashFlow.id === item.id) {
+        return {
+          id: updatedCashFlow.id, category: updatedCashFlow.category, value: updatedCashFlow.value,
+        };
       }
-      return it;
-    })));
-    dispatch(calculateOverviewData());
+      return cashFlow;
+    });
+
+    switch (type) {
+      case dictionary.DATA_LIST_TYPE_INCOMES:
+        dispatchedObject = {
+          currentIncomes: newCashFlowsList,
+          currentIncomesSum: getSumByArray(newCashFlowsList),
+        };
+        break;
+      case dictionary.DATA_LIST_TYPE_COSTS:
+        dispatchedObject = {
+          currentCosts: newCashFlowsList,
+          currentCostsSum: getSumByArray(newCashFlowsList),
+        };
+        break;
+      case dictionary.DATA_LIST_TYPE_SPENDINGS:
+        dispatchedObject = {
+          currentSpendings: newCashFlowsList,
+          currentSpendingsSum: getSumByArray(newCashFlowsList),
+        };
+        break;
+      default:
+        break;
+    }
+
+    dispatch(dispatchedFunction(dispatchedObject));
+    sendAmplitudeEvent('cashflow edited', {
+      type,
+      action: item.isNew ? 'Adding' : 'Updating',
+    });
   } catch (err) {
+    toast.error('Не удалось изменить постоянные расходы.');
     dispatch(setIsFetchFailed(true));
   }
 };
 
-export const editSavingsData = (data) => (dispatch, getState) => {
-  const { currentYearSavings, date } = getState();
-  const targetDate = data.date;
-  const updatedSavings = currentYearSavings.map((item) => {
-    const selectedMonth = getBeginOfMonth(targetDate);
-    const storedMonth = item.date;
-    if (selectedMonth === storedMonth) {
-      return data;
-    }
-    return item;
-  });
-  const currentSavings = updatedSavings.find((item) => {
-    const selectedMonth = getBeginOfMonth(date);
-    const storedMonth = item.date;
-    return selectedMonth === storedMonth;
-  });
-  dispatch(setSavings({ currentYearSavings: updatedSavings, currentSavings }));
+/* Savings */
+
+export const editSavings = (data) => (dispatch) => {
+  try {
+    const updatedSavings = fetchData('/api/savings/', 'PUT', data);
+    dispatch(setSavings({ currentSavings: data }));
+
+    sendAmplitudeEvent('cashflow edited', {
+      type: 'SAVINGS',
+      action: 'Updating',
+    });
+  } catch (err) {
+    toast.error('Не удалось изменить сбережения.');
+    dispatch(setIsFetchFailed(true));
+  }
 };
 
-export const addIncome = () => (dispatch, getState) => {
-  const { currentIncomes, date } = getState();
-  const newIncomesList = [...currentIncomes, {
-    id: nanoid(),
-    name: '',
-    value: null,
-    status: true,
-    date: getBeginOfMonth(date),
-  }];
-  const currentIncomesSum = calculateSum(newIncomesList);
-  dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum }));
-};
-
-export const deleteIncome = (id) => (dispatch, getState) => {
-  const { currentIncomes } = getState();
-  const newIncomesList = currentIncomes.filter((it) => it.id !== id);
-  const currentIncomesSum = calculateSum(newIncomesList);
-  dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum }));
-};
-
-export const editIncome = (incomeItem) => (dispatch, getState) => {
-  const { currentIncomes } = getState();
-  const newIncomesList = currentIncomes.map((it) => {
-    if (it.id === incomeItem.id) {
-      return {
-        ...it,
-        name: incomeItem.name,
-        value: incomeItem.value,
-        status: incomeItem.status,
-      };
-    }
-    return it;
-  });
-  const currentIncomesSum = calculateSum(newIncomesList);
-  dispatch(setIncomes({ currentIncomes: newIncomesList, currentIncomesSum }));
-};
-
-export const addCost = () => (dispatch, getState) => {
-  const { currentCosts, date } = getState();
-  const newCostsList = [...currentCosts, {
-    id: nanoid(),
-    name: '',
-    value: null,
-    status: true,
-    date: getBeginOfMonth(date),
-  }];
-  const currentCostsSum = calculateSum(newCostsList);
-  dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
-};
-
-export const deleteCost = (id) => (dispatch, getState) => {
-  const { currentCosts } = getState();
-  const newCostsList = currentCosts.filter((it) => it.id !== id);
-  const currentCostsSum = calculateSum(newCostsList);
-  dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
-};
-
-export const editCost = (costItem) => (dispatch, getState) => {
-  const { currentCosts } = getState();
-  const newCostsList = currentCosts.map((it) => {
-    if (it.id === costItem.id) {
-      return {
-        ...it,
-        name: costItem.name,
-        value: costItem.value,
-        status: costItem.status,
-      };
-    }
-    return it;
-  });
-  const currentCostsSum = calculateSum(newCostsList);
-  dispatch(setCosts({ currentCosts: newCostsList, currentCostsSum }));
-};
+/* Overview */
 
 export const getOverviewData = () => async (dispatch) => {
   await dispatch(fetchSpendings());
@@ -286,4 +580,5 @@ export const getOverviewData = () => async (dispatch) => {
   await dispatch(fetchCosts());
   await dispatch(fetchSavings());
   dispatch(calculateOverviewData());
+  await dispatch(fetchSaldo());
 };

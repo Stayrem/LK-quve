@@ -71,6 +71,10 @@
     opacity: 0.5;
   }
 
+  .react-datepicker__today-button {
+    background-color: $color-primary;
+  }
+
   .panel {
     display: flex;
     flex-direction: column;
@@ -154,6 +158,14 @@
         }
       }
     }
+  }
+
+  .quve__single-value {
+    font-size: 20px;
+  }
+
+  .quve__menu-list .quve__option {
+    font-size: 20px;
   }
 
   .btn {

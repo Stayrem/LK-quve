@@ -6,6 +6,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import Skeleton from 'react-loading-skeleton';
 import { getFormatedNumber } from '@utils/functions';
+import isNil from 'lodash/isNil';
 import DataInputListItem from './DataInputListItem';
 import styles from './DataInputList.module.scss';
 import SkeletonContainer from '../../hocs/SkeletonContainer/SkeletonContainer';
@@ -20,6 +21,7 @@ const DataInputList = (props) => {
     onAdd,
     onDelete,
     onEdit,
+    isDataFetched,
   } = props;
 
   const {
@@ -48,7 +50,7 @@ const DataInputList = (props) => {
       const nextIndex = data.findIndex((item) => item.id === itemId) - 1;
       id = data[nextIndex].id;
     } else if (neighbour === 'new') {
-      id = data[data.length - 1].id;
+      id = data.length > 0 ? data[data.length - 1].id : null;
     } else {
       id = itemId;
     }
@@ -57,18 +59,12 @@ const DataInputList = (props) => {
   });
 
   const onAddHandler = (() => {
-    const lastItem = data[data.length - 1];
-    if (!lastItem) {
-      onAdd();
-      setIsNewRowAdded(true);
-    } else if (lastItem.name && lastItem.value) {
-      onAdd();
-      setIsNewRowAdded(true);
-    }
+    onAdd();
+    setIsNewRowAdded(true);
   });
 
-  const onDeleteHandler = ((id) => {
-    onDelete(id);
+  const onDeleteHandler = ((item) => {
+    onDelete(item);
     if (data.length === 1) {
       onAddHandler();
     }
@@ -120,7 +116,7 @@ const DataInputList = (props) => {
             <tfoot>
               <tr>
                 <td colSpan="5">
-                  {data && (
+                  {isDataFetched && (
                     <button className={addRowButton} type="button" onClick={onAddHandler}>
                       <FontAwesomeIcon icon={faPlus} />
                       &nbsp; Добавить строчку &nbsp;
@@ -131,25 +127,46 @@ const DataInputList = (props) => {
               </tr>
             </tfoot>
             <tbody ref={tbody}>
-              {data.map((item, i) => (
-                <DataInputListItem
-                  key={item.id}
-                  index={i}
-                  id={item.id}
-                  name={item.name}
-                  value={item.value}
-                  status={item.status}
-                  isPending={item.isPending}
-                  isFocused={item.id === focusedRowId}
-                  focusedInputType={focusedInputType}
-                  isLast={item.id === data[data.length - 1].id}
-                  useStatus={useStatus}
-                  addInputListItem={onAddHandler}
-                  deleteInputListItem={onDeleteHandler}
-                  editInputListItem={onEdit}
-                  setFocusToItem={setFocusToItem}
-                />
-              ))}
+              {isDataFetched
+                ? data.map((item, i) => (
+                  <DataInputListItem
+                    key={item.id}
+                    index={i}
+                    id={item.id}
+                    category={item.category}
+                    value={item.value}
+                    status={item.status}
+                    isPending={item.isPending}
+                    isFocused={item.id === focusedRowId}
+                    isNew={item.isNew}
+                    focusedInputType={focusedInputType}
+                    isLast={item.id === data[data.length - 1].id}
+                    useStatus={useStatus}
+                    addInputListItem={onAddHandler}
+                    deleteInputListItem={onDeleteHandler}
+                    editInputListItem={onEdit}
+                    setFocusToItem={setFocusToItem}
+                    isDataDetched={isDataFetched}
+                  />
+                )) : (
+                  <tr>
+                    <td>
+                      <SkeletonContainer>
+                        <Skeleton width={30} height={20} />
+                      </SkeletonContainer>
+                    </td>
+                    <td>
+                      <SkeletonContainer>
+                        <Skeleton width={100} height={20} />
+                      </SkeletonContainer>
+                    </td>
+                    <td>
+                      <SkeletonContainer>
+                        <Skeleton width={100} height={20} />
+                      </SkeletonContainer>
+                    </td>
+                  </tr>
+                )}
             </tbody>
           </table>
         </div>
@@ -157,9 +174,15 @@ const DataInputList = (props) => {
       <div className={['panel-footer', dataInputListFooter].join(' ')}>
         <div className={dataInputListSum}>
           Сумма: &nbsp;
-          <span>
-            {sum ? getFormatedNumber(sum) : 0}
-          </span>
+          <SkeletonContainer>
+            <span>
+              {
+                isDataFetched && !isNil(sum)
+                  ? getFormatedNumber(sum)
+                  : <Skeleton width={50} height={15} />
+              }
+            </span>
+          </SkeletonContainer>
         </div>
       </div>
     </div>
@@ -171,6 +194,7 @@ DataInputList.defaultProps = {
   subtitle: null,
   data: [],
   useStatus: true,
+  isDataFetched: false,
 };
 
 DataInputList.propTypes = {
@@ -182,6 +206,7 @@ DataInputList.propTypes = {
   onAdd: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
+  isDataFetched: PropTypes.bool,
 };
 
 export default DataInputList;

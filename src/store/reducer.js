@@ -1,12 +1,18 @@
-import moment from 'moment';
-import 'moment/locale/ru';
+import { DateTime } from 'luxon';
 import { getBeginOfDay } from '@utils/functions';
 import Type from './action-types';
 
 const initialState = {
   fetchError: false,
-  date: getBeginOfDay(moment().utc().unix()),
-  info: {},
+  date: getBeginOfDay(DateTime.local().ts),
+  isDateChanged: false,
+
+  user: {
+    accessToken: null,
+    id: null,
+    full_name: null,
+    email: null,
+  },
   isInfoFetched: false,
 
   currentIncomes: [],
@@ -21,8 +27,13 @@ const initialState = {
   currentSavings: null,
   isSavingsFetched: false,
 
-  currentMonthSpendings: [],
+  currentSpendings: [],
+  currentSpendingsSum: null,
+  prevDaysSpendingsSum: null,
   isSpendingsFetched: false,
+
+  currentSaldo: [],
+  isSaldoFetched: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -31,24 +42,30 @@ const reducer = (state = initialState, action) => {
     case Type.SET_USER_INFO:
       return {
         ...state,
-        info: payload,
+        user: {
+          ...state.user,
+          ...payload,
+        },
         isInfoFetched: true,
+      };
+    case Type.SET_USER_ACCESS_TOKEN:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          accessToken: payload,
+        },
       };
     case Type.SET_IS_FETCH_FAILED:
       return {
         ...state,
         fetchError: payload,
       };
-    case Type.SET_MONTH_SPENDINGS_DATA:
+    case Type.SET_SPENDINGS_DATA:
       return {
         ...state,
-        currentMonthSpendings: payload,
+        ...payload,
         isSpendingsFetched: true,
-      };
-    case Type.SET_DAY_SPENDINGS_DATA:
-      return {
-        ...state,
-        currentDaySpendings: payload,
       };
     case Type.SET_INCOMES_DATA:
       return {
@@ -62,21 +79,31 @@ const reducer = (state = initialState, action) => {
         ...payload,
         isCostsFetched: true,
       };
-    case Type.SET_SAVINGS:
+    case Type.SET_SAVINGS_DATA:
       return {
         ...state,
         ...payload,
         isSavingsFetched: true,
       };
-    case Type.SET_DAILY_BUDJET:
+    case Type.SET_SALDO_DATA:
       return {
         ...state,
-        dailyBudjet: payload,
+        ...payload,
+        isSaldoFetched: true,
       };
     case Type.SET_DATE:
       return {
         ...state,
         date: payload,
+        isSpendingsFetched: false,
+        isIncomesFethed: false,
+        isCostsFetched: false,
+        isSavingsFetched: false,
+      };
+    case Type.SET_IS_DATE_CHANGED:
+      return {
+        ...state,
+        isDateChanged: payload,
       };
     case Type.SET_OVERVIEW_DATA:
       return {
@@ -90,7 +117,7 @@ const reducer = (state = initialState, action) => {
 
 const wrappedReducer = (state, action) => {
   if (action.type === Type.RESET_STORE) {
-    return reducer(undefined, action);
+    return reducer(initialState, action);
   }
   return reducer(state, action);
 };

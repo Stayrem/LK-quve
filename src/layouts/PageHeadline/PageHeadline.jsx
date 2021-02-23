@@ -1,18 +1,16 @@
 import React, { useState, useEffect, createRef } from 'react';
-import { useDispatch } from 'react-redux';
-import moment from 'moment';
-import 'moment/locale/ru';
+import { useDispatch, useSelector } from 'react-redux';
+import { DateTime } from 'luxon';
 import PropTypes from 'prop-types';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import ru from 'date-fns/locale/ru';
 import { getBeginOfDay } from '@utils/functions';
-import { setDate } from '../../store/action-creator';
+import { setDate, setIsDateChanged } from '../../store/action-creator';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import styles from './PageHeadline.module.scss';
 import Calendar from '../../components/Calendar/Calendar';
-
-registerLocale('ru', ru); // register it with the name you want
+import { sendAmplitudeEvent } from '../../utils/amplitude';
 
 const PageHeadline = (props) => {
   const {
@@ -28,12 +26,25 @@ const PageHeadline = (props) => {
   } = styles;
 
   const dispatch = useDispatch();
-  const [selectedDay, setSelectedDay] = useState(new Date(date * 1000));
+  const isDateChanged = useSelector((state) => state.isDateChanged);
+  const [selectedDay, setSelectedDay] = useState(new Date(date));
   const calendarRef = createRef();
 
+  const onDateChanged = (value) => {
+    setSelectedDay(value);
+    dispatch(setIsDateChanged(true));
+  };
+
   useEffect(() => {
-    dispatch(setDate(getBeginOfDay(moment(selectedDay).utc().unix())));
+    if (isDateChanged) {
+      dispatch(setDate(getBeginOfDay(DateTime.fromJSDate(selectedDay).ts)));
+      dispatch(setIsDateChanged(false));
+
+      sendAmplitudeEvent(MonthFormat ? 'month changed' : 'date changed');
+    }
   }, [selectedDay]);
+
+  registerLocale('ru', ru);
 
   return (
     <div className={pageHeadline}>
@@ -47,10 +58,11 @@ const PageHeadline = (props) => {
             <DatePicker
               customInput={<Calendar ref={calendarRef} />}
               selected={selectedDay}
-              locale={ru}
+              locale="ru"
               showMonthYearPicker={MonthFormat}
-              dateFormat={MonthFormat ? 'MMMM yyyy' : 'd MMMM yyyy'}
-              onChange={(newDate) => setSelectedDay(newDate)}
+              dateFormat={MonthFormat ? 'LLLL y' : 'd MMMM y'}
+              todayButton="Сегодня"
+              onChange={(newDate) => onDateChanged(newDate)}
               popperModifiers={{
                 offset: {
                   enabled: true,
