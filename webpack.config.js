@@ -1,5 +1,7 @@
 const path = require('path');
 const chalk = require('chalk');
+const TerserPlugin = require('terser-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -9,7 +11,8 @@ const PostCssPreset = require('postcss-preset-env');
 const CopyPlugin = require('copy-webpack-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
+const isAnalyse = process.env.NODE_ENV === 'analyse';
 const hash = isDevelopment ? '' : '-[contenthash:8]';
 
 const PATH = {
@@ -25,7 +28,8 @@ module.exports = {
   mode: isDevelopment ? 'development' : 'production',
   entry: './src/index.jsx',
   output: {
-    filename: `main${hash}.js`,
+    publicPath: '/',
+    filename: `[name]${hash}.js`,
     path: PATH.DIST,
   },
   devServer: {
@@ -122,35 +126,66 @@ module.exports = {
     ],
   },
   devtool: 'source-map',
-  plugins: [
-    new PostCssPreset({
-      browsers: 'last 2 versions',
-    }),
-    new ProgressBarPlugin({
-      format: `  build [:bar] ${chalk.green.bold(':percent')} (:elapsed seconds)`,
-      clear: false,
-    }),
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      template: PATH.TEMPLATE,
-    }),
-    new MiniCssExtractPlugin({
-      filename: `[name]${hash}.css`,
-    }),
-    new CopyPlugin({
-      patterns: [
-        { from: PATH.MOCKS, to: path.join(PATH.DIST, 'mocks') },
-      ],
-    }),
-    new MomentLocalesPlugin({
-      localesToKeep: ['es-us', 'ru'],
-    }),
-  ],
+  plugins: (() => {
+    const defaultPlugins = [
+      new ProgressBarPlugin({
+        format: `  build [:bar] ${chalk.green.bold(':percent')} (:elapsed seconds)`,
+        clear: false,
+      }),
+      new CleanWebpackPlugin(),
+      new HtmlWebpackPlugin({
+        template: PATH.TEMPLATE,
+      }),
+      new MiniCssExtractPlugin({
+        filename: `[name]${hash}.css`,
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: PATH.MOCKS, to: path.join(PATH.DIST, 'mocks') },
+        ],
+      }),
+      new MomentLocalesPlugin({
+        localesToKeep: ['ru'],
+      }),
+    ];
+    if (isAnalyse) {
+      defaultPlugins.push(new BundleAnalyzerPlugin());
+    }
+    if (!isDevelopment) {
+      defaultPlugins.push(new PostCssPreset({
+        browsers: 'last 2 versions',
+      }));
+    }
+    return defaultPlugins;
+  })(),
   optimization: {
+    minimize: true,
     minimizer: [
       new CssnanoPlugin({
-        sourceMap: true,
+        sourceMap: isDevelopment,
       }),
+      new TerserPlugin(),
     ],
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 0,
+      cacheGroups: {
+        vendorApex: {
+          test: /[\\/]node_modules[\\/](apexcharts)[\\/]/,
+          priority: -5,
+          name: 'vendor-apex',
+        },
+        vendor: {
+          test: /[\\/]node_modules[\\/](?!apexcharts)(.[a-zA-Z0-9.\-_]+)[\\/]/,
+          priority: -10,
+          name: 'vendor',
+        },
+        default: {
+          priority: -20,
+          name: 'main',
+        },
+      },
+    },
   },
 };
