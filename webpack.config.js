@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssnanoPlugin = require('cssnano-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const autoprefixer = require('autoprefixer');
+const PostCssPreset = require('postcss-preset-env');
 const CopyPlugin = require('copy-webpack-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
@@ -72,12 +72,6 @@ module.exports = {
           },
           {
             loader: 'postcss-loader',
-            options: {
-              plugins: [
-                autoprefixer(),
-              ],
-              sourceMap: true,
-            },
           },
           {
             loader: 'sass-loader',
@@ -129,6 +123,9 @@ module.exports = {
   },
   devtool: 'source-map',
   plugins: [
+    new PostCssPreset({
+      browsers: 'last 2 versions',
+    }),
     new ProgressBarPlugin({
       format: `  build [:bar] ${chalk.green.bold(':percent')} (:elapsed seconds)`,
       clear: false,
