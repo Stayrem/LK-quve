@@ -78,6 +78,7 @@
     "create-react-context": "^0.3.0",
     "css-loader": "5.0.2",
     "cssnano-webpack-plugin": "1.0.3",
+    "dotenv-webpack": "^6.0.2",
     "eslint": "7.20.0",
     "eslint-config-airbnb": "18.2.1",
     "eslint-plugin-import": "2.22.1",

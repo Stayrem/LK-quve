@@ -1,5 +1,6 @@
 const path = require('path');
 const chalk = require('chalk');
+const Dotenv = require('dotenv-webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -11,9 +12,13 @@ const PostCssPreset = require('postcss-preset-env');
 const CopyPlugin = require('copy-webpack-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
-const isDevelopment = process.env.NODE_ENV === 'development';
-const isAnalyse = process.env.NODE_ENV === 'analyse';
+const nodeEnv = process.env.NODE_ENV;
+const isDevelopment = nodeEnv === 'development';
+const isProduction = nodeEnv === 'production';
+const isAnalyse = nodeEnv === 'analyse';
 const hash = isDevelopment ? '' : '-[contenthash:8]';
+
+const dotEnvFile = isProduction || isAnalyse ? path.join(__dirname, '.env.prod') : path.join(__dirname, '.env.mock');
 
 const PATH = {
   DIST: path.join(__dirname, 'dist'),
@@ -25,7 +30,6 @@ const PATH = {
   ASSETS: path.join(__dirname, 'src/assets'),
 };
 module.exports = {
-  mode: isDevelopment ? 'development' : 'production',
   entry: './src/index.jsx',
   output: {
     publicPath: '/',
@@ -125,9 +129,14 @@ module.exports = {
       },
     ],
   },
-  devtool: 'source-map',
+  devtool: isProduction ? false : 'source-map',
   plugins: (() => {
     const defaultPlugins = [
+      new Dotenv({
+        path: dotEnvFile,
+        safe: true,
+        allowEmptyValues: true,
+      }),
       new ProgressBarPlugin({
         format: `  build [:bar] ${chalk.green.bold(':percent')} (:elapsed seconds)`,
         clear: false,
@@ -177,7 +186,7 @@ module.exports = {
           name: 'vendor-apex',
         },
         vendor: {
-          test: /[\\/]node_modules[\\/](?!apexcharts)(.[a-zA-Z0-9.\-_]+)[\\/]/,
+          test: /[\\/]node_modules[\\/](?!apexcharts)(!react)(!react-dom)(.[a-zA-Z0-9.\-_]+)[\\/]/,
           priority: -10,
           name: 'vendor',
         },

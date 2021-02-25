@@ -74,7 +74,7 @@ export const resetStore = () => ({
 
 export const fetchUserInfo = () => async (dispatch) => {
   try {
-    const userInfo = await fetchData('/api/users/', 'GET');
+    const userInfo = await fetchData(process.env.USERS_URL, 'GET');
     dispatch(setUserInfo(userInfo));
 
     setAmplitudeUserId(userInfo.id);
@@ -90,7 +90,7 @@ export const fetchIncomes = () => async (dispatch, getState) => {
   const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
-    const currentIncomes = await fetchData(`/api/incomes/?date=${currentMonth}`, 'GET');
+    const currentIncomes = await fetchData(`${process.env.INCOMES_URL}/?date=${currentMonth}`, 'GET');
     const currentIncomesSum = currentIncomes.length > 0 ? getSumByArray(currentIncomes) : 0;
     dispatch(setIncomes({ currentIncomes, currentIncomesSum }));
   } catch (error) {
@@ -104,7 +104,7 @@ export const fetchCosts = () => async (dispatch, getState) => {
   const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
-    const currentCosts = await fetchData(`/api/costs/?date=${currentMonth}`, 'GET');
+    const currentCosts = await fetchData(`${process.env.COSTS_URL}/?date=${currentMonth}`, 'GET');
     const currentCostsSum = currentCosts.length > 0 ? getSumByArray(currentCosts) : 0;
     dispatch(setCosts({ currentCosts, currentCostsSum }));
   } catch (error) {
@@ -118,7 +118,7 @@ export const fetchSpendings = () => async (dispatch, getState) => {
   const currentDay = getBeginOfDay(date) / 1000;
 
   try {
-    const response = await fetchData(`/api/spendings/?date=${currentDay}`, 'GET');
+    const response = await fetchData(`${process.env.SPENDINGS_URL}/?date=${currentDay}`, 'GET');
     const prevDaysSpendingsSum = response.prev_days_sum;
     const currentSpendings = response.today_spendings;
     const currentSpendingsSum = currentSpendings.length > 0 ? getSumByArray(currentSpendings) : 0;
@@ -134,7 +134,7 @@ export const fetchSavings = () => async (dispatch, getState) => {
   const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
-    const savings = await fetchData(`/api/savings/?date=${currentMonth}`, 'GET');
+    const savings = await fetchData(`${process.env.SAVINGS_URL}/?date=${currentMonth}`, 'GET');
     const currentSavingsUnformated = savings.find((item) => item.date === currentMonth);
     const currentSavings = currentSavingsUnformated
       ? {
@@ -161,7 +161,7 @@ export const fetchSaldo = () => async (dispatch, getState) => {
   const currentDay = getBeginOfDay(date) / 1000;
 
   try {
-    const response = await fetchData(`/api/saldo/?date=${currentDay}`, 'GET');
+    const response = await fetchData(`${process.env.SALDO_URL}/?date=${currentDay}`, 'GET');
     const currentSaldo = response;
 
     dispatch(setSaldo({ currentSaldo }));
@@ -302,7 +302,7 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
         currentCosts: [],
         currentCostsSum: null,
       };
-      requestURL = `/api/costs/${item.id}/`;
+      requestURL = `${process.env.COSTS_URL}/${item.id}/`;
       break;
     case dictionary.DATA_LIST_TYPE_SPENDINGS:
       currentCashFlows = currentSpendings;
@@ -311,7 +311,7 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
         currentSpendings: [],
         currentSpendingsSum: null,
       };
-      requestURL = `/api/spendings/${item.id}/`;
+      requestURL = `${process.env.SPENDINGS_URL}/${item.id}/`;
       break;
     default:
       toast.error('Не выбран тип CashFlow-объекта.');
@@ -440,8 +440,8 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
         currentIncomes: [],
         currentIncomesSum: null,
       };
-      addRequestURL = '/api/incomes/';
-      editRequestURL = `/api/incomes/${item.id}/`;
+      addRequestURL = process.env.INCOMES_URL;
+      editRequestURL = `${addRequestURL}/${item.id}/`;
       break;
     case dictionary.DATA_LIST_TYPE_COSTS:
       currentCashFlows = currentCosts;
@@ -450,8 +450,8 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
         currentCosts: [],
         currentCostsSum: null,
       };
-      addRequestURL = '/api/costs/';
-      editRequestURL = `/api/costs/${item.id}/`;
+      addRequestURL = process.env.COSTS_URL;
+      editRequestURL = `${addRequestURL}/${item.id}/`;
       break;
     case dictionary.DATA_LIST_TYPE_SPENDINGS:
       currentCashFlows = currentSpendings;
@@ -460,8 +460,8 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
         currentSpendings: [],
         currentSpendingsSum: null,
       };
-      addRequestURL = '/api/spendings/';
-      editRequestURL = `/api/spendings/${item.id}/`;
+      addRequestURL = process.env.SPENDINGS_URL;
+      editRequestURL = `${process.env.SPENDINGS_URL}/${item.id}/`;
       break;
     default:
       toast.error('Не выбран тип CashFlow-объекта.');
@@ -559,7 +559,7 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
 
 export const editSavings = (data) => (dispatch) => {
   try {
-    const updatedSavings = fetchData('/api/savings/', 'PUT', data);
+    const updatedSavings = fetchData(process.env.SAVINGS_URL, 'PUT', data);
     dispatch(setSavings({ currentSavings: data }));
 
     sendAmplitudeEvent('cashflow edited', {
