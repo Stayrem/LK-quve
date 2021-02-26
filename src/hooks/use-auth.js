@@ -11,7 +11,13 @@ import {
 
 const mainAuth = {
   async signIn(values, callback) {
-    const response = await fetchData('/api/auth/sign-in/', 'POST', values);
+    let response;
+    if (process.env.NODE_ENV === 'production') {
+      response = await fetchData(process.env.SIGN_IN, 'POST', values);
+    } else {
+      response = await fetchData(process.env.SIGN_IN);
+    }
+
     callback(response.access);
   },
   async signUp(values) {
