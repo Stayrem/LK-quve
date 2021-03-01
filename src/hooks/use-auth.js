@@ -12,7 +12,7 @@ import {
 const mainAuth = {
   async signIn(values, callback) {
     let response;
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== 'local') {
       response = await fetchData(process.env.SIGN_IN, 'POST', values);
     } else {
       response = await fetchData(process.env.SIGN_IN);

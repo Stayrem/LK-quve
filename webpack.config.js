@@ -14,11 +14,12 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 const nodeEnv = process.env.NODE_ENV;
 const isDevelopment = nodeEnv === 'development';
+const isLocal = nodeEnv === 'local';
 const isProduction = nodeEnv === 'production';
 const isAnalyse = nodeEnv === 'analyse';
 const hash = isDevelopment ? '' : '-[contenthash:8]';
 
-const dotEnvFile = isProduction || isAnalyse ? path.join(__dirname, '.env.prod') : path.join(__dirname, '.env.mock');
+const dotEnvFile = isLocal ? path.join(__dirname, '.env.mock') : path.join(__dirname, '.env.prod');
 
 const PATH = {
   DIST: path.join(__dirname, 'dist'),
@@ -30,6 +31,7 @@ const PATH = {
   ASSETS: path.join(__dirname, 'src/assets'),
 };
 module.exports = {
+  mode: isAnalyse || isProduction ? 'production' : 'development',
   entry: './src/index.jsx',
   output: {
     publicPath: '/',
