@@ -10,7 +10,6 @@ const CssnanoPlugin = require('cssnano-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const PostCssPreset = require('postcss-preset-env');
 const CopyPlugin = require('copy-webpack-plugin');
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 const nodeEnv = process.env.NODE_ENV;
 const isDevelopment = nodeEnv === 'development';
@@ -18,11 +17,11 @@ const isLocal = nodeEnv === 'local';
 const isProduction = nodeEnv === 'production';
 const isAnalyse = nodeEnv === 'analyse';
 const hash = isDevelopment ? '' : '-[contenthash:8]';
-
 const dotEnvFile = isLocal ? path.join(__dirname, '.env.mock') : path.join(__dirname, '.env.prod');
 
 const PATH = {
   DIST: path.join(__dirname, 'dist'),
+  BUILD: path.join(__dirname, 'build'),
   SRC: path.join(__dirname, 'src'),
   TEMPLATE: path.join(__dirname, 'src/template/index.html'),
   FONTS: path.join(__dirname, 'src/assets/fonts'),
@@ -34,9 +33,9 @@ module.exports = {
   mode: isAnalyse || isProduction ? 'production' : 'development',
   entry: './src/index.jsx',
   output: {
-    publicPath: '/',
+    publicPath: isAnalyse || isProduction ? '/' : '/', //TODO Прописать корректный для прода
     filename: `[name]${hash}.js`,
-    path: PATH.DIST,
+    path: isProduction ? PATH.BUILD : PATH.DIST,
   },
   devServer: {
     contentBase: PATH.DIST,
@@ -127,6 +126,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: '[name].[ext]',
+          outputPath: 'assets/favicons',
         },
       },
     ],
@@ -155,9 +155,6 @@ module.exports = {
           { from: PATH.MOCKS, to: path.join(PATH.DIST, 'mocks') },
         ],
       }),
-      new MomentLocalesPlugin({
-        localesToKeep: ['ru'],
-      }),
     ];
     if (isAnalyse) {
       defaultPlugins.push(new BundleAnalyzerPlugin());
@@ -170,7 +167,7 @@ module.exports = {
     return defaultPlugins;
   })(),
   optimization: {
-    minimize: true,
+    minimize: isProduction || isAnalyse,
     minimizer: [
       new CssnanoPlugin({
         sourceMap: isDevelopment,
@@ -185,16 +182,13 @@ module.exports = {
         vendorApex: {
           test: /[\\/]node_modules[\\/](apexcharts)[\\/]/,
           priority: -5,
-          name: 'vendor-apex',
         },
-        vendor: {
+        vendorNodeModules: {
           test: /[\\/]node_modules[\\/](?!apexcharts)(!react)(!react-dom)(.[a-zA-Z0-9.\-_]+)[\\/]/,
           priority: -10,
-          name: 'vendor',
         },
         default: {
           priority: -20,
-          name: 'main',
         },
       },
     },

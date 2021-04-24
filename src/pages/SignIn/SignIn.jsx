@@ -86,7 +86,7 @@ const SignIn = () => {
             </div>
             <div className="panel">
               <div className="panel-body">
-                <form onSubmit={formik.handleSubmit} className="form" autoComplete="off">
+                <form onSubmit={formik.handleSubmit} className="form">
                   <div className="form-group">
                     <div className="input-wrapper">
                       <input

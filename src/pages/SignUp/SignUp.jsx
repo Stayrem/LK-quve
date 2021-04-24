@@ -56,6 +56,8 @@ const SignUp = () => {
           const errorStatus = error.response && error.response.status;
           if (errorStatus === 422) {
             toast.error('Такой пользователь уже существует!');
+          } else if (errorStatus === 400) {
+            toast.error('Слишком ненадёжный пароль!');
           } else {
             toast.error(`Ошибка сервера: ${errorStatus}`);
           }
@@ -122,7 +124,10 @@ const SignUp = () => {
                         value={formik.values.password}
                       />
                     </div>
-                    {formik.touched.password && formik.errors.password ? <small className="text-warning">{formik.errors.password}</small> : null}
+                    {formik.touched.password && formik.errors.password
+                      ? <small className="text-warning">{formik.errors.password}</small>
+                      : <small className="text-muted">Пароль должен быть надежным и содержать не менее 8 символов.</small>
+                    }
                   </div>
                   <button type="submit" className="btn btn-accent btn-block btn-outline" disabled={formik.isSubmitting}>Отправить</button>
                 </form>

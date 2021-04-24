@@ -27,21 +27,42 @@ const defaultOptions = {
   dataLabels: {
     enabled: false,
   },
-  plotOptions: {
-
-  },
   xaxis: {
+    type: 'category',
+    labels: {
+      show: true,
+      rotate: -45,
+      rotateAlways: false,
+      hideOverlappingLabels: true,
+      showDuplicates: false,
+      trim: false,
+      minHeight: undefined,
+      maxHeight: 120,
+      style: {
+        colors: [],
+        fontSize: '11px',
+        fontFamily: 'Helvetica, Arial, sans-serif',
+        fontWeight: 500,
+        cssClass: 'apexcharts-xaxis-label',
+      },
+      offsetX: 0,
+      offsetY: 0,
+    },
     axisBorder: {
       show: false,
     },
     axisTicks: {
       show: false,
     },
-    labels: {
-      style: {
-        fontSize: '10px',
-        fontWeight: 500,
-      },
+    tickAmount: undefined,
+    tickPlacement: 'between',
+    min: undefined,
+    max: undefined,
+    range: undefined,
+    floating: false,
+    position: 'bottom',
+    tooltip: {
+      enabled: false,
     },
   },
   yaxis: {
