@@ -8,7 +8,7 @@ import PageHeadline from '../../layouts/PageHeadline/PageHeadline';
 import DataInputList from '../../components/DataInputList/DataInputList';
 import Saldo from '../../components/Saldo/Saldo';
 import {
-  getOverviewData, addCashFlow, deleteCashFlow, editCashFlow,
+  getOverviewData, addCashFlow, deleteCashFlow, editCashFlow, fetchSaldo,
 } from '../../store/action-creator';
 import createCards from '../../utils/create-cards';
 import styles from './Overview.scss';
@@ -53,6 +53,10 @@ const Overview = () => {
       dispatch(getOverviewData());
     }
   }, [isDateChanged]);
+
+  useEffect(() => {
+    dispatch(fetchSaldo());
+  }, [currentSpendings]);
 
   return (
     (() => (

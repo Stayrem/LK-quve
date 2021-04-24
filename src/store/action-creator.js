@@ -90,7 +90,7 @@ export const fetchIncomes = () => async (dispatch, getState) => {
   const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
-    const currentIncomes = await fetchData(`${process.env.INCOMES_URL}/?date=${currentMonth}`, 'GET');
+    const currentIncomes = await fetchData(`${process.env.INCOMES_URL}?date=${currentMonth}`, 'GET');
     const currentIncomesSum = currentIncomes.length > 0 ? getSumByArray(currentIncomes) : 0;
     dispatch(setIncomes({ currentIncomes, currentIncomesSum }));
   } catch (error) {
@@ -104,7 +104,7 @@ export const fetchCosts = () => async (dispatch, getState) => {
   const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
-    const currentCosts = await fetchData(`${process.env.COSTS_URL}/?date=${currentMonth}`, 'GET');
+    const currentCosts = await fetchData(`${process.env.COSTS_URL}?date=${currentMonth}`, 'GET');
     const currentCostsSum = currentCosts.length > 0 ? getSumByArray(currentCosts) : 0;
     dispatch(setCosts({ currentCosts, currentCostsSum }));
   } catch (error) {
@@ -118,7 +118,7 @@ export const fetchSpendings = () => async (dispatch, getState) => {
   const currentDay = getBeginOfDay(date) / 1000;
 
   try {
-    const response = await fetchData(`${process.env.SPENDINGS_URL}/?date=${currentDay}`, 'GET');
+    const response = await fetchData(`${process.env.SPENDINGS_URL}?date=${currentDay}`, 'GET');
     const prevDaysSpendingsSum = response.prev_days_sum;
     const currentSpendings = response.today_spendings;
     const currentSpendingsSum = currentSpendings.length > 0 ? getSumByArray(currentSpendings) : 0;
@@ -134,7 +134,7 @@ export const fetchSavings = () => async (dispatch, getState) => {
   const currentMonth = getBeginOfMonth(date) / 1000;
 
   try {
-    const savings = await fetchData(`${process.env.SAVINGS_URL}/?date=${currentMonth}`, 'GET');
+    const savings = await fetchData(`${process.env.SAVINGS_URL}?date=${currentMonth}`, 'GET');
     const currentSavingsUnformated = savings.find((item) => item.date === currentMonth);
     const currentSavings = currentSavingsUnformated
       ? {
@@ -161,7 +161,7 @@ export const fetchSaldo = () => async (dispatch, getState) => {
   const currentDay = getBeginOfDay(date) / 1000;
 
   try {
-    const response = await fetchData(`${process.env.SALDO_URL}/?date=${currentDay}`, 'GET');
+    const response = await fetchData(`${process.env.SALDO_URL}?date=${currentDay}`, 'GET');
     const currentSaldo = response;
 
     dispatch(setSaldo({ currentSaldo }));

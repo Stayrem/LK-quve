@@ -38,6 +38,7 @@ axios.interceptors.response.use(null, (error) => {
       })
       .catch((err) => {
         if (err.response.status >= 400) {
+          localStorage.removeItem('USER_ACCESS_TOKEN');
           store.dispatch(resetStore());
         }
         Promise.reject(error);
