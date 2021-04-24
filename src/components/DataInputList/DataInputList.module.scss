@@ -1,19 +1,3 @@
-.dataInputList {
-
-}
-
-.dataInputListHeader {
-
-}
-
-.dataInputListHeaderTitle {
-
-}
-
-.dataInputListHeaderDate {
-
-}
-
 .dataInputListBody {
   padding-left: 0!important;
   padding-right: 0!important;
@@ -33,7 +17,6 @@
 }
 
 .dataInputListTable {
-  min-width: 550px;
   width: 100%;
   border-collapse: collapse;
   text-align: left;
@@ -48,8 +31,16 @@
     }
 
     th {
-      padding: 10px 20px;
+      padding: 10px 20px 10px 0;
       font-weight: 600;
+
+      &:first-child {
+        padding-left: 20px;
+      }
+
+      &:last-child > * {
+        margin-left: auto;
+      }
     }
   }
 
@@ -62,7 +53,7 @@
     }
 
     td {
-      padding: 10px 20px;
+      padding: 10px 20px 10px 0;
       font-weight: 500;
 
       input {
@@ -79,6 +70,14 @@
           color: $color-font-placeholder;
         }
       }
+
+      &:first-child {
+        padding-left: 20px;
+      }
+
+      &:last-child > * {
+        margin-left: auto;
+      }
     }
   }
 
@@ -90,10 +89,6 @@
       font-weight: 500;
     }
   }
-}
-
-.dataInputListFooter {
-
 }
 
 .dataInputListSum {
@@ -136,14 +131,15 @@
     thead {
 
       th {
-        padding: 15px 30px;
+        padding: 15px 20px 15px 0;
+
       }
     }
 
     tbody {
 
       td {
-        padding: 15px 30px;
+        padding: 15px 20px 15px 0;
 
         input {
           background-color: transparent;

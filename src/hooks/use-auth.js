@@ -1,30 +1,29 @@
 import React, {
-  useState, useContext, createContext,
+  useContext, createContext,
 } from 'react';
 import fetchData from '@utils/fetch';
-import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-//import { resetStore } from '../store/action-creator';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  fetchUserInfo,
+  resetStore,
+  setUserAccessToken,
+} from '../store/action-creator';
 
 const mainAuth = {
-  isAuthenticated: false,
   async signIn(values, callback) {
-    try {
-      const response = await fetchData('/mocks/sign-in/post.json', 'POST', values);
-      if (response.code === 200) {
-        mainAuth.isAuthenticated = true;
-        callback(response.token);
-      }
-    } catch (error) {
-      if (error.response.status === 422) {
-        toast.error('Некорректные email или пароль.');
-      } else {
-        toast.error(`Ошибка сервера: ${error.response.status}`);
-      }
+    let response;
+    if (process.env.NODE_ENV !== 'local') {
+      response = await fetchData(process.env.SIGN_IN, 'POST', values);
+    } else {
+      response = await fetchData(process.env.SIGN_IN);
     }
+
+    callback(response.access);
+  },
+  async signUp(values) {
+    await fetchData('/api/auth/sign-up/', 'POST', values);
   },
   signOut(callback) {
-    mainAuth.isAuthenticated = false;
     callback();
   },
 };
@@ -32,24 +31,34 @@ const mainAuth = {
 const authContext = createContext();
 
 function useProvideAuth() {
-  //const dispatch = useDispatch();
-  const authorizedUser = localStorage.getItem('user');
-  const [user, setUser] = useState(authorizedUser || null);
+  const dispatch = useDispatch();
+  const isInfoFetched = useSelector((state) => state.isInfoFetched);
+  const accessToken = useSelector((state) => state.user.accessToken);
+  const existingAccessToken = localStorage.getItem('USER_ACCESS_TOKEN') || null;
+
+  if (existingAccessToken && !accessToken) {
+    dispatch(setUserAccessToken(existingAccessToken));
+  }
+
+  if (!isInfoFetched && accessToken) {
+    dispatch(fetchUserInfo());
+  }
 
   const signIn = (values) => mainAuth.signIn(values, (token) => {
-    setUser(token);
-    localStorage.setItem('user', token);
+    dispatch(setUserAccessToken(token));
+    localStorage.setItem('USER_ACCESS_TOKEN', token);
   });
 
+  const signUp = (values) => mainAuth.signUp(values);
+
   const signOut = () => mainAuth.signOut(() => {
-    setUser(false);
-    localStorage.removeItem('user');
-    //dispatch(resetStore());
+    localStorage.removeItem('USER_ACCESS_TOKEN');
+    dispatch(resetStore());
   });
 
   return {
-    user,
     signIn,
+    signUp,
     signOut,
   };
 }

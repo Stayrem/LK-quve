@@ -39,8 +39,55 @@
     -webkit-appearance: none;
   }
 
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    border: 1px solid transparent;
+    -webkit-text-fill-color: $color-font;
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
   .main {
     flex-grow: 1;
+  }
+
+  .react-datepicker {
+    background-color: $color-primary;
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 30px 20px -10px rgba(17, 30, 43, 0.5);
+  }
+
+  .react-datepicker__header {
+    background-color: $color-primary;
+    color: #ffffff;
+  }
+
+  .react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+    color: #ffffff;
+  }
+
+  .react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header {
+    color: #ffffff;
+  }
+
+  .react-datepicker__day:hover, .react-datepicker__month-text:hover, .react-datepicker__quarter-text:hover, .react-datepicker__year-text:hover {
+    background-color: #121f2b;
+  }
+
+  .react-datepicker__day--disabled, .react-datepicker__month-text--disabled, .react-datepicker__quarter-text--disabled, .react-datepicker__year-text--disabled {
+    opacity: 0.5;
+  }
+
+  .react-datepicker__today-button {
+    background-color: $color-primary;
   }
 
   .panel {
@@ -55,14 +102,13 @@
     .panel-header {
       padding: 25px 20px 0;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: space-between;
 
       .panel-header-title {
         font-size: 14px;
         font-weight: 700;
         flex: 0 0 auto;
-        margin-bottom: 10px;
       }
 
       .panel-header-subtitle {
@@ -70,7 +116,6 @@
         font-weight: 500;
         flex: 0 0 auto;
         text-align: left;
-        text-transform: capitalize;
         color: $color-font-lighter;
       }
     }
@@ -130,7 +175,16 @@
     }
   }
 
+  .quve__single-value {
+    font-size: 20px;
+  }
+
+  .quve__menu-list .quve__option {
+    font-size: 20px;
+  }
+
   .btn {
+    background-color: transparent;
     display: inline-block;
     font-weight: 400;
     text-align: center;
@@ -143,6 +197,7 @@
     border: 1px solid transparent;
     padding: .375rem .75rem;
     font-size: 1rem;
+    font-weight: 500;
     line-height: 1.5;
     border-radius: .25rem;
     opacity: 1;
@@ -168,6 +223,12 @@
       border-color: $color-secondary;
     }
 
+    &.btn-secondary {
+      color: $color-primary-lighter;
+      background-color: $color-primary-darkest;
+      border-color: $color-primary-darkest;
+    }
+
     &.btn-block {
       display: block;
       width: 100%;
@@ -176,6 +237,15 @@
     &.btn-outline {
       background-color: transparent;
     }
+
+    &.btn-circle {
+      border-radius: 50%;
+    }
+  }
+
+  .bg-white {
+    background-color: #FFFFFF;
+    color: $color-font-darker;
   }
 
   .apexcharts-canvas {
@@ -209,64 +279,6 @@
         border: none;
       }
     }
-
-    .DayPickerInput-OverlayWrapper {
-      transform: translateY(10px);
-      z-index: 9998;
-
-      .DayPickerInput-Overlay {
-        left: unset;
-        right: 0;
-      }
-    }
-
-    .DayPicker {
-      background-color: $color-primary;
-
-      .DayPicker-wrapper {
-        background-color: $color-primary;
-        color: $color-font;
-      }
-
-      .DayPicker-Day--today {
-        color: $color-accent;
-      }
-    }
-
-    .DayPicker-TodayButton {
-      color: $color-accent;
-      text-align: center;
-      margin: auto;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .DayPicker-Day, .DayPicker-Weekday {
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .DayPicker-Caption {
-      font-size: 14px;
-      text-transform: capitalize;
-    }
-
-    .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
-      background-color: $color-accent;
-      color: $color-font;
-    }
-
-    .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):hover {
-      background-color: $color-accent;
-    }
-
-    .DayPicker:not(.DayPicker--interactionDisabled)
-    .DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-  }
 
   @media (min-width: 768px) {
     .panel {
@@ -350,4 +362,5 @@
       }
     }
   }
+}
 }

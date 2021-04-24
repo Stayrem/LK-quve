@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 
 import Chart from 'react-apexcharts';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import styles from './DataBarChart.module.scss';
 import defaultOptions from './chart-options';
 
@@ -31,7 +31,7 @@ const DataBarChart = (props) => {
     name: '',
     data: isEmpty(graphData) ? [] : graphData.map((item) => parseInt(item.value, 10)),
   }];
-  const labels = isEmpty(graphData) ? [] : graphData.map((item) => moment.unix(item.month).utc().format('MMMM'));
+  const labels = isEmpty(graphData) ? [] : graphData.map((item) => DateTime.fromMillis(item.date * 1000).setLocale('ru').toFormat('За LLLL y'));
   const options = createOptions(labels, series);
 
   return (

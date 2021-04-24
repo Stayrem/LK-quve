@@ -8,29 +8,37 @@ import PageText from '../../components/PageText/PageText';
 import DataBarChart from '../../components/DataBarChart/DataBarChart';
 import SavingsAdjuster from '../../components/SavingsAdjuster/SavingsAdjuster';
 import SavingsSum from '../../components/SavingsSum/SavingsSum';
-import ErrorPage from '../ErrorPage/ErrorPage';
 import {
   fetchSavings,
   fetchIncomes,
-  resetStore,
 } from '../../store/action-creator';
 
 const Savings = () => {
   const dispatch = useDispatch();
   const date = useSelector((state) => state.date);
-  const isFetchFailed = useSelector((state) => state.fetchError);
-  const savingsCurrentYearList = useSelector((state) => state.savings);
-  const incomesCurrentMonthSum = useSelector((state) => state.incomesSum);
-  const savingsCurrentMonth = useSelector((state) => state.savingsSelectedMounth);
-  const savingsCurrentYearSum = savingsCurrentYearList
-    .reduce((acc, curr) => acc + curr.value, 0);
+  const isDateChanged = useSelector((state) => state.isDateChanged);
+  const currentYearSavings = useSelector((state) => state.currentYearSavings);
+  const currentSavings = useSelector((state) => state.currentSavings);
+  const currentYearSavingsSum = currentYearSavings.reduce((acc, curr) => acc + curr.value, 0);
+  const currentIncomesSum = useSelector((state) => state.currentIncomesSum);
+  const isSavingsFetched = useSelector((state) => state.isSavingsFetched);
+  const isIncomesFethed = useSelector((state) => state.isIncomesFethed);
+
+  const isDataFetched = [isSavingsFetched, isIncomesFethed]
+    .every((isDataTypeFethed) => isDataTypeFethed === true);
 
   useEffect(() => {
     dispatch(fetchSavings());
     dispatch(fetchIncomes());
-    document.title = `Сбережения | ${dictionary.APP_NAME}`;
-    return () => dispatch(resetStore());
+    document.title = `Сбережения — ${dictionary.APP_NAME}`;
   }, []);
+
+  useEffect(() => {
+    if (isDateChanged) {
+      dispatch(fetchSavings());
+      dispatch(fetchIncomes());
+    }
+  }, [isDateChanged]);
 
   const breadcrumbs = [
     {
@@ -40,36 +48,34 @@ const Savings = () => {
   ];
 
   return (
-    (() => {
-      if (isFetchFailed) {
-        return <ErrorPage code={500} message="Ошибка" />;
-      }
-      return (
-        <main className="main">
-          <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date * 1000} />
-          <PageContainer>
-            <div className="row">
-              <div className="col">
-                <PageText text="Вы можете указать величину желаемых сбережений за месяц. На основе данной величины будет рассчитана итоговая сумма, которую можно потратить за день." />
-              </div>
+    (() => (
+      <main className="main">
+        <PageContainer>
+          <PageHeadline breadcrumbs={breadcrumbs} title="Сбережения" date={date} MonthFormat />
+        </PageContainer>
+        <PageContainer>
+          <div className="row">
+            <div className="col">
+              <PageText text="Вы можете указать величину желаемых сбережений за месяц. На основе данной величины будет рассчитана итоговая сумма, которую можно потратить за день." />
             </div>
-            <div className="row">
-              <div className="col-lg-5 mb-3 mb-lg-0">
-                <SavingsAdjuster
-                  date={date}
-                  incomesCurrentMonthSum={incomesCurrentMonthSum}
-                  savingsCurrentMonthSum={savingsCurrentMonth.value}
-                />
-                <SavingsSum value={savingsCurrentYearSum} />
-              </div>
-              <div className="col-lg-7">
-                <DataBarChart title="Динамика сбережений по месяцам" graphData={savingsCurrentYearList} />
-              </div>
+          </div>
+          <div className="row">
+            <div className="col-lg-5 mb-3 mb-lg-0">
+              <SavingsAdjuster
+                date={date}
+                currentIncomesSum={currentIncomesSum}
+                currentSavings={currentSavings}
+                isDataFetched={isDataFetched}
+              />
+              <SavingsSum value={currentYearSavingsSum} />
             </div>
-          </PageContainer>
-        </main>
-      );
-    })()
+            <div className="col-lg-7">
+              <DataBarChart title="Динамика сбережений по месяцам" graphData={currentYearSavings} />
+            </div>
+          </div>
+        </PageContainer>
+      </main>
+    ))()
   );
 };
 

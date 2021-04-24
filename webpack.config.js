@@ -1,19 +1,27 @@
 const path = require('path');
 const chalk = require('chalk');
+const Dotenv = require('dotenv-webpack');
+const TerserPlugin = require('terser-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssnanoPlugin = require('cssnano-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const autoprefixer = require('autoprefixer');
+const PostCssPreset = require('postcss-preset-env');
 const CopyPlugin = require('copy-webpack-plugin');
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const nodeEnv = process.env.NODE_ENV;
+const isDevelopment = nodeEnv === 'development';
+const isLocal = nodeEnv === 'local';
+const isProduction = nodeEnv === 'production';
+const isAnalyse = nodeEnv === 'analyse';
 const hash = isDevelopment ? '' : '-[contenthash:8]';
+const dotEnvFile = isLocal ? path.join(__dirname, '.env.mock') : path.join(__dirname, '.env.prod');
 
 const PATH = {
   DIST: path.join(__dirname, 'dist'),
+  BUILD: path.join(__dirname, 'build'),
   SRC: path.join(__dirname, 'src'),
   TEMPLATE: path.join(__dirname, 'src/template/index.html'),
   FONTS: path.join(__dirname, 'src/assets/fonts'),
@@ -22,11 +30,12 @@ const PATH = {
   ASSETS: path.join(__dirname, 'src/assets'),
 };
 module.exports = {
-  mode: isDevelopment ? 'development' : 'production',
+  mode: isAnalyse || isProduction ? 'production' : 'development',
   entry: './src/index.jsx',
   output: {
-    filename: `main${hash}.js`,
-    path: PATH.DIST,
+    publicPath: isAnalyse || isProduction ? '/' : '/', //TODO Прописать корректный для прода
+    filename: `[name]${hash}.js`,
+    path: isProduction ? PATH.BUILD : PATH.DIST,
   },
   devServer: {
     contentBase: PATH.DIST,
@@ -35,6 +44,9 @@ module.exports = {
     hot: true,
     port: 1337,
     historyApiFallback: true,
+    proxy: {
+      '/api': 'http://localhost:8000',
+    },
   },
   resolve: {
     extensions: ['.jsx', '.js'],
@@ -69,12 +81,6 @@ module.exports = {
           },
           {
             loader: 'postcss-loader',
-            options: {
-              plugins: [
-                autoprefixer(),
-              ],
-              sourceMap: true,
-            },
           },
           {
             loader: 'sass-loader',
@@ -120,37 +126,71 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: '[name].[ext]',
+          outputPath: 'assets/favicons',
         },
       },
     ],
   },
-  devtool: 'source-map',
-  plugins: [
-    new ProgressBarPlugin({
-      format: `  build [:bar] ${chalk.green.bold(':percent')} (:elapsed seconds)`,
-      clear: false,
-    }),
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      template: PATH.TEMPLATE,
-    }),
-    new MiniCssExtractPlugin({
-      filename: `[name]${hash}.css`,
-    }),
-    new CopyPlugin({
-      patterns: [
-        { from: PATH.MOCKS, to: path.join(PATH.DIST, 'mocks') },
-      ],
-    }),
-    new MomentLocalesPlugin({
-      localesToKeep: ['es-us', 'ru'],
-    }),
-  ],
+  devtool: isProduction ? false : 'source-map',
+  plugins: (() => {
+    const defaultPlugins = [
+      new Dotenv({
+        path: dotEnvFile,
+        safe: true,
+        allowEmptyValues: true,
+      }),
+      new ProgressBarPlugin({
+        format: `  build [:bar] ${chalk.green.bold(':percent')} (:elapsed seconds)`,
+        clear: false,
+      }),
+      new CleanWebpackPlugin(),
+      new HtmlWebpackPlugin({
+        template: PATH.TEMPLATE,
+      }),
+      new MiniCssExtractPlugin({
+        filename: `[name]${hash}.css`,
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: PATH.MOCKS, to: path.join(PATH.DIST, 'mocks') },
+        ],
+      }),
+    ];
+    if (isAnalyse) {
+      defaultPlugins.push(new BundleAnalyzerPlugin());
+    }
+    if (!isDevelopment) {
+      defaultPlugins.push(new PostCssPreset({
+        browsers: 'last 2 versions',
+      }));
+    }
+    return defaultPlugins;
+  })(),
   optimization: {
+    minimize: isProduction || isAnalyse,
     minimizer: [
       new CssnanoPlugin({
-        sourceMap: true,
+        sourceMap: isDevelopment,
       }),
+      new TerserPlugin(),
     ],
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 0,
+      cacheGroups: {
+        vendorApex: {
+          test: /[\\/]node_modules[\\/](apexcharts)[\\/]/,
+          priority: -5,
+        },
+        vendorNodeModules: {
+          test: /[\\/]node_modules[\\/](?!apexcharts)(!react)(!react-dom)(.[a-zA-Z0-9.\-_]+)[\\/]/,
+          priority: -10,
+        },
+        default: {
+          priority: -20,
+        },
+      },
+    },
   },
 };

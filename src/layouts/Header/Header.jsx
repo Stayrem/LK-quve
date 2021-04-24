@@ -3,6 +3,7 @@ import { useState } from 'react';
 import {
   Link,
 } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styles from './Header.module.scss';
 import logo from '../../assets/images/logo.svg';
 import menu from '../../assets/images/menu.svg';
@@ -70,6 +71,7 @@ const Header = () => {
   const buttonClassname = isMenuOpened ? active : notActive;
   const mobMenuClassname = isMenuOpened ? mobileMenuOpened : '';
   const auth = useAuth();
+  const accessToken = useSelector((state) => state.user.accessToken);
 
   return (
     <header className={header}>
@@ -80,29 +82,29 @@ const Header = () => {
               <img src={logo} alt="Логотип" className={headerLogo} />
             </Link>
             <ul className={headerNavList}>
-              {auth.user && menuItems.map((listItem) => (
+              {accessToken && menuItems.map((listItem) => (
                 <li key={listItem.id} className={item}>
                   <Link to={listItem.url} className={[link, headerItem].join(' ')}>{listItem.title}</Link>
                 </li>
               ))}
             </ul>
           </nav>
-          <a href="#" className={[headerItem, mobileMenuBtn].join(' ')} onClick={() => toggleMenu((prev) => !prev)}>
+          <button type="button" className={[headerItem, mobileMenuBtn, 'btn'].join(' ')} onClick={() => toggleMenu((prev) => !prev)}>
             <img alt="mobile-menu" src={menu} className={headerLogo} />
-          </a>
+          </button>
           <div className={exitWrapper}>
             {
-              auth.user ? (
-                <a href="#" className={[link, headerItem].join(' ')} onClick={() => auth.signOut()}>Выход</a>
+              accessToken ? (
+                <a className={[link, headerItem].join(' ')} onClick={() => auth.signOut()}>Выход</a>
               ) : (
-                <Link to="/sign-up" className={[link, headerItem].join(' ')}>Регистрация</Link>
+                <Link to="/sign-in" className={[link, headerItem].join(' ')}>Вход</Link>
               )
             }
           </div>
         </div>
       </Container>
       <div className={[mobileMenu, mobMenuClassname].join(' ')}>
-        <HeaderMobileMenu menuItems={menuItems} />
+        <HeaderMobileMenu menuItems={menuItems} menuCloseHandler={toggleMenu} />
       </div>
     </header>
   );

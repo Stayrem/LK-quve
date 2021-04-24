@@ -12,6 +12,7 @@
   border: 1px solid $color-primary;
   border-top: none;
   border-bottom: none;
+  cursor: pointer;
 }
 
 .headerNav {
@@ -21,6 +22,7 @@
 .headerNavList {
   display: none;
   align-items: center;
+  margin: 0;
 }
 
 .item {

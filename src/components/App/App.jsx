@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
 } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import routes from './routes';
@@ -12,10 +11,13 @@ import Footer from '../../layouts/Footer/Footer';
 import styles from './App.module.scss';
 import { ProvideAuth } from '../../hooks/use-auth';
 import PrivateRoute from '../PrivateRoute/PrivateRoute';
-import routesDict from '../../utils/routesDict';
+import { initAmplitude } from '../../utils/amplitude';
 
 const App = () => {
   const { wrapper } = styles;
+
+  initAmplitude();
+
   return (
     <ProvideAuth>
       <Router>
@@ -37,9 +39,6 @@ const App = () => {
               </Route>
             );
           })}
-          <PrivateRoute path={routesDict.ROOT}>
-            <Redirect to={routesDict.OVERVIEW} />
-          </PrivateRoute>
         </Switch>
         <Footer />
         <ToastContainer

@@ -3,8 +3,11 @@ import { Link, useHistory } from 'react-router-dom';
 import dictionary from '@utils/dictionary';
 
 import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 import PageContainer from '../../hocs/PageContainer/PageContainer';
 import { useAuth } from '../../hooks/use-auth';
+import { sendAmplitudeEvent } from '../../utils/amplitude';
 
 const validate = (values) => {
   const errors = {};
@@ -22,17 +25,18 @@ const validate = (values) => {
 
 const SignIn = () => {
   const auth = useAuth();
+  const accessToken = useSelector((state) => state.user.accessToken);
   const history = useHistory();
 
   useEffect(() => {
-    document.title = `Вход | ${dictionary.APP_NAME}`;
+    document.title = `Вход — ${dictionary.APP_NAME}`;
   }, []);
 
   useEffect(() => {
-    if (auth.user) {
+    if (accessToken) {
       history.push('/');
     }
-  }, [auth.user]);
+  }, [accessToken]);
 
   const formik = useFormik({
     initialValues: {
@@ -42,7 +46,29 @@ const SignIn = () => {
     validate,
     onSubmit: (values, { resetForm }) => {
       auth.signIn(values)
-        .then(() => resetForm());
+        .then(() => {
+          resetForm();
+          sendAmplitudeEvent('sign-in', {
+            'is_success': true,
+          });
+        })
+        .catch((error) => {
+          const errorStatus = error.response && error.response.status;
+          if (errorStatus === 401) {
+            toast.error('Некорректные email или пароль.');
+            sendAmplitudeEvent('sign-in', {
+              'is_success': false,
+              reason: 'Incorrect email or password',
+            });
+          } else {
+            toast.error(`Ошибка сервера: ${errorStatus}`);
+            sendAmplitudeEvent('sign-in', {
+              'is_success': false,
+              reason: 'Other',
+            });
+          }
+          formik.setSubmitting(false);
+        });
     },
   });
 
@@ -60,7 +86,7 @@ const SignIn = () => {
             </div>
             <div className="panel">
               <div className="panel-body">
-                <form onSubmit={formik.handleSubmit} className="form" autoComplete="off">
+                <form onSubmit={formik.handleSubmit} className="form">
                   <div className="form-group">
                     <div className="input-wrapper">
                       <input
@@ -72,6 +98,7 @@ const SignIn = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
+                        autoComplete="username"
                       />
                     </div>
                     {formik.touched.email && formik.errors.email ? <small className="text-warning">{formik.errors.email}</small> : null}
@@ -87,6 +114,7 @@ const SignIn = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.password}
+                        autoComplete="current-password"
                       />
                     </div>
                     {formik.touched.password && formik.errors.password ? <small className="text-warning">{formik.errors.password}</small> : null}
