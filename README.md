@@ -12,5 +12,5 @@ Our product will allow people who want to manage their money wisely, plan their 
 2. `npm build`
 
 #### Deploy image
-1. `docker build -f Dockerfile --tag quve/frontend:X.Y.Z`
+1. `docker build -f Dockerfile --tag quve/frontend:X.Y.Z .`
 2. `docker push quve/frontend:X.Y.Z`

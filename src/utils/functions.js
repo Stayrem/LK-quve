@@ -5,9 +5,7 @@ export const getSumByArray = (list) => list.reduce((acc, current) => {
   return acc + current.value;
 }, 0);
 
-export const getFormatedNumber = (number) => number
-  .toString()
-  .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ' ');
+export const getFormatedNumber = (number) => number.toLocaleString();
 
 export const getBeginOfDay = (date) => DateTime.fromMillis(date).toUTC().startOf('day').ts;
 
