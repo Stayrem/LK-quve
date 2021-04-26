@@ -283,7 +283,10 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
   let dispatchedObject = {};
   let requestURL = '';
 
-  const { currentIncomes, currentCosts, currentSpendings } = getState();
+  const {
+    date, currentIncomes, currentCosts, currentSpendings,
+  } = getState();
+  const currentMonth = getBeginOfMonth(date) / 1000;
 
   switch (type) {
     case dictionary.DATA_LIST_TYPE_INCOMES:
@@ -293,7 +296,7 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
         currentIncomes: [],
         currentIncomesSum: null,
       };
-      requestURL = `${process.env.INCOMES_URL}${item.id}/`;
+      requestURL = `${process.env.INCOMES_URL}${item.id}/?date=${currentMonth}`;
       break;
     case dictionary.DATA_LIST_TYPE_COSTS:
       currentCashFlows = currentCosts;
@@ -302,7 +305,7 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
         currentCosts: [],
         currentCostsSum: null,
       };
-      requestURL = `${process.env.COSTS_URL}${item.id}/`;
+      requestURL = `${process.env.COSTS_URL}${item.id}/?date=${currentMonth}`;
       break;
     case dictionary.DATA_LIST_TYPE_SPENDINGS:
       currentCashFlows = currentSpendings;
@@ -311,7 +314,7 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
         currentSpendings: [],
         currentSpendingsSum: null,
       };
-      requestURL = `${process.env.SPENDINGS_URL}${item.id}/`;
+      requestURL = `${process.env.SPENDINGS_URL}${item.id}/?date=${currentMonth}`;
       break;
     default:
       toast.error('Не выбран тип CashFlow-объекта.');
@@ -386,7 +389,7 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
           });
         })
         .catch(() => {
-          toast.error('Не удалось удалить постоянный расход.');
+          toast.error('Не удалось удалить Cashflow-объект.');
         });
     } catch (err) {
       dispatch(setIsFetchFailed(true));
