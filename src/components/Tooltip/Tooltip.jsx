@@ -18,7 +18,7 @@ const Tooltip = (props) => {
       >
         <FontAwesomeIcon icon={faQuestion} />
       </button>
-      <ReactTooltip id={id} place="top" type="dark" effect="solid">
+      <ReactTooltip id={id} type="dark" effect="solid">
         <p className={tooltipText}>{text}</p>
       </ReactTooltip>
     </div>

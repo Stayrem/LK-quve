@@ -1,18 +1,6 @@
 .cardElippser {
   position: relative;
   width: 100%;
-
-  &:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: -1px;
-    height: 100%;
-    width: 30px;
-    background: #33485d;
-    background: linear-gradient(90deg, transparent 0%, $color-primary-darker 100%);
-    z-index: 10;
-  }
 }
 
 .cardScroller {
