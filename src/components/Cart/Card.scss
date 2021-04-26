@@ -6,7 +6,7 @@
   flex-direction: column;
   padding: 25px 20px;
   line-height: 1;
-  flex: 0 0 240px;
+  flex: 0 0 70%;
   margin-right: 15px;
 
   &:last-child {
@@ -45,7 +45,7 @@
 @media (min-width: 768px) {
   .card {
     padding: 30px 25px;
-    flex: 0 0 390px;
+    flex: 0 0 40%;
     margin-right: 30px;
   }
 
@@ -61,6 +61,12 @@
 
   .cardSubtitle {
     font-size: 14px;
+  }
+}
+
+@media (min-width: 992px) {
+  .card {
+    flex: 0 0 35%;
   }
 }
 

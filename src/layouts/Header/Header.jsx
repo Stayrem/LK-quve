@@ -89,9 +89,19 @@ const Header = () => {
               ))}
             </ul>
           </nav>
-          <button type="button" className={[headerItem, mobileMenuBtn, 'btn'].join(' ')} onClick={() => toggleMenu((prev) => !prev)}>
-            <img alt="mobile-menu" src={menu} className={headerLogo} />
-          </button>
+          {
+            accessToken ? (
+              <button
+                type="button"
+                className={[headerItem, mobileMenuBtn, 'btn'].join(' ')}
+                onClick={() => toggleMenu((prev) => !prev)}
+              >
+                <img alt="mobile-menu" src={menu} className={headerLogo} />
+              </button>
+            ) : (
+              <Link to="/sign-in" className={[link, headerItem, mobileMenuBtn].join(' ')}>Вход</Link>
+            )
+          }
           <div className={exitWrapper}>
             {
               accessToken ? (
@@ -103,9 +113,13 @@ const Header = () => {
           </div>
         </div>
       </Container>
-      <div className={[mobileMenu, mobMenuClassname].join(' ')}>
-        <HeaderMobileMenu menuItems={menuItems} menuCloseHandler={toggleMenu} />
-      </div>
+      {
+        accessToken && (
+          <div className={[mobileMenu, mobMenuClassname].join(' ')}>
+            <HeaderMobileMenu menuItems={menuItems} menuCloseHandler={toggleMenu} />
+          </div>
+        )
+      }
     </header>
   );
 };

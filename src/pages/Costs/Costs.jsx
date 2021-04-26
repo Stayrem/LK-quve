@@ -49,7 +49,7 @@ const Costs = () => {
         <PageContainer>
           <PageText text="Введите все Ваши постоянные расходы за месяц." />
           <div className="row">
-            <div className="col-lg-8">
+            <div className="col-lg-8 mb-3 mb-lg-0">
               <DataInputList
                 title="Добавленные постоянные расходы"
                 date={date}

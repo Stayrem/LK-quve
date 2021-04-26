@@ -4,15 +4,18 @@ import {
   Link,
 } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import styles from './HeaderMobileMenu.module.scss';
 import logo from '../../assets/images/logo.svg';
+import { useAuth } from '../../hooks/use-auth';
 
 const HeaderMobileMenu = (props) => {
   const { menuItems, menuCloseHandler } = props;
   const {
-    menu, header, list, link, iconWrapper, nav, footer, footerLink, footerIcon,
+    menu, header, list, link, iconWrapper, nav, footer, footerLink,
   } = styles;
+  const auth = useAuth();
+
   return (
     <div className={menu}>
       <div className={header}>
@@ -26,9 +29,6 @@ const HeaderMobileMenu = (props) => {
           {menuItems.map((listItem) => (
             <li key={listItem.id}>
               <Link to={listItem.url} className={link} onClick={() => menuCloseHandler(false)}>
-                <div className={iconWrapper}>
-                  <img src={listItem.icon} alt="иконка меню" />
-                </div>
                 {listItem.title}
               </Link>
             </li>
@@ -36,8 +36,13 @@ const HeaderMobileMenu = (props) => {
         </ul>
       </nav>
       <footer className={footer}>
-        <a href="/logout" className={footerLink}>
-          <FontAwesomeIcon icon={faSignOutAlt} color="#3B5268" size="lg" className={footerIcon} />
+        <a
+          onClick={() => {
+            menuCloseHandler(false);
+            auth.signOut();
+          }}
+          className={[link, footerLink].join(' ')}
+        >
           Выход
         </a>
       </footer>

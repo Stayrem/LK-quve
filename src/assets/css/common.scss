@@ -65,6 +65,10 @@
     box-shadow: 0 30px 20px -10px rgba(17, 30, 43, 0.5);
   }
 
+  .react-datepicker-popper {
+    z-index: 10;
+  }
+
   .react-datepicker__header {
     background-color: $color-primary;
     color: #ffffff;
@@ -88,6 +92,10 @@
 
   .react-datepicker__today-button {
     background-color: $color-primary;
+  }
+
+  .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle, .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle::before {
+    border-bottom-color: $color-primary;
   }
 
   .panel {
