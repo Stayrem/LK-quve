@@ -1,6 +1,6 @@
 const production = {
   url: {
-    API: 'https://quve.ru',
+    API: '',
   },
   amplitude: {
     API_KEY: '4636e43d6e401278e445621977bc037f',

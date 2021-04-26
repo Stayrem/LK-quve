@@ -1,0 +1,32 @@
+upstream quve_backend {
+    server $BACKEND_HOSTNAME:$BACKEND_PORT;
+}
+
+server {
+    listen   80;
+    listen   [::]:80;
+
+    root /app/static;
+    index index.html;
+
+    server_name localhost quve.ru;
+
+    location / {
+        try_files $uri /index.html;
+    }
+
+    location /static {
+        try_files $uri @proxy;
+    }
+
+    location ~ ^/(api|admin) {
+        try_files $uri @proxy;
+    }
+
+    location @proxy {
+        proxy_pass http://quve_backend;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_redirect off;
+    }
+}

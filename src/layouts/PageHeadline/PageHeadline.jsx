@@ -63,10 +63,17 @@ const PageHeadline = (props) => {
               dateFormat={MonthFormat ? 'LLLL y' : 'd MMMM y'}
               todayButton="Сегодня"
               onChange={(newDate) => onDateChanged(newDate)}
+              closeOnScroll={true}
+              popperPlacement="bottom-end"
               popperModifiers={{
                 offset: {
+                  //enabled: true,
+                  //offset: '-105px, 0',
+                },
+                preventOverflow: {
                   enabled: true,
-                  offset: '-105px, 0',
+                  escapeWithReference: false,
+                  boundariesElement: 'viewport',
                 },
               }}
             />

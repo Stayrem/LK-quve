@@ -293,7 +293,7 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
         currentIncomes: [],
         currentIncomesSum: null,
       };
-      requestURL = `/api/incomes/${item.id}/`;
+      requestURL = `${process.env.INCOMES_URL}${item.id}/`;
       break;
     case dictionary.DATA_LIST_TYPE_COSTS:
       currentCashFlows = currentCosts;
@@ -302,7 +302,7 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
         currentCosts: [],
         currentCostsSum: null,
       };
-      requestURL = `${process.env.COSTS_URL}/${item.id}/`;
+      requestURL = `${process.env.COSTS_URL}${item.id}/`;
       break;
     case dictionary.DATA_LIST_TYPE_SPENDINGS:
       currentCashFlows = currentSpendings;
@@ -311,7 +311,7 @@ export const deleteCashFlow = (item, type) => (dispatch, getState) => {
         currentSpendings: [],
         currentSpendingsSum: null,
       };
-      requestURL = `${process.env.SPENDINGS_URL}/${item.id}/`;
+      requestURL = `${process.env.SPENDINGS_URL}${item.id}/`;
       break;
     default:
       toast.error('Не выбран тип CashFlow-объекта.');
@@ -441,7 +441,7 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
         currentIncomesSum: null,
       };
       addRequestURL = process.env.INCOMES_URL;
-      editRequestURL = `${addRequestURL}/${item.id}/`;
+      editRequestURL = `${addRequestURL}${item.id}/`;
       break;
     case dictionary.DATA_LIST_TYPE_COSTS:
       currentCashFlows = currentCosts;
@@ -451,7 +451,7 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
         currentCostsSum: null,
       };
       addRequestURL = process.env.COSTS_URL;
-      editRequestURL = `${addRequestURL}/${item.id}/`;
+      editRequestURL = `${addRequestURL}${item.id}/`;
       break;
     case dictionary.DATA_LIST_TYPE_SPENDINGS:
       currentCashFlows = currentSpendings;
@@ -461,7 +461,7 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
         currentSpendingsSum: null,
       };
       addRequestURL = process.env.SPENDINGS_URL;
-      editRequestURL = `${process.env.SPENDINGS_URL}/${item.id}/`;
+      editRequestURL = `${addRequestURL}${item.id}/`;
       break;
     default:
       toast.error('Не выбран тип CashFlow-объекта.');
