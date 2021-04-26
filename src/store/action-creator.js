@@ -148,7 +148,8 @@ export const fetchSavings = () => async (dispatch, getState) => {
         value: 0,
         type: 0,
       };
-    const currentYearSavings = savings.filter((item) => item.date !== currentMonth);
+    //const currentYearSavings = savings.filter((item) => item.date !== currentMonth);
+    const currentYearSavings = savings;
     dispatch(setSavings({ currentYearSavings, currentSavings }));
   } catch (error) {
     toast.error('Не удалось загрузить сбережения.');
@@ -555,15 +556,64 @@ export const editCashFlow = (item, type) => async (dispatch, getState) => {
   } catch (err) {
     toast.error('Не удалось изменить постоянные расходы.');
     dispatch(setIsFetchFailed(true));
+
+    switch (type) {
+      case dictionary.DATA_LIST_TYPE_INCOMES:
+        dispatchedObject = {
+          currentIncomes: currentCashFlows,
+          currentIncomesSum: getSumByArray(currentCashFlows),
+        };
+        break;
+      case dictionary.DATA_LIST_TYPE_COSTS:
+        dispatchedObject = {
+          currentCosts: currentCashFlows,
+          currentCostsSum: getSumByArray(currentCashFlows),
+        };
+        break;
+      case dictionary.DATA_LIST_TYPE_SPENDINGS:
+        dispatchedObject = {
+          currentSpendings: currentCashFlows,
+          currentSpendingsSum: getSumByArray(currentCashFlows),
+        };
+        break;
+      default:
+        break;
+    }
+
+    dispatch(dispatchedFunction(dispatchedObject));
   }
 };
 
 /* Savings */
 
-export const editSavings = (data) => (dispatch) => {
+export const editSavings = (data) => async (dispatch, getState) => {
+  const {
+    currentSavings, currentYearSavings, currentIncomesSum,
+  } = getState();
+  const initialCurrentSavings = currentSavings;
+  const initialCurrentYearSavings = currentYearSavings;
+
   try {
-    const updatedSavings = fetchData(process.env.SAVINGS_URL, 'PUT', data);
-    dispatch(setSavings({ currentSavings: data }));
+    const newCurrentSavings = await fetchData(process.env.SAVINGS_URL, 'PUT', data);
+    const newCurrentYearSavings = currentYearSavings.map((item) => {
+      if (item.date === newCurrentSavings.date) {
+        return {
+          date: newCurrentSavings.date,
+          type: newCurrentSavings.type,
+          value: newCurrentSavings.type === 0
+            ? newCurrentSavings.value
+            : Math.round((newCurrentSavings.value * currentIncomesSum) / 100),
+          percent: newCurrentSavings.type === 1
+            ? newCurrentSavings.value
+            : Math.round((newCurrentSavings.value / currentIncomesSum) * 100),
+        };
+      }
+      return item;
+    });
+    dispatch(setSavings({
+      currentSavings: newCurrentSavings,
+      currentYearSavings: newCurrentYearSavings,
+    }));
 
     sendAmplitudeEvent('cashflow edited', {
       type: 'SAVINGS',
@@ -572,6 +622,10 @@ export const editSavings = (data) => (dispatch) => {
   } catch (err) {
     toast.error('Не удалось изменить сбережения.');
     dispatch(setIsFetchFailed(true));
+    dispatch(setSavings({
+      currentSavings: initialCurrentSavings,
+      currentYearSavings: initialCurrentYearSavings,
+    }));
   }
 };
 
